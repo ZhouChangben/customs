@@ -56,7 +56,7 @@ public class UserController {
         return "";
     }
 
-    //注册功能，但目前不清楚是否需要注册功能，但也可以理解为插入新用户的操作
+    //注册功能（插入操作），但目前不清楚是否需要注册功能，但也可以理解为插入新用户的操作
     @PostMapping("/Register")
     public String register(@RequestParam(name = "gqdm")String gqdm,
                            @RequestParam(name = "password")String password,
