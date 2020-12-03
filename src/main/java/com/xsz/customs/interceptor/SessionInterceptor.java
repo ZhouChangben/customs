@@ -21,7 +21,7 @@ public class SessionInterceptor implements HandlerInterceptor {
     @Autowired
     private dcUserMapper userMapper;
 
-    //就是在进入一切url之前都需要判断用户是否已经登录，如果未登录则
+    //就是在进入一切url之前都需要判断用户是否已经登录，如果未登录则在session中不会出现我们传入的User对象
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         Cookie[] cookies = request.getCookies();
@@ -37,11 +37,11 @@ public class SessionInterceptor implements HandlerInterceptor {
                         HttpSession session = request.getSession();
                         session.setAttribute("user",users.get(0));
                     }
+                    break;
                 }
             }
         }
-
-        return false;
+        return true;
     }
 
     @Override
