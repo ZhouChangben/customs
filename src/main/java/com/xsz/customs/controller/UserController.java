@@ -1,11 +1,13 @@
 package com.xsz.customs.controller;
 
 import com.xsz.customs.model.dcUser;
+import com.xsz.customs.model.dcUserExample;
 import com.xsz.customs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -13,6 +15,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -32,7 +35,12 @@ public class UserController {
         //flag==1登录成功,则将登录的关区代码写入cookie中，供实现持久登录功能使用
         if (flag){
             //测试代码
-            //userService.getUserList(user.getDcGqdm(),1);
+            /*if (gqdm.equals("000001")) {
+                userService.getUserList(user.getDcGqdm(), 0);
+            }
+            else {
+                userService.getUserList(user.getDcGqdm(), 1);
+            }*/
             //测试代码结束字段
             Cookie cookie = new Cookie("gqdm", gqdm);
             cookie.setMaxAge(60 * 60 * 24 * 30 * 6);
@@ -73,9 +81,10 @@ public class UserController {
         user.setDcGqpword(password);
         user.setDcGqname(gqname);
         userService.create(user);
-        return "index";
+        return "redirect:/";
     }
 
+    //修改用户信息
     @PostMapping("/update")
     public String update(@RequestParam(name = "gqdm")String gqdm,
                          @RequestParam(name = "password")String password,
@@ -90,19 +99,18 @@ public class UserController {
         return "index";
     }
 
-    //获取目标用户列表的方法
-    @GetMapping("/user/gqdm")
-    public String getUserList(HttpServletRequest request,
-                              HttpServletResponse response,
-                              Model model){
-        HttpSession session = request.getSession();
-        //由于持久登录的实现导致session中一直有一个user对象，想要获取下属的列表至少需要获得当前用户
-        dcUser user = (dcUser) session.getAttribute("user");
-        int degree = user.getDcGqdj();
-
-
-        return "";
+    //删除用户功能
+    @GetMapping("/deleteUser/{gqdm}")
+    public String delete(@PathVariable(name = "gqdm") String gqdm,
+                         HttpServletRequest request,
+                         HttpServletResponse response,
+                         Model model){
+        userService.deleteUser(gqdm);
+        return "redirect:/";
     }
+
+    //最高级用户跨级查看查看
+
 
     //以下均为测试用方法
     @GetMapping("/login")

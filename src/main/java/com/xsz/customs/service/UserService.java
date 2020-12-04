@@ -92,6 +92,7 @@ public class UserService {
             //测试代码结束
             return users;
         }
+        //当前用户是二级海关部门
         else if (gqdj == 1){
             String frontdm = gqdm.substring(0,4);
             //String reardm = gqdm.substring(4);
@@ -106,10 +107,21 @@ public class UserService {
                 }
             }*/
             //测试代码结束
-            return users;
+            if (users.size() != 0)
+                return users;
+            else
+                return null;
         }
+        //当前用户是最低级的用户
         else{
             return null;
         }
+    }
+
+    public void deleteUser(String gqdm){
+        dcUserExample userExample = new dcUserExample();
+        userExample.createCriteria()
+                .andDcGqdmEqualTo(gqdm);
+        userMapper.deleteByExample(userExample);
     }
 }
