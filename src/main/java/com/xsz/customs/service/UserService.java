@@ -17,6 +17,21 @@ public class UserService {
     @Autowired
     private dcUserExtMapper userExtMapper;
 
+    public dcUser findUserByGqdm(String gqdm){
+        dcUserExample example = new dcUserExample();
+        example.createCriteria()
+                .andDcGqdmEqualTo(gqdm);
+        List<dcUser> users = userMapper.selectByExample(example);
+        if (users.size() != 0){
+            dcUser user = users.get(0);
+            return user;
+        }
+        else {
+            return null;
+        }
+
+    }
+
     public void create(dcUser user){
         dcUserExample userexample = new dcUserExample();
         userexample.createCriteria()
@@ -107,10 +122,7 @@ public class UserService {
                 }
             }*/
             //测试代码结束
-            if (users.size() != 0)
                 return users;
-            else
-                return null;
         }
         //当前用户是最低级的用户
         else{

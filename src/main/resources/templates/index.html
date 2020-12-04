@@ -66,7 +66,7 @@
     <div th:if="${subusers!=null}">
         <div class="media" th:each="subuser : ${subusers}">
             <div class="media-left">
-                <li><a href="/" th:text="${subuser.getDcGqname()}"></a></li>
+                <li><a th:href="@{'/checkSubUser/'+${subuser.getDcGqdm()}}" th:text="${subuser.getDcGqname()}"></a></li>
                 <li><a th:href="@{'/deleteUser/'+${subuser.getDcGqdm()}}">删除此关区</a></li>
                 <li><a>                         </a></li>
             </div>

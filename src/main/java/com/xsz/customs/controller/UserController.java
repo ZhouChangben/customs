@@ -109,11 +109,29 @@ public class UserController {
         return "redirect:/";
     }
 
-    //最高级用户跨级查看查看
+    //最高级用户跨级查看三级海关部门
+    @GetMapping("/checkSubUser/{gqdm}")
+    public String checkSubUser(@PathVariable(name = "gqdm") String gqdm,
+                               HttpServletRequest request,
+                               HttpServletResponse response,
+                               Model model){
+        dcUser user = userService.findUserByGqdm(gqdm);
+        List<dcUser> users = userService.getUserList(gqdm,user.getDcGqdj());
+        if (users != null ){
+            model.addAttribute("ssubusers",users);
+            //不知道为什么写进model里前端读不到
+            //测试代码开始
+            for (dcUser dcUser : users) {
+                System.out.println(dcUser.getDcGqname());
+            }
+            //测试代码结束
+        }
+        return "redirect:/";
+    }
 
 
     //以下均为测试用方法
-    @GetMapping("/login")
+    /*@GetMapping("/login")
     public String toLogin(){
         return "login";
     }
@@ -126,7 +144,7 @@ public class UserController {
     @GetMapping("/update")
     public String toUpdate(){
         return "update";
-    }
+    }*/
 
 
 }
