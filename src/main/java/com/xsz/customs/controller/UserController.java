@@ -133,18 +133,25 @@ public class UserController {
     }
 
     //修改用户信息
-    @PostMapping("/update")
-    public String updateUser(@RequestParam(name = "gqdm")String gqdm,
-                         @RequestParam(name = "password")String password,
-                         @RequestParam(name = "gqname")String gqname,
+    @ResponseBody
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    public Object updateUser(@RequestBody UpdateUserDTO updateUserDTO,
                          HttpServletRequest request,
                          HttpServletResponse response){
         dcUser user = new dcUser();
-        user.setDcGqdm(gqdm);
-        user.setDcGqpword(password);
-        user.setDcGqname(gqname);
-        userService.update(user);
-        return "index";
+        user.setDcGqdm(updateUserDTO.getGqdm());
+        user.setDcGqname(updateUserDTO.getGqname());
+        user.setDcLxr(updateUserDTO.getGqlxr());
+        user.setDcLxdh(updateUserDTO.getGqlxdh());
+        boolean flag = userService.update(user);
+        UpdateUserResultDTO updateUserResultDTO = new UpdateUserResultDTO();
+        updateUserResultDTO.setSuccess(flag);
+        if (flag == true){
+            updateUserResultDTO.setMessage("修改成功");
+        }
+        else
+            updateUserResultDTO.setMessage("修改失败");
+        return updateUserResultDTO;
     }
 
     /*//删除用户功能
@@ -207,11 +214,11 @@ public class UserController {
             SubUsersDTO subUsersDTO = new SubUsersDTO();
             subUsersDTO.setTotal(size);
             subUsersDTO.setRows(users);
-            System.out.println(subUsersDTO.getTotal());
+            /*System.out.println(subUsersDTO.getTotal());
             for(int i=0;i < users.size();i++){
                 System.out.println(subUsersDTO.getRows().get(i).getDcDjlxr());
                 System.out.println(subUsersDTO.getRows().get(i).getDcDjlxdh());
-            }
+            }*/
             return subUsersDTO;
         }
         else

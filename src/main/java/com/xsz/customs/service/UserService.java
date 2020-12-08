@@ -52,7 +52,7 @@ public class UserService {
     }
 
     //更新操作，还是与注册方法写开比较好
-    public void update(dcUser user){
+    public boolean update(dcUser user){
         dcUserExample userexample = new dcUserExample();
         userexample.createCriteria()
                 .andDcGqdmEqualTo(user.getDcGqdm());
@@ -69,7 +69,10 @@ public class UserService {
             example.createCriteria()
                     .andIdEqualTo(dbuser.getId());
             userMapper.updateByExampleSelective(updateUser, example);
+            return true;
         }
+        else
+            return false;
     }
     //用于检验账号密码是否正确，若正确则返回1。如需要显示登录失败的原因可以后期进行修改。
     public boolean login(dcUser user){

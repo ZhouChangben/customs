@@ -30,11 +30,11 @@
             <scope>test</scope>
         </dependency>
 
-        <!--<dependency>
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.57</version>
-        </dependency>-->
+        </dependency>
 
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -100,7 +100,7 @@
                 </dependencies>
             </plugin>
         </plugins>
-        <resources>
+        <!--<resources>
             <resource>
                 <directory>src/main/java/resources</directory>
                 <includes>
@@ -109,7 +109,7 @@
                     <include>static/**</include>
                 </includes>
             </resource>
-        </resources>
+        </resources>-->
     </build>
 
 </project>

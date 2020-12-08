@@ -1,0 +1,670 @@
+﻿# MySQL-Front 5.1  (Build 4.13)
+
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE */;
+/*!40101 SET SQL_MODE='STRICT_TRANS_TABLES,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES */;
+/*!40103 SET SQL_NOTES='ON' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS */;
+/*!40014 SET FOREIGN_KEY_CHECKS=0 */;
+
+
+# Host: localhost    Database: hgzydc
+# ------------------------------------------------------
+# Server version 5.0.27-community-nt
+
+#
+# Source for table dc_user
+#
+#增加了一个gqdj字段
+DROP TABLE IF EXISTS `dc_user`;
+CREATE TABLE `dc_user` (
+  `Id` int(11) NOT NULL auto_increment,
+  `dc_gqdm` varchar(8) default NULL,
+  `dc_gqdj` int(11) default NULL UNIQUE,
+  `dc_gqname` varchar(30) default NULL,
+  `dc_gqpword` varchar(30) default NULL,
+  `dc_shiwuku` varchar(2) default NULL,
+  `dc_shujuku` varchar(2) default NULL,
+  `dc_lxr` varchar(20) default NULL,
+  `dc_lxsj` varchar(15) default NULL,
+  `dc_lxdh` varchar(15) default NULL,
+  `dc_dzyj` varchar(30) default NULL,
+  `dc_wjlxr` varchar(30) default NULL,
+  `dc_wjlxdh` varchar(30) default NULL,
+  `dc_wjfzr` varchar(30) default NULL,
+  `dc_wjfzdh` varchar(30) default NULL,
+  `dc_djlxr` varchar(30) default NULL,
+  `dc_djlxdh` varchar(30) default NULL,
+  `dc_djfzr` varchar(30) default NULL,
+  `dc_djfzdh` varchar(30) default NULL,
+  `dc_zjlxr` varchar(30) default NULL,
+  `dc_zjlxdh` varchar(30) default NULL,
+  `dc_zjfzr` varchar(30) default NULL,
+  `dc_zjfzdh` varchar(30) default NULL,
+  `dc_by1` varchar(100) default NULL,
+  `dc_by2` varchar(100) default NULL,
+  `dc_by3` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+  UNIQUE (dc_gqdm)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table dc_user
+#
+
+LOCK TABLES `dc_user` WRITE;
+/*!40000 ALTER TABLE `dc_user` DISABLE KEYS */;
+INSERT INTO `dc_user` VALUES (1  , '000001',0,'海关科技司','123456',	NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (2  , '010000',1,'北京海关','123456',  	NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (3  , '020000',1,'天津海关','123456',  	NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (4  , '040000',1,'石家庄海关','123456',	NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (5  , '050000',1,'太原海关','123456',  	NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (6  , '070000',1,'呼和浩特海关','123456',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (7  , '060000',1,'满洲里海关','123456',	NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (8  , '090000',1,'大连海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (9  , '080000',1,'沈阳海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (10 , '150000',1,'长春海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (11 , '190000',1,'哈尔滨海关','123456',	NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (12 , '220000',1,'上海海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (13 , '230000',1,'南京海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (14 , '290000',1,'杭州海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (15 , '310000',1,'宁波海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (16 , '330000',1,'合肥海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (17 , '350000',1,'福州海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (18 , '370000',1,'厦门海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (19 , '400000',1,'南昌海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (20 , '420000',1,'青岛海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (21 , '430000',1,'济南海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (22 , '460000',1,'郑州海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (23 , '470000',1,'武汉海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (24 , '490000',1,'长沙海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (25 , '510000',1,'广州海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (26 , '530000',1,'深圳海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (27 , '570000',1,'拱北海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (28 , '600000',1,'汕头海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (29 , '520000',1,'黄埔海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (30 , '680000',1,'江门海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (31 , '670000',1,'湛江海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (32 , '720000',1,'南宁海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (33 , '640000',1,'海口海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (34 , '800000',1,'重庆海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (35 , '790000',1,'成都海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (36 , '830000',1,'贵阳海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (37 , '860000',1,'昆明海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (38 , '880000',1,'拉萨海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (39 , '900000',1,'西安海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (40 , '950000',1,'兰州海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (41 , '970000',1,'西宁海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (42 , '960000',1,'银川海关','123456',		NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `dc_user` VALUES (43 , '940000',1,'乌鲁木齐海关','123456',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+/*!40000 ALTER TABLE `dc_user` ENABLE KEYS */;
+UNLOCK TABLES;
+
+#
+# Source for table dc_dcrw
+#
+
+DROP TABLE IF EXISTS `dc_dcrw`;
+CREATE TABLE `dc_dcrw` (
+  `Id` int(11) NOT NULL auto_increment,
+  `dc_renwumc` varchar(50) default NULL,
+  `dc_renwuxh` int(11) default '1',
+  `dc_renwugqdm` varchar(8) default NULL,   
+  `dc_renwugqname` varchar(30) default NULL,  
+  `dc_dcbname` varchar(50) default NULL,
+  `dc_dcbtj` int(11) default '0',   
+  `dc_dcbzt` varchar(6) default NULL,    
+  `dc_by1` varchar(100) default NULL,        
+  `dc_by2` varchar(100) default NULL,
+  `dc_by3` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ 
+
+#
+# Source for table dc_wsjy
+#
+          
+DROP TABLE IF EXISTS `dc_wsjy`;
+CREATE TABLE `dc_wsjy` (
+  `Id` int(11) NOT NULL auto_increment,
+  `dc_renwumc` varchar(50) default NULL,
+  `dc_renwuxh` int(11) default '1',
+  `dc_renwugqdm` varchar(8) default NULL,   
+  `dc_renwugqname` varchar(30) default NULL,  
+  `dc_renwugqdm2` varchar(8) default NULL,  
+  `dc_renwugqxh` int(11) default '1',
+  `wj_ywly` varchar(50) default NULL,
+  `wj_lb` varchar(50) default NULL,
+  `wj_name` varchar(100) default NULL,
+  `wj_ldxm` varchar(100) default NULL,
+  `wj_zhuxi` varchar(50) default NULL,
+  `wj_zhuanci` varchar(50) default NULL,
+  `wj_neibubh` varchar(50) default NULL,
+  `wj_baocunxs` varchar(50) default NULL,
+  `wj_laiyuan` varchar(100) default NULL,
+  `wj_lysuzhu` varchar(50) default NULL,
+  `wj_ybl` int(11) default '1', 
+  `wj_ybdanwei` varchar(50) default NULL,
+  `wj_baocunzt` varchar(50) default NULL,
+  `wj_huodedd` varchar(100) default NULL,
+  `wj_huoqutj` varchar(100) default NULL,
+  `wj_baocuntj` varchar(50) default NULL,
+  `wj_baocunsj` varchar(50) default NULL, 
+  `wj_baocunwz` varchar(100) default NULL,
+  `wj_lianlr` varchar(30) default NULL,
+  `wj_lianldh` varchar(30) default NULL,
+  `wj_fuzeren` varchar(30) default NULL,
+  `wj_fuzerendh` varchar(30) default NULL,
+  `wj_by1` varchar(100) default NULL,
+  `wj_by2` varchar(100) default NULL,
+  `wj_by3` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table sy_dylx
+#
+
+ 
+
+#
+# Source for table dc_ywly
+#
+
+DROP TABLE IF EXISTS `dc_ywly`;
+CREATE TABLE `dc_ywly` (
+  `Id` int(11) NOT NULL auto_increment,
+  `ywly_dm` varchar(50) default NULL,
+  `ywly_mc` varchar(50) default NULL,
+  `ywly_by1` varchar(100) default NULL,
+  `ywly_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table dc_ywly
+#
+
+LOCK TABLES `dc_ywly` WRITE;
+/*!40000 ALTER TABLE `dc_ywly` DISABLE KEYS */;
+INSERT INTO `dc_ywly` VALUES (1,'01','卫生检疫',NULL,NULL);
+INSERT INTO `dc_ywly` VALUES (2,'02','动植物资源',NULL,NULL);
+INSERT INTO `dc_ywly` VALUES (3,'03','食品和商品',NULL,NULL);
+INSERT INTO `dc_ywly` VALUES (4,'04','缉毒缉私',NULL,NULL);
+/*!40000 ALTER TABLE `dc_ywly` ENABLE KEYS */;
+UNLOCK TABLES;
+
+#
+# Source for table wj_lblx
+#
+DROP TABLE IF EXISTS `wj_lblx`;
+CREATE TABLE `wj_lblx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `wjlb_dm` varchar(50) default NULL,
+  `wjlb_mc` varchar(50) default NULL,
+  `wjlb_by1` varchar(100) default NULL,
+  `wjlb_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table wj_lblx
+#
+
+LOCK TABLES `wj_lblx` WRITE;
+/*!40000 ALTER TABLE `wj_lblx` DISABLE KEYS */;
+INSERT INTO `wj_lblx` VALUES (1,'01','病媒生物',NULL,NULL);
+INSERT INTO `wj_lblx` VALUES (2,'02','阳性样本',NULL,NULL);
+INSERT INTO `wj_lblx` VALUES (3,'03','毒种',NULL,NULL);
+INSERT INTO `wj_lblx` VALUES (4,'04','菌种',NULL,NULL);
+INSERT INTO `wj_lblx` VALUES (5,'05','细胞株',NULL,NULL);
+INSERT INTO `wj_lblx` VALUES (6,'06','核酸/蛋白',NULL,NULL); 
+/*!40000 ALTER TABLE `wj_lblx` ENABLE KEYS */;
+UNLOCK TABLES;
+ 
+DROP TABLE IF EXISTS `wj_baocunxslx`;
+CREATE TABLE `wj_baocunxslx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `wjbaocunxs_dm` varchar(50) default NULL,
+  `wjbaocunxs_mc` varchar(50) default NULL,
+  `wjbaocunxs_by1` varchar(100) default NULL,
+  `wjbaocunxs_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table wj_baocunxslx
+#
+ 
+LOCK TABLES `wj_baocunxslx` WRITE;
+/*!40000 ALTER TABLE `wj_baocunxslx` DISABLE KEYS */;
+INSERT INTO `wj_baocunxslx` VALUES (1,'01','实物标本',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (2,'02','图片标本(未经结构化整理)',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (3,'03','标准样品',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (4,'04','活毒',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (5,'05','灭活',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (6,'06','疫苗株',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (7,'07','鼻咽拭子',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (8,'08','口咽拭子',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (9,'09','肛拭子',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (10,'10','全血',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (11,'11','血清',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (12,'12','尿液',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (13,'13','唾液',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (14,'14','质粒',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (15,'15','假病毒',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (16,'16','体外合成基因',NULL,NULL);
+INSERT INTO `wj_baocunxslx` VALUES (17,'17','病原体核酸/蛋白',NULL,NULL);
+/*!40000 ALTER TABLE `wj_baocunxslx` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `wj_laiyuanlx`;
+CREATE TABLE `wj_laiyuanlx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `wjlaiyuan_dm` varchar(50) default NULL,
+  `wjlaiyuan_mc` varchar(50) default NULL,
+  `wjlaiyuan_by1` varchar(100) default NULL,
+  `wjlaiyuan_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table wj_baocunxslx
+#
+ 
+LOCK TABLES `wj_laiyuanlx` WRITE;
+/*!40000 ALTER TABLE `wj_baocunxslx` DISABLE KEYS */;
+INSERT INTO `wj_laiyuanlx` VALUES (1,'01','截获',NULL,NULL);
+INSERT INTO `wj_laiyuanlx` VALUES (2,'02','购买',NULL,NULL);
+INSERT INTO `wj_laiyuanlx` VALUES (3,'03','赠送',NULL,NULL);
+INSERT INTO `wj_laiyuanlx` VALUES (4,'04','交换',NULL,NULL);
+INSERT INTO `wj_laiyuanlx` VALUES (5,'05','监测',NULL,NULL);
+INSERT INTO `wj_laiyuanlx` VALUES (6,'06','采集',NULL,NULL);
+
+/*!40000 ALTER TABLE `wj_laiyuanlx` ENABLE KEYS */;
+UNLOCK TABLES;
+
+ 
+
+DROP TABLE IF EXISTS `dc_dwjy`;
+CREATE TABLE `dc_dwjy` (
+  `Id` int(11) NOT NULL auto_increment,
+  `dc_renwumc` varchar(50) default NULL,
+  `dc_renwuxh` int(11) default '1',
+  `dc_renwugqdm` varchar(8) default NULL,   
+  `dc_renwugqname` varchar(30) default NULL,  
+  `dc_renwugqdm2` varchar(8) default NULL,  
+  `dc_renwugqxh` int(11) default '1',
+  `dj_ywly` varchar(50) default NULL,
+  `dj_lb` varchar(50) default NULL,
+  `dj_name` varchar(100) default NULL,
+  `dj_ywm` varchar(100) default NULL,
+  `dj_duzhuxing` varchar(50) default NULL,
+  `dj_bingyuan` varchar(50) default NULL,
+  `dj_xibaoxing` varchar(50) default NULL,
+  `dj_neibubh` varchar(50) default NULL,
+  `dj_chuanci` varchar(50) default NULL,
+  `dj_zhuangtai` varchar(50) default NULL,
+  `dj_duzhucd` varchar(100) default NULL,
+  `dj_lysuzhu` varchar(100) default NULL,
+  `dj_laiyuan` varchar(100) default NULL,
+  `dj_huoqutj` varchar(50) default NULL,
+  `dj_ybl` int(11) default '1', 
+  `dj_ybdanwei` varchar(50) default NULL,
+  `dj_baocuntj` varchar(50) default NULL,
+  `dj_baocunsj` varchar(50) default NULL, 
+  `dj_jibenqk` varchar(100) default NULL,
+  `dj_huodedd` varchar(100) default NULL,
+  `dj_baocunwz` varchar(100) default NULL,
+  `dj_lianlr` varchar(30) default NULL,
+  `dj_lianldh` varchar(30) default NULL,
+  `dj_fuzeren` varchar(30) default NULL,
+  `dj_fuzerendh` varchar(30) default NULL,
+  `dj_by1` varchar(100) default NULL,
+  `dj_by2` varchar(100) default NULL,
+  `dj_by3` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ 
+#
+# Source for table dj_lblx
+#
+DROP TABLE IF EXISTS `dj_lblx`;
+CREATE TABLE `dj_lblx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `djlb_dm` varchar(50) default NULL,
+  `djlb_mc` varchar(50) default NULL,
+  `djlb_by1` varchar(100) default NULL,
+  `djlb_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table dj_lblx
+# 
+
+LOCK TABLES `dj_lblx` WRITE;
+/*!40000 ALTER TABLE `dj_lblx` DISABLE KEYS */;
+INSERT INTO `dj_lblx` VALUES (1,'01','菌毒株',NULL,NULL);
+INSERT INTO `dj_lblx` VALUES (2,'02','细胞株',NULL,NULL);
+INSERT INTO `dj_lblx` VALUES (3,'03','阳性样品',NULL,NULL);
+INSERT INTO `dj_lblx` VALUES (4,'04','血清',NULL,NULL);
+INSERT INTO `dj_lblx` VALUES (5,'05','组织',NULL,NULL);
+INSERT INTO `dj_lblx` VALUES (6,'06','实物标本',NULL,NULL);
+INSERT INTO `dj_lblx` VALUES (7,'07','其他(请在备注栏说明)',NULL,NULL);
+/*!40000 ALTER TABLE `dj_lblx` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+#
+# Source for table dj_bingyuanlx
+#
+DROP TABLE IF EXISTS `dj_bingyuanlx`;
+CREATE TABLE `dj_bingyuanlx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `djbingyuan_dm` varchar(50) default NULL,
+  `djbingyuan_mc` varchar(50) default NULL,
+  `djbingyuan_by1` varchar(100) default NULL,
+  `djbingyuan_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table dj_bingyuanlx
+# 
+
+LOCK TABLES `dj_bingyuanlx` WRITE;
+/*!40000 ALTER TABLE `dj_lblx` DISABLE KEYS */;
+INSERT INTO `dj_bingyuanlx` VALUES (1,'01','一类',NULL,NULL);
+INSERT INTO `dj_bingyuanlx` VALUES (2,'02','二类',NULL,NULL);
+INSERT INTO `dj_bingyuanlx` VALUES (3,'03','三类',NULL,NULL);
+INSERT INTO `dj_bingyuanlx` VALUES (4,'04','其他',NULL,NULL);
+UNLOCK TABLES;
+
+#
+# Source for table dj_zhuangtailx
+#
+ 
+DROP TABLE IF EXISTS `dj_zhuangtailx`;
+CREATE TABLE `dj_zhuangtailx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `djzhuangtai_dm` varchar(50) default NULL,
+  `djzhuangtai_mc` varchar(50) default NULL,
+  `djzhuangtai_by1` varchar(100) default NULL,
+  `djzhuangtai_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table dj_zhuangtailx
+# 
+
+LOCK TABLES `dj_zhuangtailx` WRITE;
+/*!40000 ALTER TABLE `dj_lblx` DISABLE KEYS */;
+INSERT INTO `dj_zhuangtailx` VALUES (1,'01','菌毒株:活毒',NULL,NULL);
+INSERT INTO `dj_zhuangtailx` VALUES (2,'02','菌毒株:灭活',NULL,NULL);
+INSERT INTO `dj_zhuangtailx` VALUES (3,'03','菌毒株:质粒',NULL,NULL);
+INSERT INTO `dj_zhuangtailx` VALUES (4,'04','菌毒株:假病毒',NULL,NULL);
+INSERT INTO `dj_zhuangtailx` VALUES (5,'05','菌毒株:疫苗株',NULL,NULL);
+INSERT INTO `dj_zhuangtailx` VALUES (6,'06','实物标本:实物',NULL,NULL);
+INSERT INTO `dj_zhuangtailx` VALUES (7,'07','实物标本:制品',NULL,NULL);
+UNLOCK TABLES;
+
+#
+# Source for table dj_zhuangtailx
+#
+ 
+DROP TABLE IF EXISTS `dj_huoqutjlx`;
+CREATE TABLE `dj_huoqutjlx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `djhuoqutj_dm` varchar(50) default NULL,
+  `djhuoqutj_mc` varchar(50) default NULL,
+  `djhuoqutj_by1` varchar(100) default NULL,
+  `djhuoqutj_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table dj_huoqutjlx
+# 
+ 
+LOCK TABLES `dj_huoqutjlx` WRITE;
+/*!40000 ALTER TABLE `dj_huoqutjlx` DISABLE KEYS */;
+INSERT INTO `dj_huoqutjlx` VALUES (1,'01','购买',NULL,NULL);
+INSERT INTO `dj_huoqutjlx` VALUES (2,'02','引进',NULL,NULL);
+INSERT INTO `dj_huoqutjlx` VALUES (3,'03','赠送',NULL,NULL);
+INSERT INTO `dj_huoqutjlx` VALUES (4,'04','截获',NULL,NULL);
+INSERT INTO `dj_huoqutjlx` VALUES (5,'05','自行分离',NULL,NULL); 
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `dc_zwjy`;
+CREATE TABLE `dc_zwjy` (
+  `Id` int(11) NOT NULL auto_increment,
+  `dc_renwumc` varchar(50) default NULL,
+  `dc_renwuxh` int(11) default '1',
+  `dc_renwugqdm` varchar(8) default NULL,   
+  `dc_renwugqname` varchar(30) default NULL,  
+  `dc_renwugqdm2` varchar(8) default NULL,  
+  `dc_renwugqxh` int(11) default '1',
+  `zj_ywly` varchar(50) default NULL,
+  `zj_lb` varchar(50) default NULL,
+  `zj_name` varchar(100) default NULL,
+  `zj_ldxm` varchar(100) default NULL,
+  `zj_shidai` varchar(50) default NULL, 
+  `zj_neibubh` varchar(50) default NULL,
+  `zj_jianyidw` varchar(50) default NULL,
+  `zj_jianyiywlb` varchar(50) default NULL,
+  `zj_huowulb` varchar(50) default NULL,
+  `zj_jizhu` varchar(50) default NULL, 
+  `zj_baocunxs` varchar(50) default NULL,
+  `zj_laiyuan` varchar(50) default NULL,
+  `zj_laiyuangj` varchar(100) default NULL,
+  `zj_ybl` int(11) default '1', 
+  `zj_ybdanwei` varchar(50) default NULL,  
+  `zj_baocunzt` varchar(100) default NULL,  
+  `zj_huodedd` varchar(100) default NULL,
+  `zj_baocunwz` varchar(100) default NULL,
+  `zj_baocuntj` varchar(100) default NULL,
+  `zj_baocunsj` varchar(50) default NULL, 
+  `zj_lianlr` varchar(30) default NULL,
+  `zj_lianldh` varchar(30) default NULL,
+  `zj_fuzeren` varchar(30) default NULL,
+  `zj_fuzerendh` varchar(30) default NULL,
+  `zj_by1` varchar(100) default NULL,
+  `zj_by2` varchar(100) default NULL,
+  `zj_by3` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ 
+
+DROP TABLE IF EXISTS `zj_lblx`;
+CREATE TABLE `zj_lblx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `zjlb_dm` varchar(50) default NULL,
+  `zjlb_mc` varchar(50) default NULL,
+  `zjlb_by1` varchar(100) default NULL,
+  `zjlb_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table zj_lblx
+# 
+ 
+LOCK TABLES `zj_lblx` WRITE;
+/*!40000 ALTER TABLE `zj_lblx` DISABLE KEYS */;
+INSERT INTO `zj_lblx` VALUES (1,'01','昆虫',NULL,NULL);
+INSERT INTO `zj_lblx` VALUES (2,'02','杂草',NULL,NULL);
+INSERT INTO `zj_lblx` VALUES (3,'03','线虫',NULL,NULL);
+INSERT INTO `zj_lblx` VALUES (4,'04','细菌',NULL,NULL);
+INSERT INTO `zj_lblx` VALUES (5,'05','真菌',NULL,NULL); 
+INSERT INTO `zj_lblx` VALUES (6,'06','病毒',NULL,NULL);
+INSERT INTO `zj_lblx` VALUES (7,'07','软体动物',NULL,NULL);
+INSERT INTO `zj_lblx` VALUES (8,'08','物种资源',NULL,NULL);
+INSERT INTO `zj_lblx` VALUES (9,'09','其他',NULL,NULL);
+UNLOCK TABLES;
+
+ 
+
+DROP TABLE IF EXISTS `zj_shidailx`;
+CREATE TABLE `zj_shidailx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `zjshidai_dm` varchar(50) default NULL,
+  `zjshidai_mc` varchar(50) default NULL,
+  `zjshidai_by1` varchar(100) default NULL,
+  `zjshidai_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table zj_shidailx
+# 
+ 
+LOCK TABLES `zj_shidailx` WRITE;
+/*!40000 ALTER TABLE `zj_shidailx` DISABLE KEYS */;
+INSERT INTO `zj_shidailx` VALUES (1,'01','无',NULL,NULL);
+INSERT INTO `zj_shidailx` VALUES (2,'02','不详',NULL,NULL);
+INSERT INTO `zj_shidailx` VALUES (3,'03','有性世代',NULL,NULL);
+INSERT INTO `zj_shidailx` VALUES (4,'04','无性世代',NULL,NULL);
+INSERT INTO `zj_shidailx` VALUES (5,'05','亚种',NULL,NULL); 
+INSERT INTO `zj_shidailx` VALUES (6,'06','变种',NULL,NULL);
+INSERT INTO `zj_shidailx` VALUES (7,'07','生理小种',NULL,NULL);
+INSERT INTO `zj_shidailx` VALUES (8,'08','专化型',NULL,NULL);
+INSERT INTO `zj_shidailx` VALUES (9,'09','致病型',NULL,NULL);
+INSERT INTO `zj_shidailx` VALUES (10,'10','株系',NULL,NULL);
+INSERT INTO `zj_shidailx` VALUES (11,'11','其他',NULL,NULL);
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `zj_jianyidwlx`;
+CREATE TABLE `zj_jianyidwlx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `zjjianyidw_dm` varchar(50) default NULL,
+  `zjjianyidw_mc` varchar(50) default NULL,
+  `zjjianyidw_by1` varchar(100) default NULL,
+  `zjjianyidw_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table zj_jianyidwlx
+# 
+ 
+LOCK TABLES `zj_jianyidwlx` WRITE;
+/*!40000 ALTER TABLE `zj_jianyidwlx` DISABLE KEYS */;
+INSERT INTO `zj_jianyidwlx` VALUES (1,'01','检疫性',NULL,NULL);
+INSERT INTO `zj_jianyidwlx` VALUES (2,'02','非检疫性',NULL,NULL); 
+UNLOCK TABLES;
+
+
+DROP TABLE IF EXISTS `zj_jianyiywlblx`;
+CREATE TABLE `zj_jianyiywlblx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `zjjianyiywlb_dm` varchar(50) default NULL,
+  `zjjianyiywlb_mc` varchar(50) default NULL,
+  `zjjianyiywlb_by1` varchar(100) default NULL,
+  `zjjianyiywlb_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table zj_jianyiywlblx
+# 
+ 
+LOCK TABLES `zj_jianyiywlblx` WRITE;
+/*!40000 ALTER TABLE `zj_jianyiywlblx` DISABLE KEYS */;
+INSERT INTO `zj_jianyiywlblx` VALUES (1,'01','货检',NULL,NULL);
+INSERT INTO `zj_jianyiywlblx` VALUES (2,'02','运输工具检疫',NULL,NULL); 
+INSERT INTO `zj_jianyiywlblx` VALUES (3,'03','旅检',NULL,NULL);
+INSERT INTO `zj_jianyiywlblx` VALUES (4,'04','邮检',NULL,NULL); 
+INSERT INTO `zj_jianyiywlblx` VALUES (5,'05','木包装检疫',NULL,NULL);
+INSERT INTO `zj_jianyiywlblx` VALUES (6,'06','集装箱检疫',NULL,NULL); 
+UNLOCK TABLES;
+
+ 
+
+DROP TABLE IF EXISTS `zj_huowulblx`;
+CREATE TABLE `zj_huowulblx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `zjhuowulb_dm` varchar(50) default NULL,
+  `zjhuowulb_mc` varchar(50) default NULL,
+  `zjhuowulb_by1` varchar(100) default NULL,
+  `zjhuowulb_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table zj_huowulblx
+# 
+ 
+LOCK TABLES `zj_huowulblx` WRITE;
+/*!40000 ALTER TABLE `zj_huowulblx` DISABLE KEYS */;
+INSERT INTO `zj_huowulblx` VALUES (1,'01','粮谷',NULL,NULL);
+INSERT INTO `zj_huowulblx` VALUES (2,'02','木材',NULL,NULL); 
+INSERT INTO `zj_huowulblx` VALUES (3,'03','水果',NULL,NULL);
+INSERT INTO `zj_huowulblx` VALUES (4,'04','种苗',NULL,NULL); 
+INSERT INTO `zj_huowulblx` VALUES (5,'05','木包装',NULL,NULL);
+INSERT INTO `zj_huowulblx` VALUES (6,'06','饲料',NULL,NULL); 
+INSERT INTO `zj_huowulblx` VALUES (7,'07','烟草',NULL,NULL); 
+INSERT INTO `zj_huowulblx` VALUES (8,'08','栽培介质',NULL,NULL);
+INSERT INTO `zj_huowulblx` VALUES (9,'09','其他',NULL,NULL); 
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `zj_baocunxslx`;
+CREATE TABLE `zj_baocunxslx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `zjhuowulb_dm` varchar(50) default NULL,
+  `zjhuowulb_mc` varchar(50) default NULL,
+  `zjhuowulb_by1` varchar(100) default NULL,
+  `zjhuowulb_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table zj_baocunxslx
+# 
+ 
+LOCK TABLES `zj_baocunxslx` WRITE;
+/*!40000 ALTER TABLE `zj_baocunxslx` DISABLE KEYS */;
+INSERT INTO `zj_baocunxslx` VALUES (1,'01','实物',NULL,NULL);
+INSERT INTO `zj_baocunxslx` VALUES (2,'02','针插标本',NULL,NULL); 
+INSERT INTO `zj_baocunxslx` VALUES (3,'03','浸渍标本(成虫)',NULL,NULL);
+INSERT INTO `zj_baocunxslx` VALUES (4,'04','浸渍标本(幼虫)',NULL,NULL); 
+INSERT INTO `zj_baocunxslx` VALUES (5,'05','玻片标本',NULL,NULL);
+INSERT INTO `zj_baocunxslx` VALUES (6,'06','解剖学标本',NULL,NULL); 
+INSERT INTO `zj_baocunxslx` VALUES (7,'07','蜡叶标本',NULL,NULL); 
+INSERT INTO `zj_baocunxslx` VALUES (8,'08','包埋标本',NULL,NULL);
+INSERT INTO `zj_baocunxslx` VALUES (9,'09','活体植物组织',NULL,NULL); 
+INSERT INTO `zj_baocunxslx` VALUES (10,'10','菌液',NULL,NULL); 
+INSERT INTO `zj_baocunxslx` VALUES (11,'11','核酸',NULL,NULL); 
+INSERT INTO `zj_baocunxslx` VALUES (12,'12','接种的培养基',NULL,NULL); 
+UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `zj_laiyuanlx`;
+CREATE TABLE `zj_laiyuanlx` (
+  `Id` int(11) NOT NULL auto_increment,
+  `zjlaiyuan_dm` varchar(50) default NULL,
+  `zjlaiyuan_mc` varchar(50) default NULL,
+  `zjlaiyuan_by1` varchar(100) default NULL,
+  `zjlaiyuan_by2` varchar(100) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+#
+# Dumping data for table zj_laiyuanlx
+#  
+ 
+LOCK TABLES `zj_laiyuanlx` WRITE;
+/*!40000 ALTER TABLE `zj_laiyuanlx` DISABLE KEYS */;
+INSERT INTO `zj_laiyuanlx` VALUES (1,'01','截获',NULL,NULL);
+INSERT INTO `zj_laiyuanlx` VALUES (2,'02','购买',NULL,NULL); 
+INSERT INTO `zj_laiyuanlx` VALUES (3,'03','赠送',NULL,NULL);
+INSERT INTO `zj_laiyuanlx` VALUES (4,'04','交换',NULL,NULL); 
+INSERT INTO `zj_laiyuanlx` VALUES (5,'05','监测',NULL,NULL);
+INSERT INTO `zj_laiyuanlx` VALUES (6,'06','采集',NULL,NULL);  
+UNLOCK TABLES;
