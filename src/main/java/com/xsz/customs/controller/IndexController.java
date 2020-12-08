@@ -18,7 +18,7 @@ public class IndexController {
     private UserService userService;
 
     @GetMapping("/")
-    //获取目标用户列表的方法
+    //获取目标用户列表的方法,设想中也希望进入首页时显示任务代码最大的。
     public String index(HttpServletRequest request,
                               HttpServletResponse response,
                               Model model){
@@ -35,6 +35,5 @@ public class IndexController {
         else{
             return "login";
         }
-
     }
 }

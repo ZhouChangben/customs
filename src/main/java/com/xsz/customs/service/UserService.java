@@ -32,7 +32,7 @@ public class UserService {
 
     }
 
-    public void create(dcUser user){
+    public boolean create(dcUser user){
         dcUserExample userexample = new dcUserExample();
         userexample.createCriteria()
                 .andDcGqdmEqualTo(user.getDcGqdm());
@@ -41,11 +41,14 @@ public class UserService {
         if (users.size() == 0){
             //这里的user还不能直接插入，需要判断一下用户等级然后加入数据库中
             String gqdm = user.getDcGqdm();
+            System.out.println(gqdm+"  xxc");
             String gqdj = gqdm.substring(4);
             int dj = Integer.parseInt(gqdj) + 1;
             user.setDcGqdj(dj);
             userMapper.insert(user);
-        }
+            return true;
+        }else
+            return false;
     }
 
     //更新操作，还是与注册方法写开比较好
@@ -130,10 +133,14 @@ public class UserService {
         }
     }
 
-    public void deleteUser(String gqdm){
+    public boolean deleteUser(String gqdm){
         dcUserExample userExample = new dcUserExample();
         userExample.createCriteria()
                 .andDcGqdmEqualTo(gqdm);
-        userMapper.deleteByExample(userExample);
+        int flag = userMapper.deleteByExample(userExample);
+        if (flag != 0){
+            return true;
+        }else
+            return false;
     }
 }

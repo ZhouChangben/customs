@@ -1,63 +1,131 @@
 <!DOCTYPE html>
+<html lang="en" style="height: 100%">
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-    <title>index</title>
-    <script src="/js/jquery-1.12.4.min.js"></script>
-    <link rel="stylesheet" href="/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
-    <script src="/js/bootstrap.min.js" type="application/javascript"></script>
-</head>
-<body>
-<div th:insert="~{index :: index}"></div>
-<form class="form-horizontal" action="/login" method="post">
-    <div class="form-group">
-        <label for="gqdm" class="col-sm-2 control-label">用户名</label>
-        <div class="col-sm-10">
-            <input  class="form-control" id="gqdm" name="gqdm" placeholder="关区代码">
-        </div>
-    </div>
+    <meta charset="UTF-8">
+    <title>Title</title>
 
-    <div class="form-group">
-        <label for="password" class="col-sm-2 control-label">密码</label>
-        <div class="col-sm-10">
-            <input type="password" class="form-control" id="password" name="password" placeholder="密码">
-        </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <div class="checkbox">
-                <label>
-                    <input type="checkbox"> Remember me
-                </label>
+    <!--    导入jQuery的js文件-->
+    <script type="text/javascript" src="https://www.jeasyui.com/easyui/jquery.min.js"></script>
+    <!--    导入easyUI的js文件-->
+    <script type="text/javascript" src="https://www.jeasyui.com/easyui/jquery.easyui.min.js"></script>
+    <!--    导入easyUI的语言js文件-->
+    <script type="text/javascript" src="https://www.jeasyui.com/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <!--    导入easyUI的图标css文件-->
+    <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/icon.css">
+    <!--    导入默认模块的css文件-->
+    <link id="themeLink" rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/default/easyui.css">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+    <script type="text/javascript">
+        function getRootPath(){
+            //获取当前网址，如： http://localhost:8088/jquery/easyui/login.jsp
+            var curWwwPath = window.document.location.href;
+            //获取主机地址之后的目录，如： jquery/easyui/login.jsp
+            var pathName = window.document.location.pathname;
+            var pos = curWwwPath.indexOf(pathName);
+            //获取主机地址，如： http://localhost:8088
+            var localhostPaht = curWwwPath.substring(0, pos);
+            //获取带"/"的项目名，如：/jquery
+            var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+            return (localhostPaht + projectName);
+        }
+        $(function () {
+            $("#loginBtn").click(function () {
+                var name=$("#userId").val();
+                var password=$("#pwd").val()
+
+                if (name==""||name==null||password==""||password==null){
+                    alert("请输入账号或密码");
+                    return ;
+                }
+
+                $.ajax({
+                    url:'http://localhost:8080/login',
+                    type:"post",
+                    data:JSON.stringify({"gqdm":name,"password":password}),
+                    dataType:"json",
+                    contentType:"application/json",
+                    success:function (data) {
+                        if(data.success==false){
+                            $.messager.alert("提示","用戶名或密碼錯誤","error")
+                        }else if (data.success==true){
+                            window.location.href="http://localhost:8080/index";
+                        }
+                    }
+                })
+                // $('#loginform').form('submit',{
+                //     url:'http://localhost:8080/login',
+                //     queryParams:{
+                //         gqdm:name,
+                //         password:password
+                //     },
+
+                    /*onSubmit:function (param) {
+                        param.gqdm=name;
+                        param.password=password;
+                    },*/
+
+                //     success:function (data) {
+                //         alert(data)
+                //     }
+                // })
+                // $.post("/login",{
+                //         "gqdm":name,
+                //         "password":password
+                //     },
+                //     function (data) {
+                //         var json=data[0];
+                //         alert(data);
+                //         if(json.success==0){
+                //             $("#errormessage").text("用户名或密码错误")
+                //         }else if (json.success==1){
+                //             window.location.herf="index.html"
+                //         }
+                //
+                //     }
+                // )
+            })
+        })
+    </script>
+</head>
+<body background="/images/mt.jpg" style="background-size: cover;height: 100%">
+        <div style="background-color: rgba(0,0,0,0.2); height: 100%;width: 500px;float: right;" >
+            <form id="loginform" action="/login" method="post">
+            <div id="loginPanel" style="border-radius:5px;width: 350px;height: 300px;position: absolute;left:85%;top:50%;margin-left:-200px;margin-top:-150px;background-color: whitesmoke;">
+
+                <div style="border-bottom: 1px solid darkgray">
+                    <h2 style="margin-left:35px;color: black;">系统登录</h2>
+                </div>
+                <div style="padding: 40px;">
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon glyphicon glyphicon-user" style="position: relative;top: 0px"></span>
+                        <input id="userId" type="text" name="gqdm" class="form-control " placeholder="账号" aria-describedby="basic-addon1">
+                    </div>
+
+                    <div class="input-group input-group-lg">
+                        <span class="input-group-addon glyphicon glyphicon-lock" style="position: relative;top: 0px"></span>
+                        <input id="pwd" type="password" name="password" class="form-control" placeholder="密码" aria-describedby="basic-addon2">
+                    </div>
+                    <!--/*@thymesVar id="error" type="java.lang.String"*/-->
+                    <!--<div>
+                        <a th:if="${error != null}" th:text="${error}"></a>
+                    </div>-->
+                    <input id="loginBtn" type="button" class="btn btn-block btn-primary btn-large" style="margin-top: 20px" value="登录"/>
+                    <span style="margin-top: 10px;margin-left:100px;color: #8d8d8d;font-size: 7px;float: right">技术支持：13659998888</span>
+                </div>
             </div>
+            </form>
         </div>
-    </div>
-    <div class="form-group">
-        <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default">Sign in</button>
-        </div>
-    </div>
-</form>
-<form class="form-inline" action="/register" method="post">
-    <div class="form-group">
-        <label class="sr-only" for="gqdm">关区代码</label>
-        <input  class="form-control" id="gqdm" name="gqdm"placeholder="关区代码">
-    </div>
-    <div class="form-group">
-        <label class="sr-only" for="gqdm">Email address</label>
-        <input  class="form-control" id="gqname" name="gqname"placeholder="关区名称">
-    </div>
-    <div class="form-group">
-        <label class="sr-only" for="password">Password</label>
-        <input type="password" class="form-control" id="password" name="password"placeholder="Password">
-    </div>
-    <div class="checkbox">
-        <label>
-            <input type="checkbox"> Remember me
-        </label>
-    </div>
-    <button type="submit" class="btn btn-default">注册</button>
-</form>
+
+
+
+
+
+
+</div>
 </body>
 </html>

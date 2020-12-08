@@ -1,21 +1,21 @@
 package com.xsz.customs.controller;
 
+import com.xsz.customs.dto.*;
 import com.xsz.customs.model.dcUser;
 import com.xsz.customs.model.dcUserExample;
 import com.xsz.customs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class UserController {
@@ -24,10 +24,11 @@ public class UserController {
     private UserService userService;
 
     //用户登录
-    @PostMapping("/login")
+    /*@PostMapping("/login")
     public String login(@RequestParam(name = "gqdm")String gqdm,
                         @RequestParam(name = "password")String password,
-                        HttpServletResponse response){
+                        HttpServletResponse response,
+                        Model model){
         dcUser user = new dcUser();
         user.setDcGqdm(gqdm);
         user.setDcGqpword(password);
@@ -35,21 +36,47 @@ public class UserController {
         //flag==1登录成功,则将登录的关区代码写入cookie中，供实现持久登录功能使用
         if (flag){
             //测试代码
-            /*if (gqdm.equals("000001")) {
+            *//*if (gqdm.equals("000001")) {
                 userService.getUserList(user.getDcGqdm(), 0);
             }
             else {
                 userService.getUserList(user.getDcGqdm(), 1);
-            }*/
+            }*//*
             //测试代码结束字段
             Cookie cookie = new Cookie("gqdm", gqdm);
             cookie.setMaxAge(60 * 60 * 24 * 30 * 6);
             response.addCookie(cookie);
+            *//*System.out.println("成功");*//*
             return "redirect:/";
+
         }else{
             System.out.println("登录失败");
+            model.addAttribute("error","用户名或密码错误！");
             return "redirect:/";
         }
+    }*/
+
+    @ResponseBody
+    @RequestMapping(value = "/login",method = RequestMethod.POST)
+    public Object login(@RequestBody UserLoginDTO userLoginDTO,
+                        HttpServletRequest request,
+                        HttpServletResponse response){
+        dcUser user = new dcUser();
+        user.setDcGqdm(userLoginDTO.getGqdm());
+        user.setDcGqpword(userLoginDTO.getPassword());
+        boolean flag = userService.login(user);
+        LoginResultDTO loginResultDTO = new LoginResultDTO();
+        loginResultDTO.setSuccess(flag);
+        if (flag == true){
+            loginResultDTO.setMessage("登录成功");
+            Cookie cookie = new Cookie("gqdm", userLoginDTO.getGqdm());
+            cookie.setMaxAge(60 * 60 * 24 * 30 * 6);
+            response.addCookie(cookie);
+        }
+        else {
+            loginResultDTO.setMessage("用户名或密码错误");
+        }
+        return loginResultDTO;
     }
 
     //用户退出
@@ -70,7 +97,7 @@ public class UserController {
     }
 
     //注册功能（插入操作），但目前不清楚是否需要注册功能，但也可以理解为插入新用户的操作
-    @PostMapping("/register")
+    /*@PostMapping("/register")
     public String register(@RequestParam(name = "gqdm")String gqdm,
                            @RequestParam(name = "password")String password,
                            @RequestParam(name = "gqname")String gqname,
@@ -82,11 +109,32 @@ public class UserController {
         user.setDcGqname(gqname);
         userService.create(user);
         return "redirect:/";
+    }*/
+
+    @ResponseBody
+    @RequestMapping(value = "/register",method = RequestMethod.POST)
+    public Object register(@RequestBody InsertUserDTO insertUserDTO,
+                        HttpServletRequest request,
+                        HttpServletResponse response){
+        dcUser user = new dcUser();
+        user.setDcGqdm(insertUserDTO.getGqdm());
+        user.setDcGqname(insertUserDTO.getGqname());
+        user.setDcLxr(insertUserDTO.getGqlxr());
+        user.setDcLxdh(insertUserDTO.getGqlxdh());
+        boolean flag = userService.create(user);
+        InsertUserResultDTO insertUserResultDTO = new InsertUserResultDTO();
+        insertUserResultDTO.setSuccess(flag);
+        if (flag == true){
+            insertUserResultDTO.setMessage("插入成功");
+        }
+        else
+            insertUserResultDTO.setMessage("插入失敗");
+        return insertUserResultDTO;
     }
 
     //修改用户信息
     @PostMapping("/update")
-    public String update(@RequestParam(name = "gqdm")String gqdm,
+    public String updateUser(@RequestParam(name = "gqdm")String gqdm,
                          @RequestParam(name = "password")String password,
                          @RequestParam(name = "gqname")String gqname,
                          HttpServletRequest request,
@@ -99,7 +147,7 @@ public class UserController {
         return "index";
     }
 
-    //删除用户功能
+    /*//删除用户功能
     @GetMapping("/deleteUser/{gqdm}")
     public String delete(@PathVariable(name = "gqdm") String gqdm,
                          HttpServletRequest request,
@@ -107,6 +155,23 @@ public class UserController {
                          Model model){
         userService.deleteUser(gqdm);
         return "redirect:/";
+    }*/
+    //删除用户
+    @ResponseBody
+    @RequestMapping(value = "/delete",method = RequestMethod.POST)
+    public Object deleteUser(@RequestBody DeleteUserDTO deleteUserDTO,
+                             HttpServletRequest request,
+                             HttpServletResponse response){
+        String gqdm = deleteUserDTO.getGqdm();
+        boolean flag = userService.deleteUser(gqdm);
+        DeleteUserResultDTO deleteUserResultDTO = new DeleteUserResultDTO();
+        deleteUserResultDTO.setSuccess(flag);
+        if (flag == true){
+            deleteUserResultDTO.setMessage("删除成功");
+        }
+        else
+            deleteUserResultDTO.setMessage("删除失败");
+        return deleteUserResultDTO;
     }
 
     //最高级用户跨级查看三级海关部门
@@ -129,6 +194,29 @@ public class UserController {
         return "redirect:/";
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/userManage",method = RequestMethod.POST)
+    public SubUsersDTO subUserList(HttpServletRequest request,
+                              HttpServletResponse response){
+        dcUser user = (dcUser) request.getSession().getAttribute("user");
+        if (user != null){
+            String gqdm = user.getDcGqdm();
+            int gqdj = user.getDcGqdj();
+            List<dcUser> users = userService.getUserList(gqdm, gqdj);
+            int size = users.size();
+            SubUsersDTO subUsersDTO = new SubUsersDTO();
+            subUsersDTO.setTotal(size);
+            subUsersDTO.setRows(users);
+            System.out.println(subUsersDTO.getTotal());
+            for(int i=0;i < users.size();i++){
+                System.out.println(subUsersDTO.getRows().get(i).getDcDjlxr());
+                System.out.println(subUsersDTO.getRows().get(i).getDcDjlxdh());
+            }
+            return subUsersDTO;
+        }
+        else
+            return null;
+    }
 
     //以下均为测试用方法
     /*@GetMapping("/login")
@@ -145,6 +233,13 @@ public class UserController {
     public String toUpdate(){
         return "update";
     }*/
-
+    @GetMapping("/index")
+    public String toLogin(){
+        return "index";
+    }
+    @GetMapping("/userMP")
+    public String toUserManage(){
+        return "userManage";
+    }
 
 }
