@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--    导入jQuery的js文件-->
+    <script type="text/javascript" src="/easyUI/jquery.min.js"></script>
+    <!--    导入easyUI的js文件-->
+    <script type="text/javascript" src="/easyUI/jquery.easyui.min.js"></script>
+    <!--    导入easyUI的语言js文件-->
+    <script type="text/javascript" src="/easyUI/locale/easyui-lang-zh_CN.js"></script>
+    <!--    导入easyUI的图标css文件-->
+    <link rel="stylesheet" type="text/css" href="/easyUI/themes/icon.css">
+    <!--    导入默认模块的css文件-->
+    <link id="themeLink" rel="stylesheet" type="text/css" href="/easyUI/themes/default/easyui.css">
+</head>
+<body class="easyui-layout" style="padding: 5px">
+<table id="dg"></table>
+<div id="editWin" class="easyui-window" data-options="title:'编辑',width:400,height:300,closed:true">
+    <form action="" method="post" id="editForm">
+        <input type="hidden" name="id">
+        <table>
+            <tr>
+                <td>关区代码</td>
+                <td><input type="text" name="分类" class="easyui-validatebox" data-options="required:true"></td>
+            </tr>
+            <tr>
+                <td>关区名称</td>
+                <td><input type="text" name="名称" class="easyui-numberbox" data-options="required:true"></td>
+            </tr>
+            <tr>
+                <td>调查时间</td>
+                <td><input type="text" name="价格" class="easyui-numberbox" data-options="required:true"></td>
+            </tr>
+            <tr>
+                <td>调查任务</td>
+                <td><input type="text" name="状态"></td>
+            </tr>
+            <tr>
+                <td>审批结果</td>
+                <td><input type="text" name="结果"></td>
+            </tr>
+            <tr>
+                <td>
+                    <a href="#" id="save" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
+                    <a href="#" id="reset" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">重置</a>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+
+
+<div data-options="region:'south',title:'历史调查任务',split:true,collapsible:false" style="height:300px;padding: 5px">
+    <table id="lsrw"></table>
+</div>
+
+<script type="text/javascript">
+    $('#dg').datagrid({
+        //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
+        url:'dcrw.json',
+        singleSelect:true,
+        columns:[
+            [
+            //展示列数据
+            {field:'dcGqdm',title:'关区代码',width:100},
+            {field:'dcGqname',title:'关区名称',width:100},
+            {field:'dcTime',title:'调查时间',width:100},
+            {field:'dcRw',title:'调查任务',width:100},
+            {field:'status',title:'审批状态',width:100,formatter:function (value,row,index) {
+                    if (value!=null){
+                        return value=="P"?"<font color='green'>通过</font>":"<font color='orange'>未审核</font>"
+                    }else {
+                        return "<font color='red'>未提交</font>"
+                    }
+                }},
+            ]
+        ],
+        pagination:true,
+        toolbar: [{
+            iconCls: 'icon-add',
+            text:"发布调查任务",
+            handler:function () {
+                $.ajax({
+                    url:"http://localhost:8080/addDcrw",
+                    type:"get",
+                    dataType:"json",
+                    contentType:"application/json",
+                    success:function (data) {
+                        if (data.success){
+                            $("#dg").datagrid("reload");
+                            $.messager.show({
+                                title:"提示",
+                                msg:"发布成功"
+                            })
+                        }else {
+                            $.messager.alert("提示",data.msg,"error");
+                        }
+                    }
+                })
+            }
+        },
+
+
+        ],
+    });
+
+
+
+    $('#lsrw').datagrid({
+        //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
+        url: 'dcrw.json',
+        singleSelect: true,
+        columns:[
+            [
+            //展示列数据
+            {field:'dcGqdm',title:'关区代码',width:100},
+            {field:'dcGqname',title:'关区名称',width:100},
+            {field:'dcTime',title:'调查时间',width:100},
+            {field:'dcRw',title:'调查任务',width:100},
+            {field:'status',title:'审批状态',width:100,formatter:function (value,row,index) {
+                    if (value!=null){
+                        return value=="P"?"<font color='green'>通过</font>":"<font color='orange'>未审核</font>"
+                    }else {
+                        return "<font color='red'>未提交</font>"
+                    }
+                }},
+            ]
+        ],
+        pagination: true
+    })
+</script>
+</body>
+</html>

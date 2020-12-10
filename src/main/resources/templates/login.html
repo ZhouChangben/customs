@@ -6,18 +6,17 @@
     <title>Title</title>
 
     <!--    导入jQuery的js文件-->
-    <script type="text/javascript" src="https://www.jeasyui.com/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.min.js"></script>
     <!--    导入easyUI的js文件-->
-    <script type="text/javascript" src="https://www.jeasyui.com/easyui/jquery.easyui.min.js"></script>
+    <script type="text/javascript" src="/easyui/jquery.easyui.min.js"></script>
     <!--    导入easyUI的语言js文件-->
-    <script type="text/javascript" src="https://www.jeasyui.com/easyui/locale/easyui-lang-zh_CN.js"></script>
+    <script type="text/javascript" src="/easyui/locale/easyui-lang-zh_CN.js"></script>
     <!--    导入easyUI的图标css文件-->
-    <link rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/icon.css">
+    <link rel="stylesheet" type="text/css" href="/easyui/themes/icon.css">
     <!--    导入默认模块的css文件-->
-    <link id="themeLink" rel="stylesheet" type="text/css" href="https://www.jeasyui.com/easyui/themes/default/easyui.css">
+    <link id="themeLink" rel="stylesheet" type="text/css" href="/easyui/themes/default/easyui.css">
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="bootstrap-3.3.7-dist/css/bootstrap.min.css">
 
 
     <script type="text/javascript">
@@ -64,10 +63,10 @@
                 //         password:password
                 //     },
 
-                    /*onSubmit:function (param) {
-                        param.gqdm=name;
-                        param.password=password;
-                    },*/
+                /*onSubmit:function (param) {
+                    param.gqdm=name;
+                    param.password=password;
+                },*/
 
                 //     success:function (data) {
                 //         alert(data)
@@ -92,34 +91,34 @@
         })
     </script>
 </head>
-<body background="/images/mt.jpg" style="background-size: cover;height: 100%">
-        <div style="background-color: rgba(0,0,0,0.2); height: 100%;width: 500px;float: right;" >
-            <form id="loginform" action="/login" method="post">
-            <div id="loginPanel" style="border-radius:5px;width: 350px;height: 300px;position: absolute;left:85%;top:50%;margin-left:-200px;margin-top:-150px;background-color: whitesmoke;">
+<body background="easyUI/images/mt.jpg" style="background-size: cover;height: 100%">
+<div style="background-color: rgba(0,0,0,0.2); height: 100%;width: 500px;float: right;" >
+    <form id="loginform" action="/login" method="post">
+        <div id="loginPanel" style="border-radius:5px;width: 350px;height: 300px;position: absolute;left:85%;top:50%;margin-left:-200px;margin-top:-150px;background-color: whitesmoke;">
 
-                <div style="border-bottom: 1px solid darkgray">
-                    <h2 style="margin-left:35px;color: black;">系统登录</h2>
-                </div>
-                <div style="padding: 40px;">
-                    <div class="input-group input-group-lg">
-                        <span class="input-group-addon glyphicon glyphicon-user" style="position: relative;top: 0px"></span>
-                        <input id="userId" type="text" name="gqdm" class="form-control " placeholder="账号" aria-describedby="basic-addon1">
-                    </div>
-
-                    <div class="input-group input-group-lg">
-                        <span class="input-group-addon glyphicon glyphicon-lock" style="position: relative;top: 0px"></span>
-                        <input id="pwd" type="password" name="password" class="form-control" placeholder="密码" aria-describedby="basic-addon2">
-                    </div>
-                    <!--/*@thymesVar id="error" type="java.lang.String"*/-->
-                    <!--<div>
-                        <a th:if="${error != null}" th:text="${error}"></a>
-                    </div>-->
-                    <input id="loginBtn" type="button" class="btn btn-block btn-primary btn-large" style="margin-top: 20px" value="登录"/>
-                    <span style="margin-top: 10px;margin-left:100px;color: #8d8d8d;font-size: 7px;float: right">技术支持：13659998888</span>
-                </div>
+            <div style="border-bottom: 1px solid darkgray">
+                <h2 style="margin-left:35px;color: black;">系统登录</h2>
             </div>
-            </form>
+            <div style="padding: 40px;">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon glyphicon glyphicon-user" style="position: relative;top: 0px"></span>
+                    <input id="userId" type="text" name="gqdm" class="form-control " placeholder="账号" aria-describedby="basic-addon1">
+                </div>
+
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon glyphicon glyphicon-lock" style="position: relative;top: 0px"></span>
+                    <input id="pwd" type="password" name="password" class="form-control" placeholder="密码" aria-describedby="basic-addon2">
+                </div>
+                <!--/*@thymesVar id="error" type="java.lang.String"*/-->
+                <!--<div>
+                    <a th:if="${error != null}" th:text="${error}"></a>
+                </div>-->
+                <input id="loginBtn" type="button" class="btn btn-block btn-primary btn-large" style="margin-top: 20px" value="登录"/>
+                <span style="margin-top: 10px;margin-left:100px;color: #8d8d8d;font-size: 7px;float: right">技术支持：13659998888</span>
+            </div>
         </div>
+    </form>
+</div>
 
 
 
