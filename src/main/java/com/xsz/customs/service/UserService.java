@@ -64,7 +64,9 @@ public class UserService {
             dcUser updateUser = new dcUser();
             updateUser.setDcGqdm(user.getDcGqdm());
             updateUser.setDcGqname(user.getDcGqname());
-            updateUser.setDcGqpword(user.getDcGqpword());
+            //updateUser.setDcGqpword(user.getDcGqpword());
+            updateUser.setDcLxr(user.getDcLxr());
+            updateUser.setDcLxdh(user.getDcLxdh());
             dcUserExample example = new dcUserExample();
             example.createCriteria()
                     .andIdEqualTo(dbuser.getId());

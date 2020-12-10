@@ -2,7 +2,6 @@ package com.xsz.customs.controller;
 
 import com.xsz.customs.dto.*;
 import com.xsz.customs.model.dcUser;
-import com.xsz.customs.model.dcUserExample;
 import com.xsz.customs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,10 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class UserController {
@@ -132,17 +128,20 @@ public class UserController {
         return insertUserResultDTO;
     }
 
+    /*@ResponseBody
+    @RequestMapping(value = "/preregister",method = RequestMethod.POST)*/
+
     //修改用户信息
-    @ResponseBody
+    /*@ResponseBody
     @RequestMapping(value = "/update",method = RequestMethod.POST)
-    public Object updateUser(@RequestBody UpdateUserDTO updateUserDTO,
+    public Object updateUser(@RequestBody UpdateUserFirstDTO updateUserFirstDTO,
                          HttpServletRequest request,
                          HttpServletResponse response){
         dcUser user = new dcUser();
-        user.setDcGqdm(updateUserDTO.getGqdm());
-        user.setDcGqname(updateUserDTO.getGqname());
-        user.setDcLxr(updateUserDTO.getGqlxr());
-        user.setDcLxdh(updateUserDTO.getGqlxdh());
+        user.setDcGqdm(updateUserFirstDTO.getGqdm());
+        user.setDcGqname(updateUserFirstDTO.getGqname());
+        user.setDcLxr(updateUserFirstDTO.getGqlxr());
+        user.setDcLxdh(updateUserFirstDTO.getGqlxdh());
         boolean flag = userService.update(user);
         UpdateUserResultDTO updateUserResultDTO = new UpdateUserResultDTO();
         updateUserResultDTO.setSuccess(flag);
@@ -152,7 +151,7 @@ public class UserController {
         else
             updateUserResultDTO.setMessage("修改失败");
         return updateUserResultDTO;
-    }
+    }*/
 
     /*//删除用户功能
     @GetMapping("/deleteUser/{gqdm}")
