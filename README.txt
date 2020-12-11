@@ -3,7 +3,7 @@ git init
 git add src
 git commit -m  “first commit”
 git remote add origin git@github.com:ZhouChangben/customs.git
-git push  -u origin master
+git push  -u origin master -f
 
 ssh -T git@github.com
 
