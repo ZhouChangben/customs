@@ -1,6 +1,6 @@
 [1]git版本控制与协作开发
 git init
-git add src
+git
 git commit -m  “first commit”
 git remote add origin git@github.com:ZhouChangben/customs.git
 
