@@ -64,7 +64,7 @@ public class UserService {
             dcUser updateUser = new dcUser();
             updateUser.setDcGqdm(user.getDcGqdm());
             updateUser.setDcGqname(user.getDcGqname());
-            //updateUser.setDcGqpword(user.getDcGqpword());
+            updateUser.setDcGqpword(user.getDcGqpword());
             updateUser.setDcLxr(user.getDcLxr());
             updateUser.setDcLxdh(user.getDcLxdh());
             dcUserExample example = new dcUserExample();
@@ -99,7 +99,51 @@ public class UserService {
     }
 
     //用于获取用户下属列表的方法,根据不同的用户类型来进行分类讨论
-    public List<dcUser> getUserList(String gqdm,int gqdj){
+    public List<dcUser> getUserList(String gqdm, int gqdj, int page,int rows,int size){
+        dcUser user = new dcUser();
+        user.setDcGqdj(gqdj);
+        dcUserExample example = new dcUserExample();
+        int first = (page-1)*rows;
+        int last = (page-1)*rows + rows;
+        if (last > size){
+            last = size;
+        }
+        //当前用户是海关科技司（最高级）
+        if (gqdj == 0){
+            example.createCriteria()
+                    .andDcGqdjEqualTo(1);
+            List<dcUser> users = userMapper.selectByExample(example);
+            //测试代码
+            /*for (dcUser dcUser : users) {
+                System.out.println(dcUser.getDcGqname());
+            }*/
+            //测试代码结束
+            return users.subList(first,last);
+        }
+        //当前用户是二级海关部门
+        else if (gqdj == 1){
+            String frontdm = gqdm.substring(0,4);
+            //String reardm = gqdm.substring(4);
+            List<dcUser> users = userExtMapper.SelectByFrontDm(frontdm+"%");
+            //测试代码
+            /*if (users.size() == 0) {
+                System.out.println("获取失败");
+            }
+            else {
+                for (dcUser dcUser : users) {
+                    System.out.println(dcUser.getDcGqname());
+                }
+            }*/
+            //测试代码结束
+                return users.subList(first,last);
+        }
+        //当前用户是最低级的用户
+        else{
+            return null;
+        }
+    }
+
+    public List<dcUser> getUserList(String gqdm, int gqdj){
         dcUser user = new dcUser();
         user.setDcGqdj(gqdj);
         dcUserExample example = new dcUserExample();
@@ -130,7 +174,7 @@ public class UserService {
                 }
             }*/
             //测试代码结束
-                return users;
+            return users;
         }
         //当前用户是最低级的用户
         else{
@@ -147,5 +191,14 @@ public class UserService {
             return true;
         }else
             return false;
+    }
+
+    public String getMaxSubUserDm(String gqdm){
+        String frontdm = gqdm.substring(0,4);
+        System.out.println(frontdm);
+        int maxNum = userExtMapper.GetTheNextGqdm(frontdm+"%");
+        String reardm = Integer.toString(maxNum);
+        System.out.println(frontdm+reardm);
+        return frontdm+reardm;
     }
 }

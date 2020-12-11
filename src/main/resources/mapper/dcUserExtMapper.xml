@@ -41,4 +41,12 @@
   dc_gqdm like #{record,jdbcType=VARCHAR} AND dc_gqdj>1
   </select>
 
+  <select id="GetTheNextGqdm" parameterType="java.lang.String" resultType="int">
+    select Max(dc_gqdj)
+    from dc_user
+    where
+    dc_gqdm like #{record,jdbcType=VARCHAR} AND dc_gqdj>0
+  </select>
+
+
 </mapper>

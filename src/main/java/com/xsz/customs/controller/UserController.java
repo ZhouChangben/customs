@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @Controller
@@ -86,12 +87,6 @@ public class UserController {
         return "redirect:/";
     }
 
-    //当用户提出修改请求时的方法,功能未定先放一放
-    @GetMapping("/modify")
-    public String modify(){
-        return "";
-    }
-
     //注册功能（插入操作），但目前不清楚是否需要注册功能，但也可以理解为插入新用户的操作
     /*@PostMapping("/register")
     public String register(@RequestParam(name = "gqdm")String gqdm,
@@ -108,6 +103,18 @@ public class UserController {
     }*/
 
     @ResponseBody
+    @RequestMapping(value = "/preregister",method = RequestMethod.GET)
+    public  Object preRegister(HttpServletRequest request,
+                               HttpServletResponse response){
+        HttpSession session = request.getSession();
+        dcUser user = (dcUser)session.getAttribute("user");
+        String gqdm = userService.getMaxSubUserDm(user.getDcGqdm());
+        NextGqdmDTO nextGqdmDTO = new NextGqdmDTO();
+        nextGqdmDTO.setGqdm(gqdm);
+        return nextGqdmDTO;
+    }
+
+    @ResponseBody
     @RequestMapping(value = "/register",method = RequestMethod.POST)
     public Object register(@RequestBody InsertUserDTO insertUserDTO,
                         HttpServletRequest request,
@@ -117,6 +124,7 @@ public class UserController {
         user.setDcGqname(insertUserDTO.getGqname());
         user.setDcLxr(insertUserDTO.getGqlxr());
         user.setDcLxdh(insertUserDTO.getGqlxdh());
+        user.setDcGqpword(insertUserDTO.getGqpwd());
         boolean flag = userService.create(user);
         InsertUserResultDTO insertUserResultDTO = new InsertUserResultDTO();
         insertUserResultDTO.setSuccess(flag);
@@ -128,30 +136,54 @@ public class UserController {
         return insertUserResultDTO;
     }
 
-    /*@ResponseBody
-    @RequestMapping(value = "/preregister",method = RequestMethod.POST)*/
 
-    //修改用户信息
-    /*@ResponseBody
-    @RequestMapping(value = "/update",method = RequestMethod.POST)
-    public Object updateUser(@RequestBody UpdateUserFirstDTO updateUserFirstDTO,
-                         HttpServletRequest request,
-                         HttpServletResponse response){
-        dcUser user = new dcUser();
-        user.setDcGqdm(updateUserFirstDTO.getGqdm());
-        user.setDcGqname(updateUserFirstDTO.getGqname());
-        user.setDcLxr(updateUserFirstDTO.getGqlxr());
-        user.setDcLxdh(updateUserFirstDTO.getGqlxdh());
-        boolean flag = userService.update(user);
-        UpdateUserResultDTO updateUserResultDTO = new UpdateUserResultDTO();
-        updateUserResultDTO.setSuccess(flag);
-        if (flag == true){
-            updateUserResultDTO.setMessage("修改成功");
+    @ResponseBody
+    @RequestMapping(value = "/preupdate",method = RequestMethod.POST)
+    public Object preUpdateuser(@RequestBody UpdateUserFirstDTO updateUserFirstDTO,
+                                HttpServletRequest request,
+                                HttpServletResponse response){
+        String gqdm = updateUserFirstDTO.getGqdm();
+        dcUser user = userService.findUserByGqdm(gqdm);
+        UpdateUserSecondDTO updateUserSecondDTO = new UpdateUserSecondDTO();
+        if (user != null){
+            updateUserSecondDTO.setGqdm(user.getDcGqdm());
+            updateUserSecondDTO.setGqname(user.getDcGqname());
+            updateUserSecondDTO.setGqpwd(user.getDcGqpword());
+            updateUserSecondDTO.setGqlxr(user.getDcLxr());
+            updateUserSecondDTO.setGqlxdh(user.getDcLxdh());
         }
-        else
-            updateUserResultDTO.setMessage("修改失败");
-        return updateUserResultDTO;
-    }*/
+        return updateUserSecondDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    public Object updateUser(@RequestBody UpdateUserSecondDTO updateUserSecondDTO,
+                             HttpServletRequest request,
+                             HttpServletResponse response){
+        dcUser user = new dcUser();
+        //由于返回的DTO都是一样的所以使用insert的
+        InsertUserResultDTO insertUserResultDTO = new InsertUserResultDTO();
+        String gqdm = updateUserSecondDTO.getGqdm();
+        String gqname = updateUserSecondDTO.getGqname();
+        String gqpwd = updateUserSecondDTO.getGqpwd();
+        String gqlxr = updateUserSecondDTO.getGqlxr();
+        String gqlxdh = updateUserSecondDTO.getGqlxdh();
+        user.setDcGqdm(gqdm);
+        user.setDcGqname(gqname);
+        user.setDcGqpword(gqpwd);
+        user.setDcLxr(gqlxr);
+        user.setDcLxdh(gqlxdh);
+        boolean flag = userService.update(user);
+        insertUserResultDTO.setSuccess(flag);
+        if (flag){
+            insertUserResultDTO.setMessage("更新用户信息成功");
+        }
+        else{
+            insertUserResultDTO.setMessage("更新用户信息失败");
+        }
+        return insertUserResultDTO;
+    }
+
 
     /*//删除用户功能
     @GetMapping("/deleteUser/{gqdm}")
@@ -181,7 +213,7 @@ public class UserController {
     }
 
     //最高级用户跨级查看三级海关部门
-    @GetMapping("/checkSubUser/{gqdm}")
+    /*@GetMapping("/checkSubUser/{gqdm}")
     public String checkSubUser(@PathVariable(name = "gqdm") String gqdm,
                                HttpServletRequest request,
                                HttpServletResponse response,
@@ -198,18 +230,22 @@ public class UserController {
             //测试代码结束
         }
         return "redirect:/";
-    }
+    }*/
 
     @ResponseBody
     @RequestMapping(value = "/userManage",method = RequestMethod.POST)
-    public SubUsersDTO subUserList(HttpServletRequest request,
+    public Object subUserList(Integer page,
+                              Integer rows,
+                              HttpServletRequest request,
                               HttpServletResponse response){
+        System.out.println(page);
         dcUser user = (dcUser) request.getSession().getAttribute("user");
         if (user != null){
             String gqdm = user.getDcGqdm();
             int gqdj = user.getDcGqdj();
             List<dcUser> users = userService.getUserList(gqdm, gqdj);
             int size = users.size();
+            users = userService.getUserList(gqdm, gqdj,page,rows,size);
             SubUsersDTO subUsersDTO = new SubUsersDTO();
             subUsersDTO.setTotal(size);
             subUsersDTO.setRows(users);
@@ -246,6 +282,10 @@ public class UserController {
     @GetMapping("/userMP")
     public String toUserManage(){
         return "userManage";
+    }
+    @GetMapping("/dcrwgl")
+    public String toGqgl(){
+        return "dcrwgl";
     }
 
 }

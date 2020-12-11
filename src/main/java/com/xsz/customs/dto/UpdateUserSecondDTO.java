@@ -6,7 +6,7 @@ import lombok.Data;
 public class UpdateUserSecondDTO {
     private String gqdm;
     private String gqname;
-    private String gqpassword;
+    private String gqpwd;
     private String gqlxr;
     private String gqlxdh;
 }

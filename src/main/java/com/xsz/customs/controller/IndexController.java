@@ -26,10 +26,10 @@ public class IndexController {
         //由于持久登录的实现导致session中一直有一个user对象，想要获取下属的列表至少需要获得当前用户
         dcUser user = (dcUser) session.getAttribute("user");
         if (user != null) {
-            int degree = user.getDcGqdj();
+           /* int degree = user.getDcGqdj();
             String gqdm = user.getDcGqdm();
-            List<dcUser> users = userService.getUserList(gqdm, degree);
-            model.addAttribute("subusers", users);
+            List<dcUser> users = userService.getUserList(gqdm, degree,1,10);
+            model.addAttribute("subusers", users);*/
             return "index";
         }
         else{

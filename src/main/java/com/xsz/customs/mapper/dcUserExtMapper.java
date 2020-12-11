@@ -8,4 +8,8 @@ import java.util.List;
 
 public interface dcUserExtMapper {
     List<dcUser> SelectByFrontDm(String record);
+
+    int GetTheNextGqdm(String gqdm);
+
+
 }

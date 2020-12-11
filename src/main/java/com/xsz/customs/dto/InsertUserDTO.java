@@ -6,6 +6,7 @@ import lombok.Data;
 public class InsertUserDTO {
     private String gqdm;
     private String gqname;
+    private String gqpwd;
     private String gqlxr;
     private String gqlxdh;
 }

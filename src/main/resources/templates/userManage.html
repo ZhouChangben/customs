@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -16,17 +17,21 @@
 </head>
 <body>
 <table id="dg"></table>
-<div id="editWin" class="easyui-window" data-options="title:'编辑',width:400,height:300,closed:true">
+<div id="editWin" class="easyui-window" data-options="title:'窗口',width:400,height:300,closed:true">
     <form action="" method="post" id="editForm">
         <input type="hidden" name="id">
         <table>
             <tr>
                 <td>关区编号</td>
-                <td><input type="text" id="gqdm" name="gqdm" class="easyui-validatebox" data-options="required:true"></td>
+                <td><input type="text" id="gqdm" name="gqdm" class="easyui-validatebox" data-options="required:true" disabled="true"></td>
             </tr>
             <tr>
                 <td>关区名称</td>
                 <td><input type="text" id="gqname" name="gqname" class="easyui-validatebox" data-options="required:true"></td>
+            </tr>
+            <tr>
+                <td>密码</td>
+                <td><input type="text" id="gqpwd" name="gqpwd" class="easyui-validatebox" data-options="required:true"></td>
             </tr>
             <tr>
                 <td>联系人</td>
@@ -36,10 +41,11 @@
                 <td>联系电话</td>
                 <td><input type="text" id="gqlxdh" name="gqlxdh" class="easyui-numberbox" data-options="required:true"></td>
             </tr>
-            <tr>
+            <tr align="center">
                 <td>
-                    <a href="#" id="save" class="easyui-linkbutton" data-options="iconCls:'icon-save'">保存</a>
-                    <a href="#" id="reset" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">重置</a>
+                    <a href="#" id="save" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="display: none">保存</a>
+                    <a href="#" id="editsave" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="display: none">保存</a>
+                    <a href="#" id="reset" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">取消</a>
                 </td>
             </tr>
         </table>
@@ -47,73 +53,104 @@
     </form>
 </div>
 <script type="text/javascript">
-$(function () {
+    $(function () {
 
-    $('#dg').datagrid({
-        //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
-        url:'http://localhost:8080/userManage',
-        columns:[
-            [
-                //展示列数据
-                {field:'dcGqdm',title:'关区编号',width:100},
-                {field:'dcGqname',title:'关区名称',width:100},
-                {field:'dcLxr',title:'联系人',width:100},
-                {field:'dcLxdh',title:'联系电话',width:100},
-            ]
-        ],
-        pagination:true,
-        toolbar: [{
-            iconCls: 'icon-save',
-            text:"添加",
-            handler:function () {
-                $("#editWin").window("open")
-            }
-        },
-            {
-                iconCls: 'icon-edit',
-                text:"编辑",
+        $('#dg').datagrid({
+            //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
+            url:'http://localhost:8080/userManage',
+            columns:[
+                [
+                    //展示列数据
+                    {field:'dcGqdm',title:'关区编号',width:100},
+                    {field:'dcGqname',title:'关区名称',width:100},
+                    {field:'dcLxr',title:'联系人',width:100},
+                    {field:'dcLxdh',title:'联系电话',width:100},
+                ]
+            ],
+            pagination:true,
+            //设置每次只能选择一条数据
+            singleSelect:true,
+            toolbar: [{
+                iconCls: 'icon-add',
+                text:"添加",
                 handler:function () {
-                    //获取选择的那一条数据
-                    var rows=$("#dg").datagrid("getSelections");
-                    //判断只能选择一条数据
-                    if (rows.length!=1){
-                        $.messager.alert("提示","一次只能选择一行","warning");
-                        return ;
-                    }
-                    //获取第一行
-                    var row=rows[0];
-                    //到后台调取数据，填充到表单
-                    $("#editForm").form("load","product_get.action?id="+row.id);
-                    //填弹出编辑窗口
+                    $("#editForm").form("clear");
+                    $("#editForm").form("load","http://localhost:8080/preregister");
+                    $("#save").css("display","inline-block");
+                    $("#editsave").css("display","none");
+                    $("#editWin").window({title:"添加"});
                     $("#editWin").window("open")
-
                 }
             },
-            {
-                iconCls: 'icon-remove',
-                text:"删除",
-                handler:function () {
-                    //获取选择的那一条数据
-                    var rows=$("#dg").datagrid("getSelections");
-                    //判断只能选择一条数据
-                    if (rows.length!=1){
-                        $.messager.alert("提示","一次只能选择一行","warning");
-                        return ;
+                {
+                    iconCls: 'icon-edit',
+                    text:"编辑",
+                    handler:function () {
+                        //获取选择的那一条数据
+                        var rows=$("#dg").datagrid("getSelections");
+                        //判断是否选择某条数据
+                        if (rows.length==0){
+                            $.messager.alert("提示","请选择一条数据","warning");
+                            return;
+                        }
+                        //获取第一行
+                        var row=rows[0];
+                        //到后台调取数据，填充到表单
+                        $.ajax({
+                            url:"http://localhost:8080/preupdate",
+                            type:"post",
+                            data:JSON.stringify({"gqdm":row.dcGqdm}),
+                            dataType:"json",
+                            contentType:"application/json",
+                            success:function (data) {
+
+                                $("#editForm").form("load",{
+                                    gqdm:data.gqdm,
+                                    gqname:data.gqname,
+                                    gqpwd:data.gqpwd,
+                                    gqlxr:data.gqlxr,
+                                    gqlxdh:data.gqlxdh
+                                });
+                            }
+                        })
+                        //填弹出编辑窗口
+                        $("#save").css("display","none");
+                        $("#editsave").css("display","inline-block");
+                        $("#editWin").window({title:"编辑"});
+                        $("#editWin").window("open")
+
                     }
-                    //获取数据的id
-                    // var ids=new Array();
-                    // $(rows).each(function (i) {
-                    //     ids.push(rows[i].id)
-                    // });
-                    // ids=ids.join(",");
-                    //发送数据id到后台删除数据
-                    $.ajax({
-                        url:"http://localhost:8080/delete",
-                        type:"post",
-                        data:JSON.stringify({"gqdm":rows[0].dcGqdm}),
-                        dataType:"json",
-                        contentType:"application/json",
-                        success:function (data) {
+                },
+                {
+                    iconCls: 'icon-remove',
+                    text:"删除",
+                    handler:function () {
+                        //获取选择的那一条数据
+                        var rows=$("#dg").datagrid("getSelections");
+                        //判断是否选择某条数据
+                        if (rows.length==0){
+                            $.messager.alert("提示","请选择一条数据","warning");
+                            return;
+                        }
+                        $.ajax({
+                            url:"http://localhost:8080/delete",
+                            type:"post",
+                            data:JSON.stringify({"gqdm":rows[0].dcGqdm}),
+                            dataType:"json",
+                            contentType:"application/json",
+                            success:function (data) {
+                                if (data.success){
+                                    $("#dg").datagrid("reload");
+                                    $.messager.show({
+                                        title:"提示",
+                                        msg:"删除成功"
+                                    })
+                                }else {
+                                    $.messager.alert("提示",data.msg,"error");
+                                }
+                            }
+                        })
+                        /*$.post("product_delete.action",{"ids":ids},function (data) {
                             if (data.success){
                                 $("#dg").datagrid("reload");
                                 $.messager.show({
@@ -121,88 +158,109 @@ $(function () {
                                     msg:"删除成功"
                                 })
                             }else {
-                                $.messager.alert("提示",data.msg,"error");
+                                $.messager.alert("提示","删除失败:"+data.msg,"error");
                             }
-                        }
-                    })
-                    /*$.post("product_delete.action",{"ids":ids},function (data) {
-                        if (data.success){
-                            $("#dg").datagrid("reload");
-                            $.messager.show({
-                                title:"提示",
-                                msg:"删除成功"
-                            })
-                        }else {
-                            $.messager.alert("提示","删除失败:"+data.msg,"error");
-                        }
-                    })*/
+                        })*/
+                    }
                 }
-            }
-        ],
-    });
-$("#save").click(function () {
-    var gqdm=$("#gqdm").val();
-    var gqname=$("#gqname").val();
-    var gqlxr=$("#gqlxr").val();
-    var gqlxdh=$("#gqlxdh").val();
-    $.ajax({
-        url:'http://localhost:8080/register',
-        type:"post",
-        data:JSON.stringify({"gqdm":gqdm,"gqname":gqname,"gqlxr":gqlxr,"gqlxdh":gqlxdh}),
-        dataType:"json",
-        contentType:"application/json",
-        success:function (data) {
-            if(data.success==true){
-                //表单清空
-                $("#editForm").form("clear")
-                //关闭窗口
-                $("#editWin").window("close")
-                //刷新datagrid
-                $("#dg").datagrid("reload")
+            ],
+        });
+        //添加保存
+        $("#save").click(function () {
+            var gqdm=$("#gqdm").val();
+            var gqname=$("#gqname").val();
+            var gqpwd=$("#gqpwd").val();
+            var gqlxr=$("#gqlxr").val();
+            var gqlxdh=$("#gqlxdh").val();
+            $.ajax({
+                url:'http://localhost:8080/register',
+                type:"post",
+                data:JSON.stringify({"gqdm":gqdm,"gqname":gqname,"gqpwd":gqpwd,"gqlxr":gqlxr,"gqlxdh":gqlxdh}),
+                dataType:"json",
+                contentType:"application/json",
+                success:function (data) {
+                    if(data.success==true){
+                        //表单清空
+                        $("#editForm").form("clear")
+                        //关闭窗口
+                        $("#editWin").window("close")
+                        //刷新datagrid
+                        $("#dg").datagrid("reload")
 
-                $.messager.show({
-                    title:"提示",
-                    msg:"保存成功"
-                })
-            }else if (data.success==false){
-                $.messager.alert("提示",data.msg,"error")
-            }
-        }
-    })
-})
-
-    /*$("#save").click(function () {
-        $("#editForm").form("submit",{
-            contentType:"application/json",
-            url:"http://localhost:8080/register",
-            onSubmit:function () {
-                return $("#editForm").form("validate")
-            },
-            success:function (data) {
-                // data=eval("("+data+")");
-                alert(data)
-                if(data.success){
-                    //表单清空
-                    $("#editForm").form("clear")
-                    //关闭窗口
-                    $("#editWin").window("close")
-                    //刷新datagrid
-                    $("#dg").datagrid("reload")
-
-                    $.messager.show({
-                        title:"提示",
-                        msg:"保存成功"
-                    })
-                }else{
-                    $.messager.alert("提示","保存失败"+data.msg,"error")
+                        $.messager.show({
+                            title:"提示",
+                            msg:"保存成功"
+                        })
+                    }else if (data.success==false){
+                        $.messager.alert("提示",data.msg,"error")
+                    }
                 }
-            }
+            })
         })
-    })*/
-    $("#reset").click(function () {
-        $("#editForm").form("clear")
+        //编辑保存
+        $("#editsave").click(function () {
+            var gqdm=$("#gqdm").val();
+            var gqname=$("#gqname").val();
+            var gqpwd=$("#gqpwd").val();
+            var gqlxr=$("#gqlxr").val();
+            var gqlxdh=$("#gqlxdh").val();
+            $.ajax({
+                url:'http://localhost:8080/update',
+                type:"post",
+                data:JSON.stringify({"gqdm":gqdm,"gqname":gqname,"gqpwd":gqpwd,"gqlxr":gqlxr,"gqlxdh":gqlxdh}),
+                dataType:"json",
+                contentType:"application/json",
+                success:function (data) {
+                    if(data.success==true){
+                        //表单清空
+                        $("#editForm").form("clear")
+                        //关闭窗口
+                        $("#editWin").window("close")
+                        //刷新datagrid
+                        $("#dg").datagrid("reload")
+
+                        $.messager.show({
+                            title:"提示",
+                            msg:"修改成功"
+                        })
+                    }else if (data.success==false){
+                        $.messager.alert("提示",data.msg,"error")
+                    }
+                }
+            })
+        })
+
+        /*$("#save").click(function () {
+            $("#editForm").form("submit",{
+                contentType:"application/json",
+                url:"http://localhost:8080/register",
+                onSubmit:function () {
+                    return $("#editForm").form("validate")
+                },
+                success:function (data) {
+                    // data=eval("("+data+")");
+                    alert(data)
+                    if(data.success){
+                        //表单清空
+                        $("#editForm").form("clear")
+                        //关闭窗口
+                        $("#editWin").window("close")
+                        //刷新datagrid
+                        $("#dg").datagrid("reload")
+                        $.messager.show({
+                            title:"提示",
+                            msg:"保存成功"
+                        })
+                    }else{
+                        $.messager.alert("提示","保存失败"+data.msg,"error")
+                    }
+                }
+            })
+        })*/
+        $("#reset").click(function () {
+            $("#editWin").window("close")
+        })
     })
-})
 
 </script>
 </body>
