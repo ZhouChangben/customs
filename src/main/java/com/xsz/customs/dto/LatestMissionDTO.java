@@ -1,14 +1,12 @@
 package com.xsz.customs.dto;
 
-import com.xsz.customs.model.dcUser;
+import com.xsz.customs.model.dcDcrw;
 import lombok.Data;
 
 import java.util.List;
 
 @Data
-public class SubUsersDTO {
+public class LatestMissionDTO {
     private int total;
-    private List<dcUser> rows;
-
-
+    private List<dcDcrw> rows;
 }

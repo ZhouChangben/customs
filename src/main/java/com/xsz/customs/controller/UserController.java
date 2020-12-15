@@ -238,7 +238,7 @@ public class UserController {
                               Integer rows,
                               HttpServletRequest request,
                               HttpServletResponse response){
-        System.out.println(page);
+        //System.out.println(page);
         dcUser user = (dcUser) request.getSession().getAttribute("user");
         if (user != null){
             String gqdm = user.getDcGqdm();
@@ -260,6 +260,18 @@ public class UserController {
             return null;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/allsubuser",method = RequestMethod.GET)
+    public Object findAllSubUser(Model model){
+        List<dcUser> users = userService.findAllSubuser();
+        SubUsersDTO subUsersDTO = new SubUsersDTO();
+        subUsersDTO.setTotal(users.size());
+        subUsersDTO.setRows(users);
+        model.addAttribute("subusers",users);
+        System.out.println("已经获取了所有二级关区");
+        return subUsersDTO;
+    }
+
     //以下均为测试用方法
     /*@GetMapping("/login")
     public String toLogin(){
@@ -279,13 +291,6 @@ public class UserController {
     public String toLogin(){
         return "index";
     }
-    @GetMapping("/userMP")
-    public String toUserManage(){
-        return "userManage";
-    }
-    @GetMapping("/dcrwgl")
-    public String toGqgl(){
-        return "dcrwgl";
-    }
+
 
 }

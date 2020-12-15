@@ -36,4 +36,12 @@ public class IndexController {
             return "login";
         }
     }
+    @GetMapping("/userMP")
+    public String toUserManage(){
+        return "userManage";
+    }
+    @GetMapping("/dcrwGL")
+    public String toGqgl(){
+        return "dcrwgl";
+    }
 }

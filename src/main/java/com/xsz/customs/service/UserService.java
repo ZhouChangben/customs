@@ -98,6 +98,7 @@ public class UserService {
         }
     }
 
+    //此方法考虑到了分页的情况
     //用于获取用户下属列表的方法,根据不同的用户类型来进行分类讨论
     public List<dcUser> getUserList(String gqdm, int gqdj, int page,int rows,int size){
         dcUser user = new dcUser();
@@ -143,6 +144,7 @@ public class UserService {
         }
     }
 
+    //此方法是获得当前关区的所有子关区的方法
     public List<dcUser> getUserList(String gqdm, int gqdj){
         dcUser user = new dcUser();
         user.setDcGqdj(gqdj);
@@ -200,5 +202,18 @@ public class UserService {
         String reardm = Integer.toString(maxNum);
         System.out.println(frontdm+reardm);
         return frontdm+reardm;
+    }
+
+    public List<dcUser> findAllSubuser(){
+        dcUserExample userExample = new dcUserExample();
+        userExample.createCriteria()
+                .andDcGqdjEqualTo(1);
+        List<dcUser> users = userMapper.selectByExample(userExample);
+        if (users.size() != 0){
+            for (dcUser user : users) {
+
+            }
+        }
+        return users;
     }
 }
