@@ -28,8 +28,54 @@ public class DcrwController {
     public Object addSingleDcrw(@RequestBody AddSingleDcrwDTO addSingleDcrwDTO,
                           HttpServletRequest request,
                           HttpServletResponse response){
+        int rwxh = dcrwService.findLatestMission();
+        dcDcrw dcrw = new dcDcrw();
+        dcrw.setDcRenwuxh(rwxh);
+        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        if (addSingleDcrwDTO.getDcbName().equals("所有任务")){
+            boolean flag;
+            dcrw.setDcRenwugqname(addSingleDcrwDTO.getDcGqName());
+            dcrw.setDcRenwugqdm(addSingleDcrwDTO.getDcGqdm());
+            dcrw.setDcRenwumc(addSingleDcrwDTO.getDcrwName());
+            dcrw.setDcDcbname("卫生检疫");
+            flag = dcrwService.createSingle(dcrw);
+            //获取当前二级关区名下的三级关区列表，将其当做参数传入service中的方法中
+            List<dcUser> users = userService.getUserList(dcrw.getDcRenwugqdm(),1);
+            flag = dcrwService.createSingleForSub(dcrw,users);
 
-        return "";
+            dcrw.setDcDcbname("动物检疫");
+            flag = dcrwService.createSingle(dcrw);
+            flag = dcrwService.createSingleForSub(dcrw,users);
+
+            dcrw.setDcDcbname("植物检疫");
+            flag = dcrwService.createSingle(dcrw);
+            flag = dcrwService.createSingleForSub(dcrw,users);
+
+            addDcrwResultDTO.setSuccess(flag);
+            if (flag == true){
+                addDcrwResultDTO.setMessage("添加单个任务成功");
+            }
+            if (flag == false){
+                addDcrwResultDTO.setMessage("添加单个任务失败");
+            }
+        }
+        else {
+            dcrw.setDcDcbname(addSingleDcrwDTO.getDcbName());
+            dcrw.setDcRenwugqname(addSingleDcrwDTO.getDcGqName());
+            dcrw.setDcRenwugqdm(addSingleDcrwDTO.getDcGqdm());
+            dcrw.setDcRenwumc(addSingleDcrwDTO.getDcrwName());
+            List<dcUser> users = userService.getUserList(dcrw.getDcRenwugqdm(),1);
+            boolean flag = dcrwService.createSingle(dcrw);
+            flag = dcrwService.createSingleForSub(dcrw,users);
+
+            addDcrwResultDTO.setSuccess(flag);
+            if (flag == true){
+                addDcrwResultDTO.setMessage("添加单个任务成功");
+            }else{
+                addDcrwResultDTO.setMessage("添加单个任务失败");
+            }
+        }
+        return addDcrwResultDTO;
     }
 
     //添加全体关区任务
@@ -59,14 +105,24 @@ public class DcrwController {
     public Object deleteMission(@RequestBody DeleteDcrwDTO deleteDcrwDTO,
                          HttpServletRequest request,
                          HttpServletResponse response){
-
-        return "";
+        DeleteUserResultDTO deleteUserResultDTO = new DeleteUserResultDTO();
+        int rwxh = deleteDcrwDTO.getId();
+        boolean flag = dcrwService.deleteDcrwById(rwxh);
+        deleteUserResultDTO.setSuccess(flag);
+        if (flag == true){
+            deleteUserResultDTO.setMessage("删除任务成功");
+        }
+        else {
+            deleteUserResultDTO.setMessage("删除任务失败");
+        }
+        return deleteUserResultDTO;
     }
 
     //快捷删除的方法
     @GetMapping("deletedcrw")
-    public void deleteByRwmc(){
-        dcrwService.deleteDcrwByRwmc("2020年第二次");
+    public String deleteByRwmc(){
+        dcrwService.deleteDcrwByRwmc("小车");
+        return "redirect:/";
     }
 
     //显示当前任务(高级关区要显示自己的子关区的任务）
@@ -82,20 +138,16 @@ public class DcrwController {
         if (user != null){
             //此时为北京科技司，理论上显示所有的任务
             if (user.getDcGqdj() == 0){
-                /*System.out.println("我是北京科技司");*/
                 List<dcDcrw> dcrws = dcrwService.getLatestMissionList(max);
                 int size = dcrws.size();
-                /*System.out.println(size);*/
                 dcrws = dcrwService.getLatestMissionListPage(dcrws,page,rows,size);
                 latestMissionDTO.setRows(dcrws);
                 latestMissionDTO.setTotal(size);
             }
             //当用户为二级关区时
             if (user.getDcGqdj() == 1){
-                /*System.out.println("进入方法");*/
                 List<dcDcrw> dcrws = dcrwService.findDcrwByGqdm(user.getDcGqdm(),max);
                 List<dcUser> users = userService.getUserList(user.getDcGqdm(),1);
-                /*System.out.println("本关区子关区的数量"+users.size());*/
                 if (users != null) {
                     //这一步非常重要，将两表的内容联系起来
                     for (dcUser dcuser : users) {
@@ -119,6 +171,52 @@ public class DcrwController {
         }
         return latestMissionDTO;
     }
-
+    //显示历史调查任务的界面，和显示最新调查任务差不多，仅仅只有几个方法不同而已
+    @ResponseBody
+    @RequestMapping(value = "lsdcrwgl",method = RequestMethod.POST)
+    public Object getMissionListHistory(Integer page,
+                                        Integer rows,
+                                        HttpServletRequest request,
+                                        HttpServletResponse response){
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
+        LatestMissionDTO latestMissionDTO = new LatestMissionDTO();
+        int max = dcrwService.findLatestMission();
+        if (user != null){
+            //此时为北京科技司，理论上显示所有的任务
+            if (user.getDcGqdj() == 0){
+                List<dcDcrw> dcrws = dcrwService.getHistoryMissionList(max);
+                int size = dcrws.size();
+                dcrws = dcrwService.getLatestMissionListPage(dcrws,page,rows,size);
+                latestMissionDTO.setRows(dcrws);
+                latestMissionDTO.setTotal(size);
+            }
+            //当用户为二级关区时
+            if (user.getDcGqdj() == 1){
+                List<dcDcrw> dcrws = dcrwService.findHistoryDcrwByGqdm(user.getDcGqdm(),max);
+                List<dcUser> users = userService.getUserList(user.getDcGqdm(),1);
+                if (users != null) {
+                    //这一步非常重要，将两表的内容联系起来
+                    for (dcUser dcuser : users) {
+                        dcrws.addAll(dcrwService.findHistoryDcrwByGqdm(dcuser.getDcGqdm(),max));
+                    }
+                    int size = dcrws.size();
+                    //此方法仅仅用于分页
+                    dcrws = dcrwService.getLatestMissionListPage(dcrws,page,rows,size);
+                    latestMissionDTO.setTotal(size);
+                    latestMissionDTO.setRows(dcrws);
+                }
+            }
+            //当用户为三级关区时（只能查看自己的任务）
+            if (user.getDcGqdj() > 1){
+                List<dcDcrw> dcrws = dcrwService.findHistoryDcrwByGqdm(user.getDcGqdm(),max);
+                int size = dcrws.size();
+                dcrws = dcrwService.getLatestMissionListPage(dcrws,page,rows,size);
+                latestMissionDTO.setTotal(size);
+                latestMissionDTO.setRows(dcrws);
+            }
+        }
+        //历史调查任务返回的内容和最新任务差不多，所以用一个对象
+        return latestMissionDTO;
+    }
 
 }

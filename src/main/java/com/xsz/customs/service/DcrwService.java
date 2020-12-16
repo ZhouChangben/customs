@@ -65,9 +65,33 @@ public class DcrwService {
     }
 
     //单独为一个关区生成调查任务
-    public boolean createSingle(){
+    public boolean createSingle(dcDcrw dcrw){
+        int flag = dcrwMapper.insert(dcrw);
+        if (flag != 0){
+            return true;
+        }else
+            return false;
+    }
 
-        return true;
+    //当为二级海关生成单独的任务时，还要为其名下的三级海关生成任务
+    public boolean createSingleForSub(dcDcrw dcrw,List<dcUser> users){
+        int flag = 1;
+        String dcRenwumc = dcrw.getDcRenwumc();
+        String dcdcbname = dcrw.getDcDcbname();
+        dcDcrw dcrw2 = new dcDcrw();
+        dcrw2.setDcRenwuxh(dcrw.getDcRenwuxh());
+        for (dcUser user : users) {
+            dcrw2.setDcRenwumc(dcRenwumc);
+            dcrw2.setDcDcbname(dcdcbname);
+            dcrw2.setDcRenwugqdm(user.getDcGqdm());
+            dcrw2.setDcRenwugqname(user.getDcGqname());
+            /*System.out.println(dcrw2.getDcRenwugqname());*/
+            flag = dcrwMapper.insert(dcrw2);
+        }
+        if (flag != 0){
+            return true;
+        }else
+            return false;
     }
 
     public int findLatestMission(){
@@ -80,6 +104,15 @@ public class DcrwService {
         dcDcrwExample dcrwExample = new dcDcrwExample();
         dcrwExample.createCriteria()
                 .andDcRenwuxhEqualTo(rwxh);
+        List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
+        return dcrws;
+    }
+
+    //这个方法是用来获取非某一等级的所有调查任务的
+    public List<dcDcrw> getHistoryMissionList(int rwxh){
+        dcDcrwExample dcrwExample = new dcDcrwExample();
+        dcrwExample.createCriteria()
+                .andDcRenwuxhNotEqualTo(rwxh);
         List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
         return dcrws;
     }
@@ -102,14 +135,36 @@ public class DcrwService {
         List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
         return dcrws;
     }
+    public List<dcDcrw> findHistoryDcrwByGqdm(String gqdm,int rwxh){
+        dcDcrwExample dcrwExample = new dcDcrwExample();
+        dcrwExample.createCriteria()
+                .andDcRenwugqdmEqualTo(gqdm)
+                .andDcRenwuxhNotEqualTo(rwxh);
+        List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
+        return dcrws;
+    }
+
 
     public boolean deleteDcrwByRwmc(String rwmc){
         dcDcrwExample dcrwExample = new dcDcrwExample();
         dcrwExample.createCriteria()
                 .andDcRenwumcEqualTo(rwmc);
-        dcrwMapper.deleteByExample(dcrwExample);
-        return true;
+        int flag = dcrwMapper.deleteByExample(dcrwExample);
+        if (flag != 0){
+            return true;
+        }else
+            return false;
     }
 
 
+    public boolean deleteDcrwById(int id) {
+        dcDcrwExample dcrwExample = new dcDcrwExample();
+        dcrwExample.createCriteria()
+                .andIdEqualTo(id);
+        int flag = dcrwMapper.deleteByExample(dcrwExample);
+        if (flag != 0){
+            return true;
+        }else
+            return false;
+    }
 }

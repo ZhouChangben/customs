@@ -41,7 +41,9 @@ public class IndexController {
         return "userManage";
     }
     @GetMapping("/dcrwGL")
-    public String toGqgl(){
+    public String toDcrwgl(){
         return "dcrwgl";
     }
+    @GetMapping("/lsdcrw")
+    public String toHistoryDcrw(){return "lsdcrw";}
 }

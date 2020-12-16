@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--    导入jQuery的js文件-->
+    <script type="text/javascript" src="./easyUI/jquery.min.js"></script>
+    <!--    导入easyUI的js文件-->
+    <script type="text/javascript" src="./easyUI/jquery.easyui.min.js"></script>
+    <!--    导入easyUI的语言js文件-->
+    <script type="text/javascript" src="./easyUI/locale/easyui-lang-zh_CN.js"></script>
+    <!--    导入easyUI的图标css文件-->
+    <link rel="stylesheet" type="text/css" href="./easyUI/themes/icon.css">
+    <!--    导入默认模块的css文件-->
+    <link id="themeLink" rel="stylesheet" type="text/css" href="./easyUI/themes/default/easyui.css">
+</head>
+<body>
+<table id="lsrw"></table>
+</body>
+
+<script type="text/javascript">
+    $('#lsrw').datagrid({
+        //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
+        url: 'http://localhost:8080/lsdcrwgl',
+        singleSelect: true,
+        rownumbers:true,
+        columns:[
+            [
+                //展示列数据
+                {field:'dcRenwumc',title:'调查任务名称',width:100},
+                {field:'dcRenwugqdm',title:'关区代码',width:100},
+                {field:'dcRenwugqname',title:'关区名称',width:100},
+                {field:'dcDcbname',title:'调查表名称',width:100},
+                {field:'dcDcbzt',title:'状态',width:100,formatter:function (value,row,index) {
+                        return value=="1"?"<font color='green'>已提交</font>":"<font color='orange'>填报</font>"
+                    }},
+            ]
+        ],
+        pagination: true
+    })
+</script>
+</html>

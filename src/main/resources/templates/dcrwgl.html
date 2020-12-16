@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -15,11 +14,31 @@
     <!--    导入默认模块的css文件-->
     <link id="themeLink" rel="stylesheet" type="text/css" href="./easyUI/themes/default/easyui.css">
 </head>
-<body class="easyui-layout" style="padding: 5px">
+<body >
 <table id="dg"></table>
-<div id="editWin" class="easyui-window" data-options="title:'编辑',width:400,height:300,closed:true">
+<div id="editWin1" class="easyui-window" data-options="width:400,height:300,closed:true">
+    <form action="" method="post" id="editForm1">
+        <table>
+            <tr>
+                <td>调查任务名称</td>
+                <td><input type="text" id="dcrwName1" name="dcrwName" class="easyui-validatebox" data-options="required:true"></td>
+            </tr>
+
+            <tr>
+                <td>
+                    <a href="#" id="save1" class="easyui-linkbutton" data-options="iconCls:'icon-save'">发布</a>
+                    <a href="#" id="cancel1" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">取消</a>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+
+
+
+<div id="editWin" class="easyui-window" data-options="width:400,height:300,closed:true">
     <form action="" method="post" id="editForm">
-        <input type="hidden" name="id">
         <table>
             <tr>
                 <td>调查任务名称</td>
@@ -28,21 +47,13 @@
             <tr>
                 <td>关区选择</td>
                 <td>
-                    <lable><input class="gqradio" type="radio" name="isAll" value="1" checked>所有关区</lable>
-                    <lable><input class="gqradio" type="radio" name="isAll" value="0">单个关区</lable>
-                </td>
-            </tr>
-            <td></td>
-            <td>
-                <select id="dcGqdm" name="dcGqdm" >
-                    <option value="bhjbh"></option>
-                    <option value="sxzc"></option>
-                </select>
+                    <input id="dcGqmc" class="easyui-combobox" name="dcGqmc" value="请选择关区" data-options="editable:false"></tr>
             </td>
+            </tr>
             <tr>
                 <td>调查表名称</td>
                 <td>
-                    <select id="dcbName"  name="dcbName">
+                    <select id="dcbName" class="easyui-combobox"  name="dcbName" style="width:154px" data-options="editable:false">
                         <option value="0">所有任务</option>
                         <option value="1">卫生检疫</option>
                         <option value="2">动物检疫</option>
@@ -52,28 +63,60 @@
             </tr>
 
             <tr>
+                <td></td>
                 <td>
                     <a href="#" id="save" class="easyui-linkbutton" data-options="iconCls:'icon-save'">发布</a>
                     <a href="#" id="cancel" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">取消</a>
                 </td>
             </tr>
         </table>
-
     </form>
 </div>
 
 
-<!--<div data-options="region:'south',title:'历史调查任务',split:true,collapsible:false" style="height:300px;padding: 5px">
-    <table id="lsrw"></table>
-</div>-->
+
+<div id="editWin2" class="easyui-window" data-options="width:600,height:400,closed:true">
+    <form action="" method="post" id="editForm2">
+        <table>
+            <tr>
+                <td>类别</td>
+                <td>
+                    <select id="cc" class="easyui-combobox" name="dept" style="width:200px;">
+                        <option value="aa">aitem1</option>
+                        <option>bitem2</option>
+                        <option>bitem3</option>
+                        <option>ditem4</option>
+                        <option>eitem5</option>
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td>
+                    <a href="#" id="save2" class="easyui-linkbutton" data-options="iconCls:'icon-save'">提交</a>
+                    <a href="#" id="cancel2" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">取消</a>
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+
 
 <script type="text/javascript">
     $(function () {
+
+        $('#dcGqmc').combobox({
+            url:'http://localhost:8080/allsubuser',
+            valueField:'dcGqdm',
+            textField:'dcGqname'
+        });
 
         $('#dg').datagrid({
             //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
             url:'http://localhost:8080/dcrwgl',
             singleSelect:true,
+            rownumbers:true,
+            fitColumns:true,
             columns:[
                 [
                     //展示列数据
@@ -81,46 +124,30 @@
                     {field:'dcRenwugqdm',title:'关区代码',width:100},
                     {field:'dcRenwugqname',title:'关区名称',width:100},
                     {field:'dcDcbname',title:'调查表名称',width:100},
-                    {field:'dcDcbzt',title:'审批状态',width:100,formatter:function (value,row,index) {
-                            if (value!="0"){
-                                return value=="2"?"<font color='green'>通过</font>":"<font color='orange'>未审核</font>"
-                            }else {
-                                return "<font color='red'>未提交</font>"
-                            }
+                    {field:'dcDcbzt',title:'状态',width:100,formatter:function (value,row,index) {
+                            return value=="1"?"<font color='green'>已提交</font>":"<font color='orange'>填报</font>"
+
                         }},
                 ]
             ],
             pagination:true,
-            toolbar: [{
-                iconCls: 'icon-add',
-                text:"发布调查任务",
-                url:'http://localhost:8080/allsubuser',
-                handler:function () {
-                    $("#editWin").window("open");
-                    var gq=$('input[name="isAll"]:checked').val();
-                    if (gq==1){
-                        $("#dcGqdm").hide();
-                    }else if (gq==0){
-                        $("#dcGqdm").show();
+            toolbar: [
+                {
+                    iconCls: 'icon-add',
+                    text:"发布所有调查任务",
+                    id:"addBtn",
+                    handler:function () {
+                        $("#editWin1").window({title:"发布所有调查任务"});
+                        $("#editWin1").window("open");
                     }
-                    $(".gqradio").click(function () {
-                        var gq=$('input[name="isAll"]:checked').val();
-                        if (gq==1){
-                            $("#dcGqdm").hide();
-                            $("#dcGqdm").val("null");
-
-                        }else if (gq==0){
-                            $("#dcGqdm").show();
-                        }
-                    })
-                }
-            },
+                },
                 {
                     iconCls: 'icon-edit',
-                    text:"审批调查任务",
+                    text:"发布单个调查任务",
+                    url:"http://localhost:8080/allsubuser",
                     handler:function () {
-                        alert("开发中");
-                        return;
+                        $("#editWin").window({title:"发布单个调查任务"});
+                        $("#editWin").window("open");
                     }
                 },
 
@@ -132,13 +159,13 @@
                         var rows=$("#dg").datagrid("getSelections");
                         //判断是否选中数据
                         if (rows.length==0){
-                            $.messager.alert("提示","请选择一条数据","warning")
+                            $.messager.alert("提示","请选择一个任务","warning")
                             return ;
                         }
                         $.ajax({
-                            url:"http://localhost:8080/delete",
+                            url:"http://localhost:8080/deletedcrw",
                             type:"post",
-                            data:JSON.stringify({"rwxh":rows[0].rwxh}),
+                            data:JSON.stringify({"id":rows[0].id}),
                             dataType:"json",
                             contentType:"application/json",
                             success:function (data) {
@@ -156,22 +183,28 @@
                     }
                 },
 
-
-
-
             ],
+            onDblClickRow:function (index,row) {
+                $("#editWin2").window({title:row.dcbName});
+                $("#editWin2").window("open");
+            }
         });
+        var user=0;
+        if (user==1){
+            $("#addBtn").hide();
+        }
+
+
         $("#save").click(function () {
             var dcrwName=$("#dcrwName").val();
-            var isAll=$('input[name="isAll"]:checked').val();
-            var dcGqdm=$("#dcGqdm").val();
-            var dcGqmc=$('#dcGqdm option:selected').text();
-            var dcbName=$("#dcbName").val();
-            alert(JSON.stringify({dcrwName,isAll,dcGqdm,dcGqmc,dcbName}))
+            var dcGqdm=$("#dcGqmc").combobox('getValue');
+            var dcGqName=$("#dcGqmc").combobox('getText');
+            var dcbName=$("#dcbName").combobox('getText');
+            alert(JSON.stringify({dcrwName,dcGqdm,dcGqmc,dcbName}))
             $.ajax({
-                url:'http://localhost:8080/',
+                url:'http://localhost:8080/addsingledcrw',
                 type:"post",
-                data:JSON.stringify({"dcrwName":dcrwName,"isAll":isAll,"dcGqdm":dcGqdm,"dcGqmc":dcGqmc,"dcbName":dcbName}),
+                data:JSON.stringify({"dcrwName":dcrwName,"dcGqdm":dcGqdm,"dcGqName":dcGqName,"dcbName":dcbName}),
                 dataType:"json",
                 contentType:"application/json",
                 success:function (data) {
@@ -193,9 +226,44 @@
                 }
             })
         })
+
+        $("#save1").click(function () {
+            var dcrwName=$("#dcrwName1").val();
+            alert(JSON.stringify({dcrwName}))
+            $.ajax({
+                url:'http://localhost:8080/addalldcrw',
+                type:"post",
+                data:JSON.stringify({"dcrwName":dcrwName}),
+                dataType:"json",
+                contentType:"application/json",
+                success:function (data) {
+                    if(data.success==true){
+                        //表单清空
+                        $("#editForm").form("clear")
+                        //关闭窗口
+                        $("#editWin").window("close")
+                        //刷新datagrid
+                        $("#dg").datagrid("reload")
+
+                        $.messager.show({
+                            title:"提示",
+                            msg:"发布成功"
+                        })
+                    }else if (data.success==false){
+                        $.messager.alert("提示","发布失败","error")
+                    }
+                }
+            })
+        })
+
         $("#cancel").click(function () {
             $("#editForm").form("clear")
             $("#editWin").window("close")
+        })
+
+        $("#cancel1").click(function () {
+            $("#editForm1").form("clear")
+            $("#editWin1").window("close")
         })
 
     })
