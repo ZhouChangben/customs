@@ -32,23 +32,23 @@ public class DcrwController {
         dcDcrw dcrw = new dcDcrw();
         dcrw.setDcRenwuxh(rwxh);
         AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        boolean flag;
         if (addSingleDcrwDTO.getDcbName().equals("所有任务")){
-            boolean flag;
             dcrw.setDcRenwugqname(addSingleDcrwDTO.getDcGqName());
             dcrw.setDcRenwugqdm(addSingleDcrwDTO.getDcGqdm());
             dcrw.setDcRenwumc(addSingleDcrwDTO.getDcrwName());
             dcrw.setDcDcbname("卫生检疫");
-            flag = dcrwService.createSingle(dcrw);
+            /*flag = dcrwService.createSingle(dcrw);*/
             //获取当前二级关区名下的三级关区列表，将其当做参数传入service中的方法中
             List<dcUser> users = userService.getUserList(dcrw.getDcRenwugqdm(),1);
             flag = dcrwService.createSingleForSub(dcrw,users);
 
             dcrw.setDcDcbname("动物检疫");
-            flag = dcrwService.createSingle(dcrw);
+            /*flag = dcrwService.createSingle(dcrw);*/
             flag = dcrwService.createSingleForSub(dcrw,users);
 
             dcrw.setDcDcbname("植物检疫");
-            flag = dcrwService.createSingle(dcrw);
+            /*flag = dcrwService.createSingle(dcrw);*/
             flag = dcrwService.createSingleForSub(dcrw,users);
 
             addDcrwResultDTO.setSuccess(flag);
@@ -65,7 +65,7 @@ public class DcrwController {
             dcrw.setDcRenwugqdm(addSingleDcrwDTO.getDcGqdm());
             dcrw.setDcRenwumc(addSingleDcrwDTO.getDcrwName());
             List<dcUser> users = userService.getUserList(dcrw.getDcRenwugqdm(),1);
-            boolean flag = dcrwService.createSingle(dcrw);
+            /*boolean flag = dcrwService.createSingle(dcrw);*/
             flag = dcrwService.createSingleForSub(dcrw,users);
 
             addDcrwResultDTO.setSuccess(flag);
@@ -121,7 +121,7 @@ public class DcrwController {
     //快捷删除的方法
     @GetMapping("deletedcrw")
     public String deleteByRwmc(){
-        dcrwService.deleteDcrwByRwmc("小车");
+        dcrwService.deleteDcrwByRwmc("2020第一次");
         return "redirect:/";
     }
 

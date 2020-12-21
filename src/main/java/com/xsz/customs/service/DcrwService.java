@@ -1,16 +1,11 @@
 package com.xsz.customs.service;
 
-import com.xsz.customs.mapper.dcDcrwExtMapper;
-import com.xsz.customs.mapper.dcDcrwMapper;
-import com.xsz.customs.mapper.dcUserExtMapper;
-import com.xsz.customs.mapper.dcUserMapper;
-import com.xsz.customs.model.dcDcrw;
-import com.xsz.customs.model.dcDcrwExample;
-import com.xsz.customs.model.dcUser;
-import com.xsz.customs.model.dcUserExample;
+import com.xsz.customs.mapper.*;
+import com.xsz.customs.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,10 +22,23 @@ public class DcrwService {
     @Autowired
     private dcUserExtMapper userExtMapper;
 
+    @Autowired
+    private dcDwjyMapper dcDwjyMapper;
+
+    @Autowired
+    private dcWsjyMapper dcWsjyMapper;
+
+    @Autowired
+    private dcZwjyMapper dcZwjyMapper;
+
+
     //为每一个关区生成三个调查任务
     public boolean createAll(dcDcrw dcrw){
         dcUserExample userExample = new dcUserExample();
         dcDcrwExample dcrwExample = new dcDcrwExample();
+        dcZwjy zwjy = new dcZwjy();
+        dcDwjy dwjy = new dcDwjy();
+        dcWsjy wsjy = new dcWsjy();
         dcrwExample.createCriteria()
                 .andDcRenwumcEqualTo(dcrw.getDcRenwumc());
         List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
@@ -59,25 +67,62 @@ public class DcrwService {
                     dcrwMapper.insert(dcdcrw);
                 }
             }
+            //除了插入dcrw表以外还需要为每一个调查表自己的数据库表创建一个自己的字段
+            dcDcrwExample dcrwExample1 = new dcDcrwExample();
+            dcrwExample1.createCriteria()
+                    .andDcRenwumcEqualTo(dcrw.getDcRenwumc());
+            List<dcDcrw> newDcrws = dcrwMapper.selectByExample(dcrwExample1);
+            for (dcDcrw dcDcrw : newDcrws) {
+                if (dcDcrw.getDcDcbname().equals("动物检疫")){
+                    dwjy.setDcRenwugqdm(dcDcrw.getDcRenwugqdm());
+                    dwjy.setDcRenwugqname(dcDcrw.getDcRenwugqname());
+                    dwjy.setDcRenwuid(dcDcrw.getId());
+                    dwjy.setDcRenwumc(dcDcrw.getDcRenwumc());
+                    dwjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
+                    dcDwjyMapper.insert(dwjy);
+                }
+                if (dcDcrw.getDcDcbname().equals("植物检疫")){
+                    zwjy.setDcRenwugqdm(dcDcrw.getDcRenwugqdm());
+                    zwjy.setDcRenwugqname(dcDcrw.getDcRenwugqname());
+                    zwjy.setDcRenwuid(dcDcrw.getId());
+                    zwjy.setDcRenwumc(dcDcrw.getDcRenwumc());
+                    zwjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
+                    dcZwjyMapper.insert(zwjy);
+                }
+                if (dcDcrw.getDcDcbname().equals("卫生检疫")){
+                    wsjy.setDcRenwugqdm(dcDcrw.getDcRenwugqdm());
+                    wsjy.setDcRenwugqname(dcDcrw.getDcRenwugqname());
+                    wsjy.setDcRenwuid(dcDcrw.getId());
+                    wsjy.setDcRenwumc(dcDcrw.getDcRenwumc());
+                    wsjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
+                    dcWsjyMapper.insert(wsjy);
+                }
+            }
+
             return true;
         }
        return false;
     }
 
-    //单独为一个关区生成调查任务
-    public boolean createSingle(dcDcrw dcrw){
+    //单独为一个关区生成调查任务，其实是一个失误，按道理来说应该和下面的方法合并
+    /*public boolean createSingle(dcDcrw dcrw){
         int flag = dcrwMapper.insert(dcrw);
         if (flag != 0){
             return true;
         }else
             return false;
-    }
+    }*/
 
     //当为二级海关生成单独的任务时，还要为其名下的三级海关生成任务
     public boolean createSingleForSub(dcDcrw dcrw,List<dcUser> users){
-        int flag = 1;
+        int flag = dcrwMapper.insert(dcrw);
+        dcDcrwExample dcrwExample = new dcDcrwExample();
         String dcRenwumc = dcrw.getDcRenwumc();
         String dcdcbname = dcrw.getDcDcbname();
+        dcZwjy zwjy = new dcZwjy();
+        dcDwjy dwjy = new dcDwjy();
+        dcWsjy wsjy = new dcWsjy();
+
         dcDcrw dcrw2 = new dcDcrw();
         dcrw2.setDcRenwuxh(dcrw.getDcRenwuxh());
         for (dcUser user : users) {
@@ -85,8 +130,37 @@ public class DcrwService {
             dcrw2.setDcDcbname(dcdcbname);
             dcrw2.setDcRenwugqdm(user.getDcGqdm());
             dcrw2.setDcRenwugqname(user.getDcGqname());
-            /*System.out.println(dcrw2.getDcRenwugqname());*/
             flag = dcrwMapper.insert(dcrw2);
+        }
+
+        dcrwExample.createCriteria()
+                .andDcRenwumcEqualTo(dcRenwumc);
+        List<dcDcrw> newDcrws = dcrwMapper.selectByExample(dcrwExample);
+        for (dcDcrw dcDcrw : newDcrws) {
+            if (dcDcrw.getDcDcbname().equals("动物检疫")){
+                dwjy.setDcRenwugqdm(dcDcrw.getDcRenwugqdm());
+                dwjy.setDcRenwugqname(dcDcrw.getDcRenwugqname());
+                dwjy.setDcRenwuid(dcDcrw.getId());
+                dwjy.setDcRenwumc(dcDcrw.getDcRenwumc());
+                dwjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
+                dcDwjyMapper.insert(dwjy);
+            }
+            if (dcDcrw.getDcDcbname().equals("植物检疫")){
+                zwjy.setDcRenwugqdm(dcDcrw.getDcRenwugqdm());
+                zwjy.setDcRenwugqname(dcDcrw.getDcRenwugqname());
+                zwjy.setDcRenwuid(dcDcrw.getId());
+                zwjy.setDcRenwumc(dcDcrw.getDcRenwumc());
+                zwjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
+                dcZwjyMapper.insert(zwjy);
+            }
+            if (dcDcrw.getDcDcbname().equals("卫生检疫")){
+                wsjy.setDcRenwugqdm(dcDcrw.getDcRenwugqdm());
+                wsjy.setDcRenwugqname(dcDcrw.getDcRenwugqname());
+                wsjy.setDcRenwuid(dcDcrw.getId());
+                wsjy.setDcRenwumc(dcDcrw.getDcRenwumc());
+                wsjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
+                dcWsjyMapper.insert(wsjy);
+            }
         }
         if (flag != 0){
             return true;
@@ -114,7 +188,7 @@ public class DcrwService {
         dcrwExample.createCriteria()
                 .andDcRenwuxhNotEqualTo(rwxh);
         List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
-        return dcrws;
+        return dcrws.subList(1,dcrws.size());
     }
 
     //这个方法是用来给调查任务列表分页的
