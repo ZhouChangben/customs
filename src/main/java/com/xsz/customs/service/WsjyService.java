@@ -22,6 +22,7 @@ public class WsjyService {
     @Autowired
     private dcUserMapper userMapper;
 
+
     public boolean updateTable(dcWsjy dcwsjy){
 
         dcWsjyExample wsjyExample = new dcWsjyExample();
@@ -201,5 +202,18 @@ public class WsjyService {
             return false;
         else
             return true;
+    }
+
+    //将历史任务中卫生检疫表的表项选中后插入到当前任务中
+    public boolean historyOnceMore(List<Integer> ids,int renwuid){
+        dcDcrw dcrw = new dcDcrw();
+        dcWsjy wsjy = new dcWsjy();
+        dcrw = dcrwMapper.selectByPrimaryKey(renwuid);
+        for (int id : ids) {
+            wsjy = wsjyMapper.selectByPrimaryKey(id);
+            wsjy.setDcRenwumc(dcrw.getDcRenwumc());
+            wsjyMapper.insert(wsjy);
+        }
+        return true;
     }
 }

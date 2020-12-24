@@ -31,7 +31,7 @@ public class DcrwController {
         int rwxh = dcrwService.findLatestMission();
         dcDcrw dcrw = new dcDcrw();
         dcrw.setDcRenwuxh(rwxh);
-        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        ResultDTO resultDTO = new ResultDTO();
         boolean flag;
         if (addSingleDcrwDTO.getDcbName().equals("所有任务")){
             dcrw.setDcRenwugqname(addSingleDcrwDTO.getDcGqName());
@@ -51,12 +51,12 @@ public class DcrwController {
             /*flag = dcrwService.createSingle(dcrw);*/
             flag = dcrwService.createSingleForSub(dcrw,users);
 
-            addDcrwResultDTO.setSuccess(flag);
+            resultDTO.setSuccess(flag);
             if (flag == true){
-                addDcrwResultDTO.setMessage("添加单个任务成功");
+                resultDTO.setMessage("添加单个任务成功");
             }
             if (flag == false){
-                addDcrwResultDTO.setMessage("添加单个任务失败");
+                resultDTO.setMessage("添加单个任务失败");
             }
         }
         else {
@@ -68,14 +68,14 @@ public class DcrwController {
             /*boolean flag = dcrwService.createSingle(dcrw);*/
             flag = dcrwService.createSingleForSub(dcrw,users);
 
-            addDcrwResultDTO.setSuccess(flag);
+            resultDTO.setSuccess(flag);
             if (flag == true){
-                addDcrwResultDTO.setMessage("添加单个任务成功");
+                resultDTO.setMessage("添加单个任务成功");
             }else{
-                addDcrwResultDTO.setMessage("添加单个任务失败");
+                resultDTO.setMessage("添加单个任务失败");
             }
         }
-        return addDcrwResultDTO;
+        return resultDTO;
     }
 
     //添加全体关区任务
@@ -87,16 +87,16 @@ public class DcrwController {
         String dcrwName = addAllDcrwDTO.getDcrwName();
         dcDcrw dcrw = new dcDcrw();
         dcrw.setDcRenwumc(dcrwName);
-        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        ResultDTO resultDTO = new ResultDTO();
         boolean flag = dcrwService.createAll(dcrw);
-        addDcrwResultDTO.setSuccess(flag);
+        resultDTO.setSuccess(flag);
         if (flag == true){
-            addDcrwResultDTO.setMessage("添加全体任务成功");
+            resultDTO.setMessage("添加全体任务成功");
         }
         else {
-            addDcrwResultDTO.setMessage("添加全体任务失败");
+            resultDTO.setMessage("添加全体任务失败");
         }
-        return addDcrwResultDTO;
+        return resultDTO;
     }
 
     //删除任务（选中然后删除）
@@ -105,17 +105,17 @@ public class DcrwController {
     public Object deleteMission(@RequestBody DeleteDcrwDTO deleteDcrwDTO,
                          HttpServletRequest request,
                          HttpServletResponse response){
-        DeleteUserResultDTO deleteUserResultDTO = new DeleteUserResultDTO();
+        ResultDTO resultDTO = new ResultDTO();
         int rwxh = deleteDcrwDTO.getId();
         boolean flag = dcrwService.deleteDcrwById(rwxh);
-        deleteUserResultDTO.setSuccess(flag);
+        resultDTO.setSuccess(flag);
         if (flag == true){
-            deleteUserResultDTO.setMessage("删除任务成功");
+            resultDTO.setMessage("删除任务成功");
         }
         else {
-            deleteUserResultDTO.setMessage("删除任务失败");
+            resultDTO.setMessage("删除任务失败");
         }
-        return deleteUserResultDTO;
+        return resultDTO;
     }
 
     //快捷删除的方法
@@ -226,13 +226,13 @@ public class DcrwController {
                            HttpServletResponse response){
         int id = withdrawDTO.getRenwuid();
         boolean flag = dcrwService.modifyStatusToNoSubmit(id);
-        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
-        addDcrwResultDTO.setSuccess(flag);
+        ResultDTO resultDTO = new ResultDTO();
+        resultDTO.setSuccess(flag);
         if (flag == true)
-            addDcrwResultDTO.setMessage("修改状态成功");
+            resultDTO.setMessage("修改状态成功");
         else
-            addDcrwResultDTO.setMessage("修改状态失败");
-        return addDcrwResultDTO;
+            resultDTO.setMessage("修改状态失败");
+        return resultDTO;
     }
 
 
@@ -251,12 +251,14 @@ public class DcrwController {
                            HttpServletResponse response){
         int id = withdrawDTO.getRenwuid();
         boolean flag = dcrwService.modifyStatusToAccept(id);
-        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
-        addDcrwResultDTO.setSuccess(flag);
+        ResultDTO resultDTO = new ResultDTO();
+        resultDTO.setSuccess(flag);
         if (flag == true)
-            addDcrwResultDTO.setMessage("修改状态成功");
+            resultDTO.setMessage("修改状态成功");
         else
-            addDcrwResultDTO.setMessage("修改状态失败");
-        return addDcrwResultDTO;
+            resultDTO.setMessage("修改状态失败");
+        return resultDTO;
     }
+
+
 }

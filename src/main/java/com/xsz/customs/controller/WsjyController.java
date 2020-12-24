@@ -36,19 +36,19 @@ public class WsjyController {
                           HttpServletRequest request,
                           HttpServletResponse response){
         int renwuid = (int)request.getSession().getAttribute("rwid");
-        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        ResultDTO resultDTO = new ResultDTO();
         dcWsjy wsjy = new dcWsjy();
         wsjy = wsjyService.transformDTOToWsjy(wsjyDTO);
         wsjy.setDcRenwuid(renwuid);
         boolean flag = wsjyService.insertNewTable(wsjy);
-        addDcrwResultDTO.setSuccess(flag);
+        resultDTO.setSuccess(flag);
         if (flag == true){
-            addDcrwResultDTO.setMessage("插入动物检疫表格成功");
+            resultDTO.setMessage("插入动物检疫表格成功");
         }
         else {
-            addDcrwResultDTO.setMessage("插入动物检疫表格失败");
+            resultDTO.setMessage("插入动物检疫表格失败");
         }
-        return addDcrwResultDTO;
+        return resultDTO;
     }
 
     //将数据库中的数据写在未提交的表中
@@ -99,19 +99,19 @@ public class WsjyController {
     public Object moodifyWsjy(@RequestBody WsjyDTO wsjyDTO,
                               HttpServletRequest request,
                               HttpServletResponse response){
-        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        ResultDTO resultDTO = new ResultDTO();
         dcWsjy wsjy = new dcWsjy();
 
         wsjy = wsjyService.transformDTOToWsjy(wsjyDTO);
         boolean flag = wsjyService.updateWsjy(wsjy);
-        addDcrwResultDTO.setSuccess(flag);
+        resultDTO.setSuccess(flag);
         if (flag == true){
-            addDcrwResultDTO.setMessage("修改卫生检疫表格成功");
+            resultDTO.setMessage("修改卫生检疫表格成功");
         }
         else {
-            addDcrwResultDTO.setMessage("修改卫生检疫表格失败");
+            resultDTO.setMessage("修改卫生检疫表格失败");
         }
-        return addDcrwResultDTO;
+        return resultDTO;
     }
 
     //删除卫生检疫表项
@@ -120,18 +120,17 @@ public class WsjyController {
     public Object deleteWsjy(@RequestBody ShowTableDTO showTableDTO,
                             HttpServletRequest request,
                             HttpServletResponse response){
-        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        ResultDTO resultDTO = new ResultDTO();
         int id = showTableDTO.getId();
-        System.out.println(id);
         boolean flag = wsjyService.deleteWsjyById(id);
-        addDcrwResultDTO.setSuccess(flag);
+        resultDTO.setSuccess(flag);
         if (flag == true){
-            addDcrwResultDTO.setMessage("删除卫生检疫表格成功");
+            resultDTO.setMessage("删除卫生检疫表格成功");
         }
         else {
-            addDcrwResultDTO.setMessage("删除卫生检疫表格失败");
+            resultDTO.setMessage("删除卫生检疫表格失败");
         }
-        return addDcrwResultDTO;
+        return resultDTO;
     }
 
     //提交卫生检疫表,DTO是借用的
@@ -139,19 +138,37 @@ public class WsjyController {
     @RequestMapping(value = "submit",method = RequestMethod.POST)
     public Object submit(HttpServletRequest request,
                          HttpServletResponse response){
-        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        ResultDTO resultDTO = new ResultDTO();
         int rwid = (int)request.getSession().getAttribute("rwid");
-        System.out.println(rwid);
         boolean flag = dcrwService.modifyStatusToSubmit(rwid);
-        addDcrwResultDTO.setSuccess(flag);
+        resultDTO.setSuccess(flag);
         if (flag == true){
-            addDcrwResultDTO.setMessage("删除卫生检疫表格成功");
+            resultDTO.setMessage("删除卫生检疫表格成功");
         }
         else {
-            addDcrwResultDTO.setMessage("删除卫生检疫表格失败");
+            resultDTO.setMessage("删除卫生检疫表格失败");
         }
-        return addDcrwResultDTO;
+        return resultDTO;
+    }
 
+    //将历史任务中卫生检疫表的表项选中后插入到当前任务中
+    @ResponseBody
+    @RequestMapping(value = "historyOnceMore",method = RequestMethod.POST)
+    public Object historyOnceMoreWj(@RequestBody HistoryOnceMoreDTO historyOnceMoreDTO,
+                                    HttpServletRequest request,
+                                    HttpServletResponse response){
+        ResultDTO resultDTO = new ResultDTO();
+        List<Integer> ids = historyOnceMoreDTO.getIds();
+        int renwuid = historyOnceMoreDTO.getRenwuid();
+        boolean flag = wsjyService.historyOnceMore(ids,renwuid);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("删除卫生检疫表格成功");
+        }
+        else {
+            resultDTO.setMessage("删除卫生检疫表格失败");
+        }
+        return resultDTO;
     }
 
 }

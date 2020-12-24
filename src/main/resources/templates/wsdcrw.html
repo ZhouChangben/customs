@@ -399,8 +399,11 @@
                                     $.messager.show({
                                         title: "提示",
                                         msg: "提交成功"
-                                    })
-                                    window.location.href="http://localhost:8080/dcrwGL"
+                                    });
+                                    var jq=top.jQuery;
+                                    jq("#tt").tabs('close',"卫生检疫");
+                                    var tab = jq("#tt").tabs('getTab',"调查任务管理");
+                                    tab.panel('refresh','http://localhost:8080/dcrwGL');
                                 } else {
                                     $.messager.alert("提示", "提交失败", "error");
                                 }

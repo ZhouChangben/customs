@@ -55,6 +55,7 @@ public class DcrwService {
                     dcdcrw.setDcRenwumc(dcrw.getDcRenwumc());
                     dcdcrw.setDcRenwugqdm(user.getDcGqdm());
                     dcdcrw.setDcRenwugqname(user.getDcGqname());
+                    dcdcrw.setDcDcbzt("未提交");
                     if (i == 0){
                         dcdcrw.setDcDcbname("卫生检疫");
                     }
@@ -125,6 +126,7 @@ public class DcrwService {
 
         dcDcrw dcrw2 = new dcDcrw();
         dcrw2.setDcRenwuxh(dcrw.getDcRenwuxh());
+        dcrw2.setDcDcbzt("未提交");
         for (dcUser user : users) {
             dcrw2.setDcRenwumc(dcRenwumc);
             dcrw2.setDcDcbname(dcdcbname);
@@ -297,4 +299,6 @@ public class DcrwService {
         }
         return false;
     }
+
+
 }
