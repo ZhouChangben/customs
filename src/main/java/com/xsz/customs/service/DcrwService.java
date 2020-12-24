@@ -36,9 +36,9 @@ public class DcrwService {
     public boolean createAll(dcDcrw dcrw){
         dcUserExample userExample = new dcUserExample();
         dcDcrwExample dcrwExample = new dcDcrwExample();
-        dcZwjy zwjy = new dcZwjy();
+        /*dcZwjy zwjy = new dcZwjy();
         dcDwjy dwjy = new dcDwjy();
-        dcWsjy wsjy = new dcWsjy();
+        dcWsjy wsjy = new dcWsjy();*/
         dcrwExample.createCriteria()
                 .andDcRenwumcEqualTo(dcrw.getDcRenwumc());
         List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
@@ -68,7 +68,7 @@ public class DcrwService {
                 }
             }
             //除了插入dcrw表以外还需要为每一个调查表自己的数据库表创建一个自己的字段
-            dcDcrwExample dcrwExample1 = new dcDcrwExample();
+            /*dcDcrwExample dcrwExample1 = new dcDcrwExample();
             dcrwExample1.createCriteria()
                     .andDcRenwumcEqualTo(dcrw.getDcRenwumc());
             List<dcDcrw> newDcrws = dcrwMapper.selectByExample(dcrwExample1);
@@ -97,7 +97,7 @@ public class DcrwService {
                     wsjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
                     dcWsjyMapper.insert(wsjy);
                 }
-            }
+            }*/
 
             return true;
         }
@@ -133,7 +133,7 @@ public class DcrwService {
             flag = dcrwMapper.insert(dcrw2);
         }
 
-        dcrwExample.createCriteria()
+        /*dcrwExample.createCriteria()
                 .andDcRenwumcEqualTo(dcRenwumc);
         List<dcDcrw> newDcrws = dcrwMapper.selectByExample(dcrwExample);
         for (dcDcrw dcDcrw : newDcrws) {
@@ -161,7 +161,7 @@ public class DcrwService {
                 wsjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
                 dcWsjyMapper.insert(wsjy);
             }
-        }
+        }*/
         if (flag != 0){
             return true;
         }else
@@ -240,5 +240,61 @@ public class DcrwService {
             return true;
         }else
             return false;
+    }
+
+    public boolean modifyStatusToNoSubmit(int renwuid){
+        //规定0,1,2分别代表状态“已接收”、“已提交”、“未提交”
+        dcDcrw exitDcrw = dcrwMapper.selectByPrimaryKey(renwuid);
+        if (exitDcrw.getDcDcbzt().equals("已提交")){
+            dcDcrw dcrw = new dcDcrw();
+            dcDcrwExample example = new dcDcrwExample();
+            example.createCriteria()
+                    .andIdEqualTo(renwuid);
+            dcrw.setDcDcbzt("未提交");
+            int flag = dcrwMapper.updateByExampleSelective(dcrw,example);
+            if (flag == 1){
+                return true;
+            }
+            else
+                return false;
+        }
+        return false;
+    }
+
+    public boolean modifyStatusToAccept(int renwuid){
+        //规定0,1,2分别代表状态“已接收”、“已提交”、“未提交”
+        dcDcrw exitDcrw = dcrwMapper.selectByPrimaryKey(renwuid);
+        if (exitDcrw.getDcDcbzt().equals("已提交")){
+            dcDcrw dcrw = new dcDcrw();
+            dcDcrwExample example = new dcDcrwExample();
+            example.createCriteria()
+                    .andIdEqualTo(renwuid);
+            dcrw.setDcDcbzt("接受");
+            int flag = dcrwMapper.updateByExampleSelective(dcrw,example);
+            if (flag == 1){
+                return true;
+            }
+            else
+                return false;
+        }
+        return false;
+    }
+
+    public boolean modifyStatusToSubmit(int renwuid){
+        dcDcrw exitDcrw = dcrwMapper.selectByPrimaryKey(renwuid);
+        if (exitDcrw.getDcDcbzt().equals("未提交")){
+            dcDcrw dcrw = new dcDcrw();
+            dcDcrwExample example = new dcDcrwExample();
+            example.createCriteria()
+                    .andIdEqualTo(renwuid);
+            dcrw.setDcDcbzt("已提交");
+            int flag = dcrwMapper.updateByExampleSelective(dcrw,example);
+            if (flag == 1){
+                return true;
+            }
+            else
+                return false;
+        }
+        return false;
     }
 }

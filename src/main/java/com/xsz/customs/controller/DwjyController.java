@@ -45,7 +45,7 @@ public class DwjyController {
         return addDcrwResultDTO;
     }
 
-    @ResponseBody
+    /*@ResponseBody
     @RequestMapping(value = "showTable",method = RequestMethod.POST)
     public Object showTable(@RequestBody ShowTableDTO showTableDTO,
                             HttpServletRequest request,
@@ -70,6 +70,6 @@ public class DwjyController {
             return wsjyDTO;
         }
         return null;
-    }
+    }*/
 
 }

@@ -219,4 +219,44 @@ public class DcrwController {
         return latestMissionDTO;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "withdraw",method = RequestMethod.POST)
+    public Object withdraw(@RequestBody WithdrawDTO withdrawDTO,
+                           HttpServletRequest request,
+                           HttpServletResponse response){
+        int id = withdrawDTO.getRenwuid();
+        boolean flag = dcrwService.modifyStatusToNoSubmit(id);
+        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        addDcrwResultDTO.setSuccess(flag);
+        if (flag == true)
+            addDcrwResultDTO.setMessage("修改状态成功");
+        else
+            addDcrwResultDTO.setMessage("修改状态失败");
+        return addDcrwResultDTO;
+    }
+
+
+    @RequestMapping(value = "/wsdcrw",method = RequestMethod.GET)
+    public String toWsjy(@RequestParam(value = "rwid") Integer rwid,
+                       HttpServletRequest request,
+                       HttpServletResponse response){
+        request.getSession().setAttribute("rwid",rwid);
+        return "wsdcrw";
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "accept",method = RequestMethod.POST)
+    public Object accept(@RequestBody WithdrawDTO withdrawDTO,
+                           HttpServletRequest request,
+                           HttpServletResponse response){
+        int id = withdrawDTO.getRenwuid();
+        boolean flag = dcrwService.modifyStatusToAccept(id);
+        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        addDcrwResultDTO.setSuccess(flag);
+        if (flag == true)
+            addDcrwResultDTO.setMessage("修改状态成功");
+        else
+            addDcrwResultDTO.setMessage("修改状态失败");
+        return addDcrwResultDTO;
+    }
 }

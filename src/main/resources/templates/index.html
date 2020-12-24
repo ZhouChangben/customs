@@ -82,7 +82,9 @@
             var title=$(this).text();
             //判断是否存在指定标题的选项卡
             if ($("#tt").tabs("exists",title)){
-                $("#tt").tabs("select",title)
+                $("#tt").tabs("select",title);
+                var tab = $('#tt').tabs('getSelected');
+                $("#tt").tabs("update", {tab:tab,options:{title:title, href:"dcrwgl.html"}})
             }else{
                 $("#tt").tabs("add",{
                     title:title,

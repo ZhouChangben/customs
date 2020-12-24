@@ -132,7 +132,7 @@ DROP TABLE IF EXISTS `dc_wsjy`;
 CREATE TABLE `dc_wsjy` (
   `Id` int(11) NOT NULL auto_increment,
   `dc_renwumc` varchar(50) default NULL,
-  `dc_renwuid` int(11) default NULL UNIQUE,
+  `dc_renwuid` int(11) default NULL,
   `dc_renwuxh` int(11) default '1',
   `dc_renwugqdm` varchar(8) default NULL,   
   `dc_renwugqname` varchar(30) default NULL,  
@@ -160,6 +160,7 @@ CREATE TABLE `dc_wsjy` (
   `wj_lianldh` varchar(30) default NULL,
   `wj_fuzeren` varchar(30) default NULL,
   `wj_fuzerendh` varchar(30) default NULL,
+  `wj_danwei` varchar(30) default NULL,
   `wj_by1` varchar(100) default NULL,
   `wj_by2` varchar(100) default NULL,
   `wj_by3` varchar(100) default NULL,
@@ -296,7 +297,7 @@ DROP TABLE IF EXISTS `dc_dwjy`;
 CREATE TABLE `dc_dwjy` (
   `Id` int(11) NOT NULL auto_increment,
   `dc_renwumc` varchar(50) default NULL,
-  `dc_renwuid` int(11) default NULL UNIQUE,
+  `dc_renwuid` int(11) default NULL,
   `dc_renwuxh` int(11) default '1',
   `dc_renwugqdm` varchar(8) default NULL,   
   `dc_renwugqname` varchar(30) default NULL,  
@@ -448,7 +449,7 @@ DROP TABLE IF EXISTS `dc_zwjy`;
 CREATE TABLE `dc_zwjy` (
   `Id` int(11) NOT NULL auto_increment,
   `dc_renwumc` varchar(50) default NULL,
-  `dc_renwuid` int(11) default NULL UNIQUE,
+  `dc_renwuid` int(11) default NULL,
   `dc_renwuxh` int(11) default '1',
   `dc_renwugqdm` varchar(8) default NULL,   
   `dc_renwugqname` varchar(30) default NULL,  

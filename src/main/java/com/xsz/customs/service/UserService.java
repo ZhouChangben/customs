@@ -41,7 +41,7 @@ public class UserService {
         if (users.size() == 0){
             //这里的user还不能直接插入，需要判断一下用户等级然后加入数据库中
             String gqdm = user.getDcGqdm();
-            System.out.println(gqdm+"  xxc");
+            /*System.out.println(gqdm+"  xxc");*/
             String gqdj = gqdm.substring(4);
             int dj = Integer.parseInt(gqdj) + 1;
             user.setDcGqdj(dj);
@@ -197,7 +197,7 @@ public class UserService {
 
     public String getMaxSubUserDm(String gqdm){
         String frontdm = gqdm.substring(0,4);
-        System.out.println(frontdm);
+        /*System.out.println(frontdm);*/
         int maxNum = userExtMapper.GetTheNextGqdm(frontdm+"%");
         String reardm = Integer.toString(maxNum);
         System.out.println(frontdm+reardm);
