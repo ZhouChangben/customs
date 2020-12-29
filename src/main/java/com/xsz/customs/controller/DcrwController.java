@@ -2,8 +2,10 @@ package com.xsz.customs.controller;
 
 import com.xsz.customs.dto.*;
 import com.xsz.customs.model.dcDcrw;
+import com.xsz.customs.model.dcLog;
 import com.xsz.customs.model.dcUser;
 import com.xsz.customs.service.DcrwService;
+import com.xsz.customs.service.LogService;
 import com.xsz.customs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,12 +24,22 @@ public class DcrwController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LogService logService;
+
     //添加单个关区任务
     @ResponseBody
     @RequestMapping(value = "addsingledcrw",method = RequestMethod.POST)
     public Object addSingleDcrw(@RequestBody AddSingleDcrwDTO addSingleDcrwDTO,
                           HttpServletRequest request,
                           HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("添加单个任务"+addSingleDcrwDTO.getDcrwName());
+        logService.InsertLog(log);
+
         int rwxh = dcrwService.findLatestMission();
         dcDcrw dcrw = new dcDcrw();
         dcrw.setDcRenwuxh(rwxh);
@@ -84,6 +96,14 @@ public class DcrwController {
     public Object addAllDcrw(@RequestBody AddAllDcrwDTO addAllDcrwDTO,
                              HttpServletRequest request,
                              HttpServletResponse response){
+
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("添加全体任务"+addAllDcrwDTO.getDcrwName());
+        logService.InsertLog(log);
+
         String dcrwName = addAllDcrwDTO.getDcrwName();
         dcDcrw dcrw = new dcDcrw();
         dcrw.setDcRenwumc(dcrwName);
@@ -105,6 +125,13 @@ public class DcrwController {
     public Object deleteMission(@RequestBody DeleteDcrwDTO deleteDcrwDTO,
                          HttpServletRequest request,
                          HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("删除一条达调查任务");
+        logService.InsertLog(log);
+
         ResultDTO resultDTO = new ResultDTO();
         int rwxh = deleteDcrwDTO.getId();
         boolean flag = dcrwService.deleteDcrwById(rwxh);
@@ -118,12 +145,12 @@ public class DcrwController {
         return resultDTO;
     }
 
-    //快捷删除的方法
+    /*//快捷删除的方法
     @GetMapping("deletedcrw")
     public String deleteByRwmc(){
         dcrwService.deleteDcrwByRwmc("2020第一次");
         return "redirect:/";
-    }
+    }*/
 
     //显示当前任务(高级关区要显示自己的子关区的任务）
     @ResponseBody
@@ -224,6 +251,13 @@ public class DcrwController {
     public Object withdraw(@RequestBody WithdrawDTO withdrawDTO,
                            HttpServletRequest request,
                            HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("撤回提交的任务");
+        logService.InsertLog(log);
+
         int id = withdrawDTO.getRenwuid();
         boolean flag = dcrwService.modifyStatusToNoSubmit(id);
         ResultDTO resultDTO = new ResultDTO();
@@ -244,11 +278,34 @@ public class DcrwController {
         return "wsdcrw";
     }
 
+    @RequestMapping(value = "/dwdcrw",method = RequestMethod.GET)
+    public String toDwjy(@RequestParam(value = "rwid") Integer rwid,
+                         HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().setAttribute("rwid",rwid);
+        return "dwdcrw";
+    }
+
+    @RequestMapping(value = "/zwdcrw",method = RequestMethod.GET)
+    public String toZwjy(@RequestParam(value = "rwid") Integer rwid,
+                         HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().setAttribute("rwid",rwid);
+        return "zwdcrw";
+    }
+
     @ResponseBody
     @RequestMapping(value = "accept",method = RequestMethod.POST)
     public Object accept(@RequestBody WithdrawDTO withdrawDTO,
                            HttpServletRequest request,
                            HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("接受了调查任务");
+        logService.InsertLog(log);
+
         int id = withdrawDTO.getRenwuid();
         boolean flag = dcrwService.modifyStatusToAccept(id);
         ResultDTO resultDTO = new ResultDTO();

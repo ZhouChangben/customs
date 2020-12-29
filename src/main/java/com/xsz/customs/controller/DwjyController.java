@@ -2,6 +2,9 @@ package com.xsz.customs.controller;
 
 import com.xsz.customs.dto.*;
 import com.xsz.customs.model.dcDwjy;
+import com.xsz.customs.model.dcDwjy;
+import com.xsz.customs.service.*;
+import com.xsz.customs.service.DwjyService;
 import com.xsz.customs.service.DwjyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Controller
 public class DwjyController {
@@ -19,57 +23,153 @@ public class DwjyController {
     private DwjyService dwjyService;
 
     @Autowired
-    private DwjyService zwjyService;
+    private ZwjyService zwjyService;
 
     @Autowired
-    private DwjyService wsjyService;
+    private DcrwService dcrwService;
+
+
 
     @ResponseBody
     @RequestMapping(value = "addDwjy",method = RequestMethod.POST)
     public Object addDwjy(@RequestBody DwjyDTO dwjyDTO,
                           HttpServletRequest request,
                           HttpServletResponse response){
-        AddDcrwResultDTO addDcrwResultDTO = new AddDcrwResultDTO();
+        int renwuid = (int)request.getSession().getAttribute("rwid");
+        ResultDTO resultDTO = new ResultDTO();
         dcDwjy dwjy = new dcDwjy();
-        //写完DwjyDTO以后写
+        dwjy = dwjyService.transformDTOToDwjy(dwjyDTO);
 
-
+        dwjy.setDcRenwuid(renwuid);
         boolean flag = dwjyService.insertNewTable(dwjy);
-        addDcrwResultDTO.setSuccess(flag);
+        resultDTO.setSuccess(flag);
         if (flag == true){
-            addDcrwResultDTO.setMessage("插入动物检疫表格成功");
+            resultDTO.setMessage("插入动物检疫表格成功");
         }
         else {
-            addDcrwResultDTO.setMessage("插入动物检疫表格失败");
+            resultDTO.setMessage("插入动物检疫表格失败");
         }
-        return addDcrwResultDTO;
+        return resultDTO;
     }
 
-    /*@ResponseBody
-    @RequestMapping(value = "showTable",method = RequestMethod.POST)
+    //将数据库中的数据写在未提交的表中
+    @ResponseBody
+    @RequestMapping(value = "showDwjyTable",method = RequestMethod.POST)
     public Object showTable(@RequestBody ShowTableDTO showTableDTO,
                             HttpServletRequest request,
                             HttpServletResponse response){
+        DwjyDTO dwjyDTO = new DwjyDTO();
+        int id = showTableDTO.getId();
+        dcDwjy dwjy = dwjyService.findDwjyById(id);
+        dwjyDTO = dwjyService.transformDwjyToDTO(dwjy);
+        return dwjyDTO;
+    }
 
-        int renwuid = showTableDTO.getRenwuid();
-        if (showTableDTO.getDcbName().equals("动物检疫")){
-            DwjyDTO dwjyDTO = new DwjyDTO();
-            dcDwjy dwjy = dwjyService.getDwjyByRenwuid(renwuid);
-            //把动物检疫表和DTO整合起来
+    //展示当前任务下的动物检疫的所有表项,也许将来要把所有的调查表都整合在这个方法里
+    @ResponseBody
+    @RequestMapping(value = "dwdcrw",method = RequestMethod.POST)
+    public Object showDwjys(Integer page,
+                            Integer rows,
+                            HttpServletRequest request,
+                            HttpServletResponse response){
+        int renwuid = (int)request.getSession().getAttribute("rwid");
+        ShowDwjyDTO showDwjyDTO = new ShowDwjyDTO();
+        List<dcDwjy> dwjys = dwjyService.getDwjysByRenwuid(renwuid);
+        int size = dwjys.size();
+        dwjys = dwjyService.getDwjyListPage(dwjys,page,rows,size);
+        showDwjyDTO.setTotal(size);
+        showDwjyDTO.setRows(dwjys);
+        return showDwjyDTO;
+    }
 
-            return dwjyDTO;
+    //点击添加数据时将联系人，联系电话、关区等返回给前台
+    @ResponseBody
+    @RequestMapping(value = "showDwDcrwinformation",method = RequestMethod.POST)
+    public Object showInformationAlreadyKnow(HttpServletRequest request,
+                                             HttpServletResponse response){
+        int renwuid = (int)request.getSession().getAttribute("rwid");
+        DwjyInfoDTO dwjyInfoDTO = new DwjyInfoDTO();
+        dwjyInfoDTO.setRwid(renwuid);
+        dwjyInfoDTO = dwjyService.showInformationAlreadyKnow(dwjyInfoDTO);
+        return dwjyInfoDTO;
+    }
+
+    //修改已有的数据
+    @ResponseBody
+    @RequestMapping(value = "modifyDwjy",method = RequestMethod.POST)
+    public Object moodifyDwjy(@RequestBody DwjyDTO dwjyDTO,
+                              HttpServletRequest request,
+                              HttpServletResponse response){
+        ResultDTO resultDTO = new ResultDTO();
+        dcDwjy dwjy = new dcDwjy();
+
+        dwjy = dwjyService.transformDTOToDwjy(dwjyDTO);
+        boolean flag = dwjyService.updateDwjy(dwjy);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("修改动物检疫表格成功");
         }
-        else if (showTableDTO.getDcbName().equals("植物检疫")){
-            ZwjyDTO zwjyDTO = new ZwjyDTO();
-
-            return zwjyDTO;
+        else {
+            resultDTO.setMessage("修改动物检疫表格失败");
         }
-        else if (showTableDTO.getDcbName().equals("卫生检疫")){
-            WsjyDTO wsjyDTO = new WsjyDTO();
+        return resultDTO;
+    }
 
-            return wsjyDTO;
+    //删除动物检疫表项
+    @ResponseBody
+    @RequestMapping(value = "deleteDwjy",method = RequestMethod.POST)
+    public Object deleteDwjy(@RequestBody ShowTableDTO showTableDTO,
+                             HttpServletRequest request,
+                             HttpServletResponse response){
+        ResultDTO resultDTO = new ResultDTO();
+        int id = showTableDTO.getId();
+        boolean flag = dwjyService.deleteDwjyById(id);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("删除动物检疫表格成功");
         }
-        return null;
-    }*/
+        else {
+            resultDTO.setMessage("删除动物检疫表格失败");
+        }
+        return resultDTO;
+    }
+
+    //提交动物检疫表,DTO是借用的
+    @ResponseBody
+    @RequestMapping(value = "submitDwjy",method = RequestMethod.POST)
+    public Object submit(HttpServletRequest request,
+                         HttpServletResponse response){
+        ResultDTO resultDTO = new ResultDTO();
+        int rwid = (int)request.getSession().getAttribute("rwid");
+        boolean flag = dcrwService.modifyStatusToSubmit(rwid);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("删除动物检疫表格成功");
+        }
+        else {
+            resultDTO.setMessage("删除动物检疫表格失败");
+        }
+        return resultDTO;
+    }
+
+    //将历史任务中动物检疫表的表项选中后插入到当前任务中
+    @ResponseBody
+    @RequestMapping(value = "dwjyHistoryOnceMore",method = RequestMethod.POST)
+    public Object historyOnceMoreWj(@RequestBody HistoryOnceMoreDTO historyOnceMoreDTO,
+                                    HttpServletRequest request,
+                                    HttpServletResponse response){
+        ResultDTO resultDTO = new ResultDTO();
+        List<Integer> ids = historyOnceMoreDTO.getIds();
+        int renwuid = historyOnceMoreDTO.getRenwuid();
+        boolean flag = dwjyService.historyOnceMoreDj(ids,renwuid);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("删除动物检疫表格成功");
+        }
+        else {
+            resultDTO.setMessage("删除动物检疫表格失败");
+        }
+        return resultDTO;
+    }
 
 }

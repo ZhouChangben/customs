@@ -35,6 +35,6 @@
         <table schema="DB2ADMIN" tableName="dc_dwjy" domainObjectName="dcDwjy" ></table>
         <table schema="DB2ADMIN" tableName="dc_zwjy" domainObjectName="dcZwjy" ></table>
         <table schema="DB2ADMIN" tableName="dc_wsjy" domainObjectName="dcWsjy" ></table>
-
+        <table schema="DB2ADMIN" tableName="dc_log" domainObjectName="dcLog" ></table>
     </context>
 </generatorConfiguration>

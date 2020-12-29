@@ -45,15 +45,9 @@ public class WsjyService {
 
     //通过id获取具体的一个卫生检疫
     public dcWsjy getWsjyById(int id){
-        dcWsjyExample dcwsjyExample = new dcWsjyExample();
-        dcwsjyExample.createCriteria()
-                .andIdEqualTo(id);
-        List<dcWsjy> wsjys = wsjyMapper.selectByExample(dcwsjyExample);
-        if (wsjys.size() != 0){
-            return wsjys.get(0);
-        }
-        else
-            return null;
+        dcWsjy wsjy = new dcWsjy();
+        wsjy = wsjyMapper.selectByPrimaryKey(id);
+        return wsjy;
     }
 
     //通过任务id获取当前任务填写的所有表项

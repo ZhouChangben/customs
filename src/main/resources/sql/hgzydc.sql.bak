@@ -21,8 +21,8 @@
 DROP TABLE IF EXISTS `dc_user`;
 CREATE TABLE `dc_user` (
   `Id` int(11) NOT NULL auto_increment,
-  `dc_gqdm` varchar(8) default NULL,
-  `dc_gqdj` int(11) default NULL UNIQUE,
+  `dc_gqdm` varchar(8) default NULL UNIQUE,
+  `dc_gqdj` int(11) default NULL,
   `dc_gqname` varchar(30) default NULL,
   `dc_gqpword` varchar(30) default NULL,
   `dc_shiwuku` varchar(2) default NULL,
@@ -672,3 +672,12 @@ INSERT INTO `zj_laiyuanlx` VALUES (4,'04','交换',NULL,NULL);
 INSERT INTO `zj_laiyuanlx` VALUES (5,'05','监测',NULL,NULL);
 INSERT INTO `zj_laiyuanlx` VALUES (6,'06','采集',NULL,NULL);  
 UNLOCK TABLES;
+
+DROP TABLE IF EXISTS `dc_log`;
+CREATE TABLE `dc_log` (
+  `Id` int(11) NOT NULL auto_increment,
+  `ip` varchar(30) default null,
+  `time` BIGINT default NULL,
+  `movement` varchar(50) default NULL,
+  PRIMARY KEY  (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

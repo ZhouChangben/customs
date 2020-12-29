@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--    导入jQuery的js文件-->
+    <script type="text/javascript" src="./easyui/jquery.min.js"></script>
+    <!--    导入easyUI的js文件-->
+    <script type="text/javascript" src="./easyui/jquery.easyui.min.js"></script>
+    <!--    导入easyUI的语言js文件-->
+    <script type="text/javascript" src="./easyui/locale/easyui-lang-zh_CN.js"></script>
+    <!--    导入easyUI的图标css文件-->
+    <link rel="stylesheet" type="text/css" href="./easyui/themes/icon.css">
+    <!--    导入默认模块的css文件-->
+    <link id="themeLink" rel="stylesheet" type="text/css" href="./easyui/themes/default/easyui.css">
+</head>
+<body>
+<table id="dg"></table>
+<div id="editWin" class="easyui-window" data-options="closed:true,width:500,height:240">
+    <form action="" method="post" id="editForm">
+        <table>
+            <tr>
+                <td style="text-align: right">卫生检疫联系人</td>
+                <td><input type="text" id="wjLxr" name="wjLxr" ></td>
+                <td style="padding-left: 20px">联系电话</td>
+                <td><input type="text" id="wjLxdh" name="wjLxdh" ></td>
+            </tr>
+            <tr>
+                <td style="text-align: right">负责人</td>
+                <td><input type="text" id="wjFzr" name="wjFzr" ></td>
+                <td style="padding-left: 20px">联系电话</td>
+                <td><input type="text" id="wjFzrdh" name="wjFzrdh"  ></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right">动物检疫联系人</td>
+                <td><input type="text" id="djLxr" name="djLxr"></td>
+                <td style="padding-left: 20px">联系电话</td>
+                <td><input type="text" id="djLxdh" name="djLxdh" ></td>
+            </tr>
+            <tr>
+                <td style="text-align: right">负责人</td>
+                <td><input type="text" id="djFzr" name="djFzr"  ></td>
+                <td style="padding-left: 20px">联系电话</td>
+                <td><input type="text" id="djFzrdh" name="djFzrdh" ></td>
+            </tr>
+            <tr>
+                <td style="text-align: right">植物检疫联系人</td>
+                <td><input type="text" id="zjLxr" name="zjLxr" ></td>
+                <td style="padding-left: 20px">联系电话</td>
+                <td><input type="text" id="zjLxdh" name="zjLxdh" ></td>
+            </tr>
+            <tr>
+                <td style="text-align: right">负责人</td>
+                <td><input type="text" id="zjFzr" name="zjFzr" ></td>
+                <td style="padding-left: 20px">联系电话</td>
+                <td><input type="text" id="zjFzrdh" name="zjFzrdh" ></td>
+            </tr>
+
+            <tr style="vertical-align: bottom">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                    <a href="#" id="save" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="display: none">保存</a>
+                    <a href="#" id="editsave" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="display: none">保存</a>
+                    <a href="#" id="cancel" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">取消</a>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+
+        $('#dg').datagrid({
+            //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
+            url:'http://localhost:8080/userInfo',
+            columns:[
+                [
+                    //展示列数据
+                    /*{field:'gqName',title:'关区名称',width:100,halign:'center'},*/
+                    {field:'wjLxr',title:'卫生检疫联系人',width:100,halign:'center'},
+                    {field:'wjLxdh',title:'联系电话',width:100,halign:'center'},
+                    {field:'wjFzr',title:'卫生检疫负责人',width:100,halign:'center'},
+                    {field:'wjFzrdh',title:'联系电话',width:100,halign:'center'},
+                    {field:'djLxr',title:'动物检疫联系人',width:100,halign:'center'},
+                    {field:'djLxdh',title:'联系电话',width:100,halign:'center'},
+                    {field:'djFzr',title:'动物检疫负责人',width:100,halign:'center'},
+                    {field:'djFzrdh',title:'联系电话',width:100,halign:'center'},
+                    {field:'zjLxr',title:'植物检疫联系人',width:100,halign:'center'},
+                    {field:'zjLxdh',title:'联系电话',width:100,halign:'center'},
+                    {field:'zjFzr',title:'植物检疫负责人',width:100,halign:'center'},
+                    {field:'zjFzrdh',title:'联系电话',width:100,halign:'center'},
+                ]
+            ],
+            pagination:true,
+            //设置每次只能选择一条数据
+            singleSelect:true,
+            toolbar: [{
+                iconCls: 'icon-add',
+                text:"添加",
+                handler:function () {
+                    $("#save").css("display","inline-block");
+                    $("#editsave").css("display","none");
+                    $("#editWin").window({title:"添加"});
+                    $("#editWin").window("open")
+                }
+            },
+                {
+                    iconCls: 'icon-edit',
+                    text:"编辑",
+                    handler:function () {
+                        //获取选择的那一条数据
+                        var rows=$("#dg").datagrid("getSelections");
+                        //判断是否选中数据
+                        if (rows.length==0){
+                            $.messager.alert("提示","请选择一条记录","warning")
+                        }
+                        //获取第一行
+                        var row=rows[0];
+                        //到后台调取数据，填充到表单
+                        $.ajax({
+                            url:"http://localhost:8080/showUserInfo",
+                            type:"post",
+                            // data:JSON.stringify({"gqdm":row.dcGqdm}),
+                            dataType:"json",
+                            contentType:"application/json",
+                            success:function (data) {
+
+                                $("#editForm").form("load",{
+                                    gqdm:data.gqdm,
+                                    gqName:data.gqname,
+                                    wjLxr:data.wjLxr,
+                                    wjLxdh:data.wjLxdh,
+                                    wjFzr:data.wjFzr,
+                                    wjFzrdh:data.wjFzrdh,
+                                    djLxr:data.djLxr,
+                                    djLxdh:data.djLxdh,
+                                    djFzr:data.djFzr,
+                                    djFzrdh:data.djFzrdh,
+                                    zjLxr:data.zjLxr,
+                                    zjLxdh:data.zjLxdh,
+                                    zjFzr:data.zjFzr,
+                                    zjFzrdh:data.zjFzrdh,
+
+                                });
+                            }
+                        })
+                        //填弹出编辑窗口
+                        $("#editsave").css("display","inline-block");
+                        $("#save").css("display","none");
+                        $("#editWin").window({title:"编辑"});
+                        $("#editWin").window("open")
+
+                    }
+                },
+                {
+                    iconCls: 'icon-remove',
+                    text:"删除",
+                    handler:function () {
+                        //获取选择的那一条数据
+                        var rows=$("#dg").datagrid("getSelections");
+                        //判断是否选中数据
+                        if (rows.length==0){
+                            $.messager.alert("提示","请选择一个用户","warning")
+                            return ;
+                        }
+                        //获取数据的id
+                        // var ids=new Array();
+                        // $(rows).each(function (i) {
+                        //     ids.push(rows[i].id)
+                        // });
+                        // ids=ids.join(",");
+                        //发送数据id到后台删除数据
+                        $.ajax({
+                            url:"http://localhost:8080/delete",
+                            type:"post",
+                            // data:JSON.stringify({"gqdm":rows[0].dcGqdm}),
+                            dataType:"json",
+                            contentType:"application/json",
+                            success:function (data) {
+                                if (data.success){
+                                    $("#dg").datagrid("reload");
+                                    $.messager.show({
+                                        title:"提示",
+                                        msg:"删除成功"
+                                    })
+                                }else {
+                                    $.messager.alert("提示",data.msg,"error");
+                                }
+                            }
+                        })
+
+                    }
+                }
+            ],
+        });
+        $("#save").click(function () {
+            var wjLxr=$("#wjLxr").val();
+            var wjLxdh=$("#wjLxdh").val();
+            var wjFzr=$("#wjFzr").val();
+            var wjFzrdh=$("#wjFzrdh").val();
+            var djLxr=$("#djLxr").val();
+            var djLxdh=$("#djLxdh").val();
+            var djFzr=$("#djFzr").val();
+            var djFzrdh=$("#djFzrdh").val();
+            var zjLxr=$("#zjLxr").val();
+            var zjLxdh=$("#zjLxdh").val();
+            var zjFzr=$("#zjFzr").val();
+            var zjFzrdh=$("#zjFzrdh").val();
+            $.ajax({
+                url:'http://localhost:8080/',
+                type:"post",
+                data:JSON.stringify({
+                    "wjLxr":wjLxr,"wjLxdh":wjLxdh,"wjFzr":wjFzr,"wjFzrdh":wjFzrdh,
+                    "djLxr":djLxr,"djLxrdh":djLxdh,"djFzr":djFzr,"djFzrdh":djFzrdh,
+                    "zjLxr":zjLxr,"zjLxdh":zjLxdh,"zjFzr":zjFzr,"zjFzrdh":zjFzrdh,
+                }),
+                dataType:"json",
+                contentType:"application/json",
+                success:function (data) {
+                    if(data.success==true){
+                        //表单清空
+                        $("#editForm").form("clear")
+                        //关闭窗口
+                        $("#editWin").window("close")
+                        //刷新datagrid
+                        $("#dg").datagrid("reload")
+
+                        $.messager.show({
+                            title:"提示",
+                            msg:"保存成功"
+                        })
+                    }else if (data.success==false){
+                        $.messager.alert("提示",data.msg,"error")
+                    }
+                }
+            })
+        })
+
+        $("#editsave").click(function () {
+            var wjLxr=$("#wjLxr").val();
+            var wjLxdh=$("#wjLxdh").val();
+            var wjFzr=$("#wjFzr").val();
+            var wjFzrdh=$("#wjFzrdh").val();
+            var djLxr=$("#djLxr").val();
+            var djLxdh=$("#djLxdh").val();
+            var djFzr=$("#djFzr").val();
+            var djFzrdh=$("#djFzrdh").val();
+            var zjLxr=$("#zjLxr").val();
+            var zjLxdh=$("#zjLxdh").val();
+            var zjFzr=$("#zjFzr").val();
+            var zjFzrdh=$("#zjFzrdh").val();
+            $.ajax({
+                url:'http://localhost:8080/updateUserInfo',
+                type:"post",
+                data:JSON.stringify({
+                    "wjLxr":wjLxr,"wjLxdh":wjLxdh,"wjFzr":wjFzr,"wjFzrdh":wjFzrdh,
+                    "djLxr":djLxr,"djLxdh":djLxdh,"djFzr":djFzr,"djFzrdh":djFzrdh,
+                    "zjLxr":zjLxr,"zjLxdh":zjLxdh,"zjFzr":zjFzr,"zjFzrdh":zjFzrdh,
+                }),
+                dataType:"json",
+                contentType:"application/json",
+                success:function (data) {
+                    if(data.success==true){
+                        //表单清空
+                        $("#editForm").form("clear")
+                        //关闭窗口
+                        $("#editWin").window("close")
+                        //刷新datagrid
+                        $("#dg").datagrid("reload")
+
+                        $.messager.show({
+                            title:"提示",
+                            msg:"保存成功"
+                        })
+                    }else if (data.success==false){
+                        $.messager.alert("提示",data.msg,"error")
+                    }
+                }
+            })
+        })
+
+
+        $("#cancel").click(function () {
+            $("#editForm").form("clear");
+            $("#editWin").window("close")
+        })
+    })
+
+
+
+
+
+</script>
+</body>
+</html>

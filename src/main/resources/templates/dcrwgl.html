@@ -121,7 +121,7 @@
 
         edit = function (row) {
             if (row.dcDcbname == "卫生检疫") {
-                alert("http://localhost:8080/wsdcrw?rwid=" + row.id)
+                // alert("http://localhost:8080/wsdcrw?rwid=" + row.id)
                     var jq=top.jQuery;
                     if (jq("#tt").tabs('exists',row.dcDcbname)){
                         jq("#tt").tabs('select',row.dcDcbname)
@@ -135,14 +135,33 @@
                     }
 
             } else if (row.dcDcbname == "动物检疫") {
-                window.location.href = "http:/localhost:8080/dwdcrw.html?rwid=" + row.dcrwXh;
+                var jq=top.jQuery;
+                if (jq("#tt").tabs('exists',row.dcDcbname)){
+                    jq("#tt").tabs('select',row.dcDcbname)
+                }else {
+                    jq("#tt").tabs("add", {
+                        title: row.dcDcbname,
+                        // content:"<iframe src='http://localhost:8080/"+pageUrl+"' width='100%' height='100%' frameborder='0'></iframe>",
+                        content: "<iframe src='http://localhost:8080/dwdcrw?rwid="+row.id+"' width='100%' height='100%' frameborder='0'></iframe>",
+                        closable: true
+                    })
+                }
             } else if (row.dcDcbname == "植物检疫") {
-                window.location.href = "http:/localhost:8080/zwdcrw.html?rwid=" + row.dcrwXh;
+                var jq=top.jQuery;
+                if (jq("#tt").tabs('exists',row.dcDcbname)){
+                    jq("#tt").tabs('select',row.dcDcbname)
+                }else {
+                    jq("#tt").tabs("add", {
+                        title: row.dcDcbname,
+                        // content:"<iframe src='http://localhost:8080/"+pageUrl+"' width='100%' height='100%' frameborder='0'></iframe>",
+                        content: "<iframe src='http://localhost:8080/zwdcrw?rwid="+row.id+"' width='100%' height='100%' frameborder='0'></iframe>",
+                        closable: true
+                    })
+                }
             }
         };
         withdraw = function(row){
             alert(JSON.stringify(row));
-            if (row.dcDcbname == "卫生检疫"){
                 $.ajax({
                     url:'http://localhost:8080/withdraw',
                     type:"post",
@@ -157,12 +176,10 @@
                         }
                     }
                 })
-            }
         }
 
         accept = function(row){
             alert(JSON.stringify(row));
-            if (row.dcDcbname == "卫生检疫"){
                 $.ajax({
                     url:'http://localhost:8080/accept',
                     type:"post",
@@ -177,7 +194,6 @@
                         }
                     }
                 })
-            }
         }
 
 

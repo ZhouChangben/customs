@@ -43,10 +43,10 @@ public class WsjyController {
         boolean flag = wsjyService.insertNewTable(wsjy);
         resultDTO.setSuccess(flag);
         if (flag == true){
-            resultDTO.setMessage("插入动物检疫表格成功");
+            resultDTO.setMessage("插入卫生检疫表格成功");
         }
         else {
-            resultDTO.setMessage("插入动物检疫表格失败");
+            resultDTO.setMessage("插入卫生检疫表格失败");
         }
         return resultDTO;
     }

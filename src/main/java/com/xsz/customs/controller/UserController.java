@@ -1,7 +1,9 @@
 package com.xsz.customs.controller;
 
 import com.xsz.customs.dto.*;
+import com.xsz.customs.model.dcLog;
 import com.xsz.customs.model.dcUser;
+import com.xsz.customs.service.LogService;
 import com.xsz.customs.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -21,11 +23,21 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private LogService logService;
+
     @ResponseBody
     @RequestMapping(value = "/login",method = RequestMethod.POST)
     public Object login(@RequestBody UserLoginDTO userLoginDTO,
                         HttpServletRequest request,
                         HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("登录");
+        logService.InsertLog(log);
+
         dcUser user = new dcUser();
         user.setDcGqdm(userLoginDTO.getGqdm());
         user.setDcGqpword(userLoginDTO.getPassword());
@@ -48,6 +60,13 @@ public class UserController {
     @GetMapping("/logout")
     public String logout(HttpServletRequest request,
                          HttpServletResponse response) {
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("退出");
+        logService.InsertLog(log);
+
         request.getSession().removeAttribute("user");
         Cookie cookie = new Cookie("gqdm", null);
         cookie.setMaxAge(0);
@@ -72,6 +91,13 @@ public class UserController {
     public Object register(@RequestBody InsertUserDTO insertUserDTO,
                         HttpServletRequest request,
                         HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("新增用户");
+        logService.InsertLog(log);
+
         dcUser user = new dcUser();
         user.setDcGqdm(insertUserDTO.getGqdm());
         user.setDcGqname(insertUserDTO.getGqname());
@@ -113,6 +139,13 @@ public class UserController {
     public Object updateUser(@RequestBody UpdateUserSecondDTO updateUserSecondDTO,
                              HttpServletRequest request,
                              HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("更新用户信息");
+        logService.InsertLog(log);
+
         dcUser user = new dcUser();
         //由于返回的DTO都是一样的所以使用insert的
         InsertUserResultDTO insertUserResultDTO = new InsertUserResultDTO();
@@ -143,6 +176,13 @@ public class UserController {
     public Object deleteUser(@RequestBody DeleteUserDTO deleteUserDTO,
                              HttpServletRequest request,
                              HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("删除用户");
+        logService.InsertLog(log);
+
         String gqdm = deleteUserDTO.getGqdm();
         boolean flag = userService.deleteUser(gqdm);
         DeleteUserResultDTO deleteUserResultDTO = new DeleteUserResultDTO();
@@ -200,6 +240,75 @@ public class UserController {
     public String toUpdate(){
         return "update";
     }*/
+
+    //获取用户信息的方法
+    @ResponseBody
+    @RequestMapping(value = "/userInfo",method = RequestMethod.POST)
+    public Object userInfoList(Integer page,
+                              Integer rows,
+                              HttpServletRequest request,
+                              HttpServletResponse response){
+        dcUser user = (dcUser) request.getSession().getAttribute("user");
+        ShowUserInfoDTO showUserInfoDTO = new ShowUserInfoDTO();
+        List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
+        int size = userInfoDTOS.size();
+        userInfoDTOS = userService.getUserInfoListPage(userInfoDTOS,page,rows,size);
+        showUserInfoDTO.setTotal(size);
+        showUserInfoDTO.setRows(userInfoDTOS);
+        return showUserInfoDTO;
+    }
+
+    //编辑前的数据写入
+    @ResponseBody
+    @RequestMapping(value = "/showUserInfo",method = RequestMethod.POST)
+    public Object showUserInfo(HttpServletRequest request,
+                               HttpServletResponse response){
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
+        String gqdm = user.getDcGqdm();
+        List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user,null);
+        UserInfoDTO userInfoDTO = userInfoDTOS.get(0);
+        return userInfoDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateUserInfo",method = RequestMethod.POST)
+    public Object updateUserInfo(@RequestBody UserInfoDTO userInfoDTO,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("更新用户联系方式");
+        logService.InsertLog(log);
+
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
+        ResultDTO resultDTO = new ResultDTO();
+
+        user.setDcWjlxr(userInfoDTO.getWjLxr());
+        user.setDcWjlxdh(userInfoDTO.getWjLxdh());
+        user.setDcWjfzr(userInfoDTO.getWjFzr());
+        user.setDcWjfzdh(userInfoDTO.getWjFzrdh());
+        user.setDcDjlxr(userInfoDTO.getDjLxr());
+        user.setDcDjlxdh(userInfoDTO.getDjLxdh());
+        user.setDcDjfzr(userInfoDTO.getDjFzr());
+        user.setDcDjfzdh(userInfoDTO.getDjFzrdh());
+        user.setDcZjlxr(userInfoDTO.getZjLxr());
+        user.setDcZjlxdh(userInfoDTO.getZjLxdh());
+        user.setDcZjfzr(userInfoDTO.getZjFzr());
+        user.setDcZjfzdh(userInfoDTO.getZjFzrdh());
+
+        boolean flag = userService.updateUserInfomation(user);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("更新联系人成功");
+        }
+        else {
+            resultDTO.setMessage("更新联系人失败");
+        }
+        return resultDTO;
+    }
+
     @GetMapping("/index")
     public String toLogin(){
         return "index";

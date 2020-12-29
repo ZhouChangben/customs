@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!--    导入jQuery的js文件-->
+    <script type="text/javascript" src="./easyUI/jquery.min.js"></script>
+    <!--    导入easyUI的js文件-->
+    <script type="text/javascript" src="./easyUI/jquery.easyui.min.js"></script>
+    <!--    导入easyUI的语言js文件-->
+    <script type="text/javascript" src="./easyUI/locale/easyui-lang-zh_CN.js"></script>
+    <!--    导入easyUI的图标css文件-->
+    <link rel="stylesheet" type="text/css" href="./easyUI/themes/icon.css">
+    <!--    导入默认模块的css文件-->
+    <link id="themeLink" rel="stylesheet" type="text/css" href="./easyUI/themes/default/easyui.css">
+</head>
+<body>
+<div id="loading" style="position:absolute;z-index:1000;top:0px;left:0px;width:100%;height:100%;background:#DDDDDB;text-align :center;padding-top:20%;">
+    <h1><font color="#15428B">加载中....</font></h1>
+</div>
+<table id="dg"></table>
+<div id="editWinPlant" class="easyui-window" data-options="width:650,height:410,closed:true,closable: false,collapsible:false,minimizable:false,maximizable:false">
+    <form action="" method="post" id="editFormPlant">
+        <input type="hidden" id="rwid" name="rwid">
+        <input type="hidden" id="rwmc" name="rwmc">
+        <input type="hidden" id="rwxh" name="rwxh">
+        <input type="hidden" id="gqdm" name="gqdm">
+        <input type="hidden" id="gqName" name="gqName">
+        <input type="hidden" id="id" name="id">
+        <table>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">业务领域 </td>
+                <td style="width: 180px"><input type="text" id="ywly" name="ywly" value="植物检疫"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">中文名称</td>
+                <td><input type="text" id="name" name="name"></td>
+                <td style="text-align: right;padding-right: 0.5em">拉丁学名</td>
+                <td><input type="text" id="ename" name="ename"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">类别</td>
+                <td>
+                    <input id="category" name="category" class="easyui-combobox" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'昆虫'},
+                           {id:'2',value:'杂草'},
+                           {id:'3',value:'线虫'},
+                           {id:'4',value:'细菌'},
+                           {id:'5',value:'真菌'},
+                           {id:'6',value:'病毒'},
+                           {id:'7',value:'软体动物'},
+                           {id:'8',value:'物种资源'},
+                           {id:'9',value:'其他'}
+                           ]">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">世代/种下阶元</td>
+                <td>
+                    <input type="text" id="shidai" name="shidai">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">内部保存编号</td>
+                <td><input type="text" id="code" name="code"></td>
+                <td style="text-align: right;padding-right: 0.5em">检疫地位</td>
+                <td>
+                    <input id="jydw" name="jydw" class="easyui-combobox" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'检疫性'},
+                           {id:'2',value:'非检疫性'},
+                           ]">
+                </td>
+
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">检疫业务类别</td>
+                <td>
+                    <input id="jyywlb" name="jyywlb" class="easyui-combobox" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'货检'},
+                           {id:'2',value:'运输工具检疫'},
+                           {id:'3',value:'旅检'},
+                           {id:'4',value:'邮检'},
+                           {id:'5',value:'木包装检疫'},
+                           {id:'6',value:'集装箱检疫'},
+                           ]">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">货物类别</td>
+                <td>
+                    <input type="text" id="hwlb" name="hwlb">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">寄主</td>
+                <td><input type="text" id="jizhu" name="jizhu"></td>
+                <td style="text-align: right;padding-right: 0.5em">保存形式</td>
+                <td>
+                    <input id="saveType" name="saveType" class="easyui-combobox" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'实物'},
+                           {id:'2',value:'针插标本'},
+                           {id:'3',value:'浸渍标本（成虫）'},
+                           {id:'4',value:'浸渍标本（幼虫）'},
+                           {id:'5',value:'玻片标本'},
+                           {id:'6',value:'解剖学标本'},
+                           {id:'7',value:'活体植物组织'},
+                           {id:'8',value:'菌液'},
+                           {id:'9',value:'核酸'},
+                           {id:'10',value:'接种的培养基'},
+                           ]">
+                </td>
+            </tr>
+
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">来源</td>
+                <td>
+                    <input id="source" name="source" class="easyui-combobox" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'截获'},
+                           {id:'2',value:'购买'},
+                           {id:'3',value:'赠送'},
+                           {id:'4',value:'交换'},
+                           {id:'5',value:'监测'},
+                           {id:'6',value:'采集'},
+                           ]">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">来源国家/地区</td>
+                <td><input type="text" id="sourceSite" name="sourceSite"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">样本数量</td>
+                <td><input type="text" id="number" name="number" style="width: 80px">
+                    单位
+                    <input type="text" id="danwei" name="danwei" style="width: 2em">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">保存状态 </td>
+                <td><input type="text" id="saveStatus" name="saveStatus"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">保存条件 </td>
+                <td><input type="text" id="saveCondition" name="saveCondition"></td>
+                <td style="text-align: right;padding-right: 0.5em">保存时间 </td>
+                <td><input type="text" id="saveTime" name="saveTime"></td>
+            </tr>
+
+            <tr>
+
+                <td style="text-align: right;padding-right: 0.5em">获得地点 </td>
+                <td><input type="text" id="obtainSite" name="obtainSite"></td>
+                <td style="text-align: right">保存位置（隶属关/部门）</td>
+                <td><input type="text" id="saveLocation" name="saveLocation"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">联络人 </td>
+                <td><input type="text" id="contact" name="contact" style="width: 6em"></td>
+                <td style="text-align: right;padding-right: 0.5em">联络人电话 </td>
+                <td><input type="text" id="lxrPhone" name="lxrPhone"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">负责人 </td>
+                <td><input type="text" id="principal" name="principal" style="width: 6em"></td>
+                <td style="text-align: right;padding-right: 0.5em">负责人电话 </td>
+                <td><input type="text" id="fzrPhone" name="fzrPhone"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;vertical-align: top;padding-right: 0.5em">备注 </td>
+                <td>
+                    <textarea name="remark" id="remark" cols="16" rows="5" style="resize: none"></textarea>
+                </td>
+                <td></td>
+                <td style="vertical-align: bottom">
+                    <a href="#" id="savePlant" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="display: none;">保存</a>
+                    <a href="#" id="editsavePlant" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="display: none;">保存</a>
+                    <a href="#" id="cancelPlant" class="easyui-linkbutton" data-options="iconCls:'icon-reload'" >取消</a>
+                </td>
+            </tr>
+
+        </table>
+    </form>
+</div>
+
+<script type="text/javascript">
+    var pc;
+    //不要放在$(function(){});中
+    $.parser.onComplete = function () {
+        if (pc) clearTimeout(pc);
+        pc = setTimeout(closes, 200);
+    }
+    function closes() {
+        $('#loading').fadeOut('normal', function () {
+            $(this).remove();
+        });
+    }
+
+    $(function () {
+        //页面加载数据
+        $('#dg').datagrid({
+            //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
+            url: 'http://localhost:8080/zwdcrw',
+            rownumbers: true,
+            pagination:true,
+            columns: [
+                [
+                    //展示列数据
+                    {field: 'dcRenwumc', title: '关区', width: 100},
+                    {field: 'zjYwly', title: '业务领域', width: 100},
+                    {field: 'zjLb', title: '类别', width: 100},
+                    {field: 'zjName', title: '中文名称', width: 100},
+                    {field: 'zjLdxm', title: '拉丁学名', width: 100},
+                    {field: 'zjShidai', title: '世代/种下阶元', width: 100},
+                    {field: 'zjNeibubh', title: '内部保存编号', width: 100},
+                    {field: 'zjJianyidw', title: '检疫地位', width: 100},
+                    {field: 'zjJianyiywlb', title: '检疫业务类别', width: 100},
+                    {field: 'zjHuowulb', title: '货物类别', width: 100},
+                    {field: 'zjJizhu', title: '寄主', width: 100},
+                    {field: 'zjBaocunxs', title: '保存形式', width: 100},
+                    {field: 'zjLaiyuan', title: '来源', width: 100},
+                    {field: 'zjLaiyuangj', title: '来源国家/地区', width: 100},
+                    {field: 'zjYbl', title: '样本数量', width: 100},
+                    {field: 'zjYbdanwei', title: '单位', width: 100},
+                    {field: 'zjBaocunzt', title: '保存状态', width: 100},
+                    {field: 'zjHuodedd', title: '获得地点', width: 100},
+                    {field: 'zjBaocuntj', title: '保存条件', width: 100},
+                    {field: 'zjBaocunsj', title: '保存时间', width: 100},
+                    {
+                        field: 'zjBaocunwz', title: '保存位置\n' +
+                            '（隶属关/部门）', width: 100
+                    },
+                    {field: 'zjLianlr', title: '联络人', width: 100},
+                    {field: 'zjLianldh', title: '联络电话', width: 100},
+                    {field: 'zjFuzeren', title: '负责人', width: 100},
+                    {field: 'zjFuzerendh', title: '负责人电话', width: 100},
+                    {field: 'zjBy1', title: '备注', width: 100},
+
+                ]
+            ],
+            // pagination:true,
+            //设置每次只能选择一条数据
+            singleSelect: true,
+            toolbar: [{
+                iconCls: 'icon-add',
+                text: "添加记录",
+                handler: function () {
+                    $.ajax({
+                        url: "http://localhost:8080/showZwDcrwinformation",
+                        type: "post",
+                        /*data: JSON.stringify({"rwid": request.rwid}),*/
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (data) {
+                            alert(JSON.stringify(data))
+                            $("#editFormPlant").form("load", {
+                                rwid: data.rwid,
+                                rwmc: data.rwmc,
+                                gqdm: data.gqdm,
+                                gqName: data.gqName,
+                                ywly: data.ywly,
+                                saveLocation: data.saveLocation,
+                                contact: data.contact,
+                                lxrPhone: data.lxrPhone,
+                                principal: data.principal,
+                                fzrPhone: data.fzrPhone,
+                            });
+                        }
+                    })
+                    $("#savePlant").css("display", "inline-block");
+                    $("#editsavePlant").css("display", "none");
+                    $("#editWinPlant").window({title: "添加记录"});
+                    $("#editWinPlant").window("open")
+                }
+            },
+                {
+                    iconCls: 'icon-edit',
+                    text: "编辑记录",
+                    handler: function () {
+                        //获取选择的那一条数据
+                        var rows = $("#dg").datagrid("getSelections");
+                        //判断是否选中数据
+                        if (rows.length == 0) {
+                            $.messager.alert("提示", "请选择一条记录", "warning")
+                        }
+                        //获取第一行
+                        var row = rows[0];
+                        //到后台调取数据，填充到表单
+                        $.ajax({
+                            url: "http://localhost:8080/showZwjyTable",
+                            type: "post",
+                            data: JSON.stringify({"id": row.id}),
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function (data) {
+
+                                $("#editFormPlant").form("load", {
+                                    id:data.id,
+                                    rwid: data.rwid,
+                                    rwmc: data.rwmc,
+                                    rwxh: data.rwxh,
+                                    gqdm: data.gqdm,
+                                    gqName: data.gqName,
+                                    ywly: data.ywly,
+                                    name: data.name,
+                                    ename: data.ename,
+                                    category: data.category,
+                                    shidai: data.shidai,
+                                    code: data.code,
+                                    jydw:data.jydw,
+                                    jyywlb:data.jyywlb,
+                                    hwlb: data.hwlb,
+                                    jizhu: data.jizhu,
+                                    saveType:data.saveType,
+                                    source:data.source,
+                                    sourceSite:data.sourceSite,
+                                    number: data.number,
+                                    danwei:data.danwei,
+                                    saveStatus: data.saveStatus,
+                                    saveCondition: data.saveCondition,
+                                    saveTime: data.saveTime,
+                                    obtainSite:data.obtainSite,
+                                    saveLocation: data.saveLocation,
+                                    contact: data.contact,
+                                    lxrPhone: data.lxrPhone,
+                                    principal: data.principal,
+                                    fzrPhone: data.fzrPhone,
+                                    remark: data.remark,
+                                });
+                            }
+                        })
+                        //填弹出编辑窗口
+                        $("#savePlant").css("display", "none");
+                        $("#editsavePlant").css("display", "inline-block");
+                        $("#editWinPlant").window({title: "编辑记录"});
+                        $("#editWinPlant").window("open")
+
+                    }
+                },
+                {
+                    iconCls: 'icon-remove',
+                    text: "删除记录",
+                    handler: function () {
+                        //获取选择的那一条数据
+                        var rows = $("#dg").datagrid("getSelections");
+                        //判断是否选中数据
+                        if (rows.length == 0) {
+                            $.messager.alert("提示", "请选择一条记录", "warning")
+                            return;
+                        }
+
+                        $.ajax({
+                            url: "http://localhost:8080/deleteZwjy",
+                            type: "post",
+                            data: JSON.stringify({"id": rows[0].id}),
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function (data) {
+                                if (data.success) {
+                                    $("#dg").datagrid("reload");
+                                    $.messager.show({
+                                        title: "提示",
+                                        msg: "删除成功"
+                                    })
+                                } else {
+                                    $.messager.alert("提示", "删除失败", "error");
+                                }
+                            }
+                        })
+
+                    }
+                },
+                {
+                    iconCls: 'icon-ok',
+                    text: "提交",
+                    handler: function () {
+
+                        $.ajax({
+                            url: "http://localhost:8080/submitZwjy",
+                            type: "post",
+                            // data: JSON.stringify({"rwid": rows[0].rwid}),
+                            dataType: "json",
+                            contentType: "application/json",
+                            success: function (data) {
+                                if (data.success) {
+                                    $.messager.show({
+                                        title: "提示",
+                                        msg: "提交成功"
+                                    });
+                                    var jq=top.jQuery;
+                                    jq("#tt").tabs('close',"植物检疫");
+                                    var tab = jq("#tt").tabs('getTab',"调查任务管理");
+                                    tab.panel('refresh','http://localhost:8080/dcrwGL');
+                                } else {
+                                    $.messager.alert("提示", "提交失败", "error");
+                                }
+                            }
+                        })
+                    }
+                }
+            ],
+
+        });
+
+
+        //保存当前所填写的一条数据
+        $("#savePlant").click(function () {
+            var rwid=$("#rwid").val();
+            var rwmc=$("#rwmc").val();
+            var rwxh=$("#rwxh").val();
+            var gqdm=$("#gqdm").val();
+            var gqName=$("#gqName").val();
+            var ywly=$("#ywly").val();
+            var name=$("#name").val();
+            var ename=$("#ename").val();
+            var category=$("#category").combobox('getText');
+
+            var shidai=$("#shidai").val();
+            var code=$("#code").val();
+            var jydw=$("#jydw").combobox('getText');
+            var jyywlb=$("#jyywlb").combobox('getText');
+            var hwlb=$("#hwlb").val();
+            var jizhu=$("#jizhu").val();
+            var saveType=$("#saveType").combobox('getText');
+            var source=$("#source").combobox('getText');
+            var sourceSite=$("#sourceSite").val();
+            var number=$("#number").val();
+            var danwei=$("#danwei").val();
+            var saveStatus=$("#saveStatus").val();
+            var saveCondition=$("#saveCondition").val();
+            var saveTime=$("#saveTime").val();
+            var obtainSite=$("#obtainSite").val();
+            var saveLocation=$("#saveLocation").val();
+            var contact=$("#contact").val();
+            var lxrPhone=$("#lxrPhone").val();
+            var principal=$("#principal").val();
+            var fzrPhone=$("#fzrPhone").val();
+            var remark=$("#remark").val();
+            $.ajax({
+                url:'http://localhost:8080/addZwjy',
+                type:"post",
+                data:JSON.stringify({"rwxh":rwxh,"gqdm":gqdm,"rwmc":rwmc,"rwid":rwid,"gqName":gqName,"ywly": ywly,"category":category,
+                    "saveType":saveType,"name":name,"ename":ename,"source":source,"shidai":shidai,"jydw":jydw,"jyywlb":jyywlb,
+                    "number":number,"danwei":danwei,"saveStatus":saveStatus,"hwlb":hwlb,"jizhu":jizhu,
+                    "obtainSite":obtainSite,"saveCondition":saveCondition,"sourceSite":sourceSite,
+                    "saveTime":saveTime,"code":code,"saveLocation":saveLocation,"contact":contact,"lxrPhone":lxrPhone,"principal":principal,
+                    "fzrPhone":fzrPhone,"remark":remark,
+                }),
+                dataType:"json",
+                contentType:"application/json",
+                success:function (data) {
+                    if(data.success==true){
+                        //表单清空
+                        $("#editFormPlant").form("clear")
+                        //关闭窗口
+                        $("#editWinPlant").window("close")
+                        //刷新datagrid
+                        $("#dg").datagrid("reload")
+
+                        $.messager.show({
+                            title:"提示",
+                            msg:"保存成功"
+                        })
+                    }else if (data.success==false){
+                        $.messager.alert("提示","保存失败","error")
+                    }
+                }
+            })
+        })
+
+
+        //修改当前所选中的一条数据
+        $("#editsavePlant").click(function () {
+            var id=$("#id").val();
+            var rwid=$("#rwid").val();
+            var rwmc=$("#rwmc").val();
+            var rwxh=$("#rwxh").val();
+            var gqdm=$("#gqdm").val();
+            var gqName=$("#gqName").val();
+            var ywly=$("#ywly").val();
+            var name=$("#name").val();
+            var ename=$("#ename").val();
+            var category=$("#category").combobox('getText');
+
+            var shidai=$("#shidai").val();
+            var code=$("#code").val();
+            var jydw=$("#jydw").combobox('getText');
+            var jyywlb=$("#jyywlb").combobox('getText');
+            var hwlb=$("#hwlb").val();
+            var jizhu=$("#jizhu").val();
+            var saveType=$("#saveType").combobox('getText');
+            var source=$("#source").combobox('getText');
+            var sourceSite=$("#sourceSite").val();
+            var number=$("#number").val();
+            var danwei=$("#danwei").val();
+            var saveStatus=$("#saveStatus").val();
+            var saveCondition=$("#saveCondition").val();
+            var saveTime=$("#saveTime").val();
+            var obtainSite=$("#obtainSite").val();
+            var saveLocation=$("#saveLocation").val();
+            var contact=$("#contact").val();
+            var lxrPhone=$("#lxrPhone").val();
+            var principal=$("#principal").val();
+            var fzrPhone=$("#fzrPhone").val();
+            var remark=$("#remark").val();
+            // alert(JSON.stringify({gqName,ywly,category,saveType,name,ename,
+            //     zhuxi,chuanci,source,szhj,number,danwei,saveStatus,obtainSite,
+            //     obtainApproach,saveCondition,saveTime,code,saveLocation,
+            //     contact,lxrPhone,principal,fzrPhone,remark
+            // }))
+            $.ajax({
+                url:'http://localhost:8080/modifyZwjy',
+                type:"post",
+                data:JSON.stringify({"id":id,"rwxh":rwxh,"gqdm":gqdm,"rwmc":rwmc,"rwid":rwid,"gqName":gqName,"ywly": ywly,"category":category,
+                    "saveType":saveType,"name":name,"ename":ename,"source":source,"shidai":shidai,"jydw":jydw,"jyywlb":jyywlb,
+                    "number":number,"danwei":danwei,"saveStatus":saveStatus,"hwlb":hwlb,"jizhu":jizhu,
+                    "obtainSite":obtainSite,"saveCondition":saveCondition,"sourceSite":sourceSite,
+                    "saveTime":saveTime,"code":code,"saveLocation":saveLocation,"contact":contact,"lxrPhone":lxrPhone,"principal":principal,
+                    "fzrPhone":fzrPhone,"remark":remark,
+                }),
+                dataType:"json",
+                contentType:"application/json",
+                success:function (data) {
+                    if(data.success==true){
+                        //表单清空
+                        $("#editFormPlant").form("clear")
+                        //关闭窗口
+                        $("#editWinPlant").window("close")
+                        //刷新datagrid
+                        $("#dg").datagrid("reload")
+
+                        $.messager.show({
+                            title:"提示",
+                            msg:"修改成功"
+                        })
+                    }else if (data.success==false){
+                        $.messager.alert("提示","修改失败","error")
+                    }
+                }
+            })
+        })
+
+        //关闭当前对话框，并且清空所填数据
+        $("#cancelPlant").click(function () {
+            $("#editFormPlant").form("clear")
+            $("#editWinPlant").window("close")
+        })
+    })
+</script>
+</body>
+</html>

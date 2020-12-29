@@ -1,12 +1,15 @@
 package com.xsz.customs.service;
 
+import com.xsz.customs.dto.UserInfoDTO;
 import com.xsz.customs.mapper.dcUserExtMapper;
 import com.xsz.customs.mapper.dcUserMapper;
+import com.xsz.customs.model.dcDwjy;
 import com.xsz.customs.model.dcUser;
 import com.xsz.customs.model.dcUserExample;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -215,5 +218,95 @@ public class UserService {
             }
         }
         return users;
+    }
+
+    public List<UserInfoDTO> getUserInfo(dcUser user,List<dcUser> users){
+
+        List<UserInfoDTO> userInfoDTOS = new ArrayList<>();
+        UserInfoDTO userInfoDTO1 = new UserInfoDTO();
+        userInfoDTO1.setGqdm(user.getDcGqdm());
+        userInfoDTO1.setGqName(user.getDcGqname());
+        userInfoDTO1.setDjLxr(user.getDcDjlxr());
+        userInfoDTO1.setDjLxdh(user.getDcDjlxdh());
+        userInfoDTO1.setDjFzr(user.getDcDjfzr());
+        userInfoDTO1.setDjFzrdh(user.getDcDjfzdh());
+        userInfoDTO1.setWjLxr(user.getDcWjlxr());
+        userInfoDTO1.setWjLxdh(user.getDcWjlxdh());
+        userInfoDTO1.setWjFzr(user.getDcWjfzr());
+        userInfoDTO1.setWjFzrdh(user.getDcWjfzdh());
+        userInfoDTO1.setZjLxr(user.getDcZjlxr());
+        userInfoDTO1.setZjLxdh(user.getDcZjlxdh());
+        userInfoDTO1.setZjFzr(user.getDcZjfzr());
+        userInfoDTO1.setZjFzrdh(user.getDcZjfzdh());
+
+        userInfoDTOS.add(userInfoDTO1);
+        if (users != null) {
+            for (dcUser dcuser : users) {
+                UserInfoDTO userInfoDTO = new UserInfoDTO();
+                userInfoDTO.setGqdm(dcuser.getDcGqdm());
+                userInfoDTO.setGqName(dcuser.getDcGqname());
+                userInfoDTO.setDjLxr(dcuser.getDcDjlxr());
+                userInfoDTO.setDjLxdh(dcuser.getDcDjlxdh());
+                userInfoDTO.setDjFzr(dcuser.getDcDjfzr());
+                userInfoDTO.setDjFzrdh(dcuser.getDcDjfzdh());
+                userInfoDTO.setWjLxr(dcuser.getDcWjlxr());
+                userInfoDTO.setWjLxdh(dcuser.getDcWjlxdh());
+                userInfoDTO.setWjFzr(dcuser.getDcWjfzr());
+                userInfoDTO.setWjFzrdh(dcuser.getDcWjfzdh());
+                userInfoDTO.setZjLxr(dcuser.getDcZjlxr());
+                userInfoDTO.setZjLxdh(dcuser.getDcZjlxdh());
+                userInfoDTO.setZjFzr(dcuser.getDcZjfzr());
+                userInfoDTO.setZjFzrdh(dcuser.getDcZjfzdh());
+
+                userInfoDTOS.add(userInfoDTO);
+            }
+        }
+        return userInfoDTOS;
+    }
+    public List<UserInfoDTO> getUserInfo(dcUser user){
+        List<UserInfoDTO> userInfoDTOS = new ArrayList<>();
+        UserInfoDTO userInfoDTO1 = new UserInfoDTO();
+        userInfoDTO1.setGqdm(user.getDcGqdm());
+        userInfoDTO1.setGqName(user.getDcGqname());
+        userInfoDTO1.setDjLxr(user.getDcDjlxr());
+        userInfoDTO1.setDjLxdh(user.getDcDjlxdh());
+        userInfoDTO1.setDjFzr(user.getDcDjfzr());
+        userInfoDTO1.setDjFzrdh(user.getDcDjfzdh());
+        userInfoDTO1.setWjLxr(user.getDcWjlxr());
+        userInfoDTO1.setWjLxdh(user.getDcWjlxdh());
+        userInfoDTO1.setWjFzr(user.getDcWjfzr());
+        userInfoDTO1.setWjFzrdh(user.getDcWjfzdh());
+        userInfoDTO1.setZjLxr(user.getDcZjlxr());
+        userInfoDTO1.setZjLxdh(user.getDcZjlxdh());
+        userInfoDTO1.setZjFzr(user.getDcZjfzr());
+        userInfoDTO1.setZjFzrdh(user.getDcZjfzdh());
+
+        userInfoDTOS.add(userInfoDTO1);
+        return userInfoDTOS;
+    }
+    public List<UserInfoDTO> getUserInfoListPage(List<UserInfoDTO> userInfoDTOS, Integer page, Integer rows, int size) {
+        int first = (page-1)*rows;
+        int last = (page-1)*rows + rows;
+        if (last > size){
+            last = size;
+        }
+        return userInfoDTOS.subList(first,last);
+    }
+
+    public boolean updateUserInfomation(dcUser user){
+        dcUserExample example = new dcUserExample();
+        example.createCriteria()
+                .andDcGqdmEqualTo(user.getDcGqdm());
+        List<dcUser> users = userMapper.selectByExample(example);
+        if (users.size() != 0){
+            int flag = userMapper.updateByExampleSelective(user,example);
+            if (flag == 0){
+                return false;
+            }
+            if (flag == 1){
+                return true;
+            }
+        }
+        return false;
     }
 }

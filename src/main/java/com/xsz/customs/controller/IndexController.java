@@ -46,4 +46,6 @@ public class IndexController {
     }
     @GetMapping("/lsdcrw")
     public String toHistoryDcrw(){return "lsdcrw";}
+    @GetMapping("/userInfo")
+    public String toUserInfo(){return "userInfo";}
 }
