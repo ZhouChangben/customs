@@ -14,7 +14,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -203,19 +205,20 @@ public class UserController {
                               HttpServletResponse response){
         //System.out.println(page);
         dcUser user = (dcUser) request.getSession().getAttribute("user");
+        SubUsersDTO subUsersDTO = new SubUsersDTO();
         if (user != null){
             String gqdm = user.getDcGqdm();
             int gqdj = user.getDcGqdj();
             List<dcUser> users = userService.getUserList(gqdm, gqdj);
-            int size = users.size();
-            users = userService.getUserList(gqdm, gqdj,page,rows,size);
-            SubUsersDTO subUsersDTO = new SubUsersDTO();
-            subUsersDTO.setTotal(size);
-            subUsersDTO.setRows(users);
-            return subUsersDTO;
+            if (users != null){
+                users.add(user);
+                int size = users.size();
+                users = userService.getUserList(gqdm, gqdj,page,rows,size);
+                subUsersDTO.setTotal(size);
+                subUsersDTO.setRows(users);
+            }
         }
-        else
-            return null;
+            return subUsersDTO;
     }
 
     //获取所有二级关区，是在点击发布单个任务的时候使用的
@@ -234,12 +237,6 @@ public class UserController {
         }
         return allSubUsers;
     }
-
-    //以下均为测试用方法
-    /*@GetMapping("/update")
-    public String toUpdate(){
-        return "update";
-    }*/
 
     //获取用户信息的方法
     @ResponseBody
@@ -313,6 +310,5 @@ public class UserController {
     public String toLogin(){
         return "index";
     }
-
 
 }

@@ -116,30 +116,25 @@ public class UserService {
         if (gqdj == 0){
             example.createCriteria()
                     .andDcGqdjEqualTo(1);
-            List<dcUser> users = userMapper.selectByExample(example);
-            //测试代码
-            /*for (dcUser dcUser : users) {
-                System.out.println(dcUser.getDcGqname());
-            }*/
-            //测试代码结束
+            List<dcUser> users1 = userMapper.selectByExample(example);
+
+            dcUserExample example1 = new dcUserExample();
+            example1.createCriteria()
+                    .andDcGqdmEqualTo(gqdm);
+            List<dcUser> users = userMapper.selectByExample(example1);
+            users.addAll(users1);
             return users.subList(first,last);
         }
         //当前用户是二级海关部门
         else if (gqdj == 1){
             String frontdm = gqdm.substring(0,4);
             //String reardm = gqdm.substring(4);
-            List<dcUser> users = userExtMapper.SelectByFrontDm(frontdm+"%");
-            //测试代码
-            /*if (users.size() == 0) {
-                System.out.println("获取失败");
-            }
-            else {
-                for (dcUser dcUser : users) {
-                    System.out.println(dcUser.getDcGqname());
-                }
-            }*/
-            //测试代码结束
-                return users.subList(first,last);
+            List<dcUser> users1 = userExtMapper.SelectByFrontDm(frontdm+"%");
+            example.createCriteria()
+                    .andDcGqdmEqualTo(gqdm);
+            List<dcUser> users = userMapper.selectByExample(example);
+            users.addAll(users1);
+            return users.subList(first,last);
         }
         //当前用户是最低级的用户
         else{
@@ -157,28 +152,12 @@ public class UserService {
             example.createCriteria()
                     .andDcGqdjEqualTo(1);
             List<dcUser> users = userMapper.selectByExample(example);
-            //测试代码
-            /*for (dcUser dcUser : users) {
-                System.out.println(dcUser.getDcGqname());
-            }*/
-            //测试代码结束
             return users;
         }
         //当前用户是二级海关部门
         else if (gqdj == 1){
             String frontdm = gqdm.substring(0,4);
-            //String reardm = gqdm.substring(4);
             List<dcUser> users = userExtMapper.SelectByFrontDm(frontdm+"%");
-            //测试代码
-            /*if (users.size() == 0) {
-                System.out.println("获取失败");
-            }
-            else {
-                for (dcUser dcUser : users) {
-                    System.out.println(dcUser.getDcGqname());
-                }
-            }*/
-            //测试代码结束
             return users;
         }
         //当前用户是最低级的用户

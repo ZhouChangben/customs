@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Controller
@@ -126,10 +128,15 @@ public class DcrwController {
                          HttpServletRequest request,
                          HttpServletResponse response){
         //日志记录
+         /*long currentTime = System.currentTimeMillis();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy年-MM月dd日-HH时mm分ss秒");
+        Date date = new Date(currentTime);
+        System.out.println(formatter.format(date));
+        System.out.println(formatter.format(date).getClass());*/
         dcLog log = new dcLog();
         log.setIp(request.getRemoteAddr());
         log.setTime(System.currentTimeMillis());
-        log.setMovement("删除一条达调查任务");
+        log.setMovement("删除一条调查任务");
         logService.InsertLog(log);
 
         ResultDTO resultDTO = new ResultDTO();

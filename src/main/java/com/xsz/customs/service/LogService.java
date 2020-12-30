@@ -14,4 +14,9 @@ public class LogService {
     public void InsertLog(dcLog log){
         logMapper.insert(log);
     }
+
+    public dcLog selectLogById(int id){
+        dcLog log = logMapper.selectByPrimaryKey(id);
+        return log;
+    }
 }
