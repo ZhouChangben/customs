@@ -27,8 +27,7 @@ public class IndexController {
     @GetMapping("/")
     //获取目标用户列表的方法,设想中也希望进入首页时显示任务代码最大的。
     public String index(HttpServletRequest request,
-                              HttpServletResponse response,
-                              Model model){
+                        HttpServletResponse response){
         HttpSession session = request.getSession();
         //由于持久登录的实现导致session中一直有一个user对象，想要获取下属的列表至少需要获得当前用户
         dcUser user = (dcUser) session.getAttribute("user");

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--    导入jQuery的js文件-->
+    <script type="text/javascript" src="./easyUI/jquery.min.js"></script>
+    <!--    导入easyUI的js文件-->
+    <script type="text/javascript" src="./easyUI/jquery.easyui.min.js"></script>
+    <!--    导入easyUI的语言js文件-->
+    <script type="text/javascript" src="./easyUI/locale/easyui-lang-zh_CN.js"></script>
+    <!--    导入easyUI的图标css文件-->
+    <link rel="stylesheet" type="text/css" href="./easyUI/themes/icon.css">
+    <!--    导入默认模块的css文件-->
+    <link id="themeLink" rel="stylesheet" type="text/css" href="./easyUI/themes/default/easyui.css">
+</head>
+<body>
+<div id="loading" style="position:absolute;z-index:1000;top:0px;left:0px;width:100%;height:100%;background:#DDDDDB;text-align :center;padding-top:20%;">
+    <h1><font color="#15428B">加载中....</font></h1>
+</div>
+<table id="dg"></table>
+</body>
+<script type="text/javascript">
+    var pc;
+    //不要放在$(function(){});中
+    $.parser.onComplete = function () {
+        if (pc) clearTimeout(pc);
+        pc = setTimeout(closes, 200);
+    }
+    function closes() {
+        $('#loading').fadeOut('normal', function () {
+            $(this).remove();
+        });
+    }
+
+    $(function () {
+        $('#dg').datagrid({
+            //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
+            url: 'http://localhost:8080/dwlsjl',
+            rownumbers: true,
+            columns: [
+                [
+                    //展示列数据
+                    {field: 'dcRenwugqname', title: '关区', width: 100},
+                    {field: 'djYwly', title: '业务领域', width: 100},
+                    {field: 'djLb', title: '类别', width: 100},
+                    {field: 'djName', title: '名称', width: 100},
+                    {field: 'djYwm', title: '英文名（简称）', width: 100},
+                    {field: 'djDuzhuxing', title: '毒（菌）株型/血清型', width: 100},
+                    {field: 'djBingyuan', title: '病原微生物分类', width: 100},
+                    {field: 'djXibaoxing', title: '细胞型', width: 100},
+                    {field: 'djNeibubh', title: '内部保存编号', width: 100},
+                    {field: 'djChuanci', title: '传次', width: 100},
+                    {field: 'djZhuangtai', title: '状态\\形式', width: 100},
+                    {field: 'djLysuzhu', title: '宿主', width: 100},
+                    {field: 'djLaiyuan', title: '来源国家/地区', width: 100},
+                    {field: 'djHuoqutj', title: '获得渠道', width: 100},
+                    {field: 'djYbl', title: '数量', width: 100},
+                    {field: 'djYbdanwei', title: '单位', width: 100},
+                    {field: 'djBaocuntj', title: '保存条件', width: 100},
+                    {field: 'djBaocunsj', title: '保存时间', width: 100},
+                    {field: 'djJibenqk', title: '基本情况', width: 100},
+                    {field: 'djHuodedd', title: '获得地点', width: 100},
+                    {
+                        field: 'djBaocunwz', title: '保存位置\n' +
+                            '（隶属关/部门）', width: 100
+                    },
+                    {field: 'djLianlr', title: '联络人', width: 100},
+                    {field: 'djLianldh', title: '联络电话', width: 100},
+                    {field: 'djFuzeren', title: '负责人', width: 100},
+                    {field: 'djFuzerendh', title: '负责人电话', width: 100},
+                    {field: 'djBy1', title: '备注', width: 100},
+
+                ]
+            ],
+            pagination: true,
+            toolbar: [{
+                iconCls: 'icon-add',
+                text: "添加记录到当前调查任务",
+                handler: function () {
+                    //获取选择的数据
+                    var rows=$("#dg").datagrid("getSelections");
+                    //将获取的数据插入数组
+                    var ids=new Array();
+                    $(rows).each(function (i) {
+                        ids.push(rows[i].id)
+                    });
+                    alert(ids);
+                    $.ajax({
+                        url: "http://localhost:8080/HistoryOnceMoreDj",
+                        type: "post",
+                        data: JSON.stringify({"ids": ids}),
+                        dataType: "json",
+                        contentType: "application/json",
+                        success: function (data) {
+                            if(data.success==true){
+
+                                $.messager.show({
+                                    title:"提示",
+                                    msg:"添加成功"
+                                })
+                            }else if (data.success==false){
+                                $.messager.alert("提示","添加失败","error")
+                            }
+
+                        }
+                    })
+
+                }
+            }]
+        })
+    })
+</script>
+</html>

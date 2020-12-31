@@ -45,8 +45,10 @@ public class DcrwService {
         //说明这个调查任务的名字还没有被使用过
         if (dcrws.size() == 0){
             //查找所有非海关科技司的用户
+            /*userExample.createCriteria()
+                    .andDcGqdmNotEqualTo("000001");*/
             userExample.createCriteria()
-                    .andDcGqdmNotEqualTo("000001");
+                    .andDcGqdjEqualTo(1);
             List<dcUser> users = userMapper.selectByExample(userExample);
             dcDcrw dcdcrw = new dcDcrw();
             dcdcrw.setDcRenwuxh(dcrwExtMapper.SelectTheLatestMission()+1);
@@ -114,7 +116,7 @@ public class DcrwService {
             return false;
     }*/
 
-    //当为二级海关生成单独的任务时，还要为其名下的三级海关生成任务
+    /*//当为二级海关生成单独的任务时，还要为其名下的三级海关生成任务
     public boolean createSingleForSub(dcDcrw dcrw,List<dcUser> users){
         int flag = dcrwMapper.insert(dcrw);
         dcDcrwExample dcrwExample = new dcDcrwExample();
@@ -135,7 +137,7 @@ public class DcrwService {
             flag = dcrwMapper.insert(dcrw2);
         }
 
-        /*dcrwExample.createCriteria()
+        *//*dcrwExample.createCriteria()
                 .andDcRenwumcEqualTo(dcRenwumc);
         List<dcDcrw> newDcrws = dcrwMapper.selectByExample(dcrwExample);
         for (dcDcrw dcDcrw : newDcrws) {
@@ -163,11 +165,20 @@ public class DcrwService {
                 wsjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
                 dcWsjyMapper.insert(wsjy);
             }
-        }*/
+        }*//*
         if (flag != 0){
             return true;
         }else
             return false;
+    }*/
+
+    public boolean createSingle(dcDcrw dcrw){
+        dcrw.setDcDcbzt("未提交");
+        int flag = dcrwMapper.insert(dcrw);
+        if (flag == 1){
+            return true;
+        }
+        return false;
     }
 
     public int findLatestMission(){
@@ -300,5 +311,87 @@ public class DcrwService {
         return false;
     }
 
+    public dcUser findFatherGq(String gqdm) {
+        dcUser user = new dcUser();
+        dcUserExample example = new dcUserExample();
+        String subgqdm = gqdm.substring(0,4);
+        String fgqdm = subgqdm + "00";
+        example.createCriteria()
+                .andDcGqdmEqualTo(fgqdm);
+        List<dcUser> users = userMapper.selectByExample(example);
+        if (users != null){
+            return users.get(0);
+        }
+        return null;
+    }
 
+    public List<dcDcrw> findDcrwsForThird(dcUser user,dcUser fuser,int max){
+        boolean wjFlag = user.getDcWjqx();
+        boolean djFlag = user.getDcDjqx();
+        boolean zjFlag = user.getDcZjqx();
+        List<dcDcrw> dcrws = new ArrayList<>();
+        if (wjFlag == true){
+            dcDcrwExample example = new dcDcrwExample();
+            example.createCriteria()
+                    .andDcRenwugqdmEqualTo(fuser.getDcGqdm())
+                    .andDcDcbnameEqualTo("卫生检疫")
+                    .andDcRenwuxhEqualTo(max);
+            List<dcDcrw> dcrws1 = dcrwMapper.selectByExample(example);
+            dcrws.addAll(dcrws1);
+        }
+        if (djFlag == true){
+            dcDcrwExample example = new dcDcrwExample();
+            example.createCriteria()
+                    .andDcRenwugqdmEqualTo(fuser.getDcGqdm())
+                    .andDcDcbnameEqualTo("动物检疫")
+                    .andDcRenwuxhEqualTo(max);
+            List<dcDcrw> dcrws1 = dcrwMapper.selectByExample(example);
+            dcrws.addAll(dcrws1);
+        }
+        if (zjFlag == true){
+            dcDcrwExample example = new dcDcrwExample();
+            example.createCriteria()
+                    .andDcRenwugqdmEqualTo(fuser.getDcGqdm())
+                    .andDcDcbnameEqualTo("植物检疫")
+                    .andDcRenwuxhEqualTo(max);
+            List<dcDcrw> dcrws1 = dcrwMapper.selectByExample(example);
+            dcrws.addAll(dcrws1);
+        }
+        return dcrws;
+    }
+
+    public List<dcDcrw> findHistoryDcrwForThrid(String fGqdm, dcUser user, int max) {
+        boolean wjFlag = user.getDcWjqx();
+        boolean djFlag = user.getDcDjqx();
+        boolean zjFlag = user.getDcZjqx();
+        List<dcDcrw> dcrws = new ArrayList<>();
+        if (wjFlag == true){
+            dcDcrwExample example = new dcDcrwExample();
+            example.createCriteria()
+                    .andDcRenwugqdmEqualTo(fGqdm)
+                    .andDcDcbnameEqualTo("卫生检疫")
+                    .andDcRenwuxhNotEqualTo(max);
+            List<dcDcrw> dcrws1 = dcrwMapper.selectByExample(example);
+            dcrws.addAll(dcrws1);
+        }
+        if (djFlag == true){
+            dcDcrwExample example = new dcDcrwExample();
+            example.createCriteria()
+                    .andDcRenwugqdmEqualTo(fGqdm)
+                    .andDcDcbnameEqualTo("动物检疫")
+                    .andDcRenwuxhNotEqualTo(max);
+            List<dcDcrw> dcrws1 = dcrwMapper.selectByExample(example);
+            dcrws.addAll(dcrws1);
+        }
+        if (zjFlag == true){
+            dcDcrwExample example = new dcDcrwExample();
+            example.createCriteria()
+                    .andDcRenwugqdmEqualTo(fGqdm)
+                    .andDcDcbnameEqualTo("植物检疫")
+                    .andDcRenwuxhNotEqualTo(max);
+            List<dcDcrw> dcrws1 = dcrwMapper.selectByExample(example);
+            dcrws.addAll(dcrws1);
+        }
+        return dcrws;
+    }
 }

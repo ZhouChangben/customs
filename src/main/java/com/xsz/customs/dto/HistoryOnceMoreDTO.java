@@ -6,6 +6,6 @@ import java.util.List;
 
 @Data
 public class HistoryOnceMoreDTO {
-    int renwuid;
     List<Integer> ids;
+    /*String ids;*/
 }

@@ -4,6 +4,7 @@ import com.xsz.customs.dto.*;
 import com.xsz.customs.model.dcDcrw;
 import com.xsz.customs.model.dcLog;
 import com.xsz.customs.model.dcUser;
+import com.xsz.customs.model.dcUserExample;
 import com.xsz.customs.service.DcrwService;
 import com.xsz.customs.service.LogService;
 import com.xsz.customs.service.UserService;
@@ -46,30 +47,40 @@ public class DcrwController {
         dcDcrw dcrw = new dcDcrw();
         dcrw.setDcRenwuxh(rwxh);
         ResultDTO resultDTO = new ResultDTO();
-        boolean flag;
         if (addSingleDcrwDTO.getDcbName().equals("所有任务")){
             dcrw.setDcRenwugqname(addSingleDcrwDTO.getDcGqName());
             dcrw.setDcRenwugqdm(addSingleDcrwDTO.getDcGqdm());
             dcrw.setDcRenwumc(addSingleDcrwDTO.getDcrwName());
-            dcrw.setDcDcbname("卫生检疫");
-            /*flag = dcrwService.createSingle(dcrw);*/
+            /*dcrw.setDcDcbname("卫生检疫");
+            flag = dcrwService.createSingle(dcrw);*/
             //获取当前二级关区名下的三级关区列表，将其当做参数传入service中的方法中
-            List<dcUser> users = userService.getUserList(dcrw.getDcRenwugqdm(),1);
+            /*List<dcUser> users = userService.getUserList(dcrw.getDcRenwugqdm(),1);
             flag = dcrwService.createSingleForSub(dcrw,users);
 
             dcrw.setDcDcbname("动物检疫");
-            /*flag = dcrwService.createSingle(dcrw);*/
+            *//*flag = dcrwService.createSingle(dcrw);*//*
             flag = dcrwService.createSingleForSub(dcrw,users);
 
             dcrw.setDcDcbname("植物检疫");
-            /*flag = dcrwService.createSingle(dcrw);*/
-            flag = dcrwService.createSingleForSub(dcrw,users);
+            *//*flag = dcrwService.createSingle(dcrw);*//*
+            flag = dcrwService.createSingleForSub(dcrw,users);*/
+            dcrw.setDcDcbname("卫生检疫");
+            boolean flag1 = dcrwService.createSingle(dcrw);
 
-            resultDTO.setSuccess(flag);
-            if (flag == true){
+
+            dcrw.setDcDcbname("动物检疫");
+            boolean flag2 = dcrwService.createSingle(dcrw);
+
+
+            dcrw.setDcDcbname("植物检疫");
+            boolean flag3 = dcrwService.createSingle(dcrw);
+
+
+            resultDTO.setSuccess(flag1 && flag2 && flag3);
+            if (flag1 && flag2 && flag3 == true){
                 resultDTO.setMessage("添加单个任务成功");
             }
-            if (flag == false){
+            if (flag1 && flag2 && flag3 == false){
                 resultDTO.setMessage("添加单个任务失败");
             }
         }
@@ -78,10 +89,11 @@ public class DcrwController {
             dcrw.setDcRenwugqname(addSingleDcrwDTO.getDcGqName());
             dcrw.setDcRenwugqdm(addSingleDcrwDTO.getDcGqdm());
             dcrw.setDcRenwumc(addSingleDcrwDTO.getDcrwName());
-            List<dcUser> users = userService.getUserList(dcrw.getDcRenwugqdm(),1);
-            /*boolean flag = dcrwService.createSingle(dcrw);*/
-            flag = dcrwService.createSingleForSub(dcrw,users);
+            /*List<dcUser> users = userService.getUserList(dcrw.getDcRenwugqdm(),1);
+            *//*boolean flag = dcrwService.createSingle(dcrw);*//*
+            flag = dcrwService.createSingleForSub(dcrw,users);*/
 
+            boolean flag = dcrwService.createSingle(dcrw);
             resultDTO.setSuccess(flag);
             if (flag == true){
                 resultDTO.setMessage("添加单个任务成功");
@@ -169,7 +181,32 @@ public class DcrwController {
         dcUser user = (dcUser)request.getSession().getAttribute("user");
         LatestMissionDTO latestMissionDTO = new LatestMissionDTO();
         int max = dcrwService.findLatestMission();
+        String gqdm = user.getDcGqdm();
         if (user != null){
+            if (user.getDcGqdj() == 0){
+                List<dcDcrw> dcrws = dcrwService.getLatestMissionList(max);
+                int size = dcrws.size();
+                dcrws = dcrwService.getLatestMissionListPage(dcrws,page,rows,size);
+                latestMissionDTO.setRows(dcrws);
+                latestMissionDTO.setTotal(size);
+            }
+            else if (user.getDcGqdj() == 1){
+                List<dcDcrw> dcrws = dcrwService.findDcrwByGqdm(gqdm,max);
+                int size = dcrws.size();
+                dcrws = dcrwService.getLatestMissionListPage(dcrws,page,rows,size);
+                latestMissionDTO.setRows(dcrws);
+                latestMissionDTO.setTotal(size);
+            }
+            else if(user.getDcGqdj() > 1){
+                dcUser user1 = dcrwService.findFatherGq(gqdm);
+                List<dcDcrw> dcrws = dcrwService.findDcrwsForThird(user,user1,max);
+                int size = dcrws.size();
+                dcrws = dcrwService.getLatestMissionListPage(dcrws,page,rows,size);
+                latestMissionDTO.setRows(dcrws);
+                latestMissionDTO.setTotal(size);
+            }
+        }
+        /*if (user != null){
             //此时为北京科技司，理论上显示所有的任务
             if (user.getDcGqdj() == 0){
                 List<dcDcrw> dcrws = dcrwService.getLatestMissionList(max);
@@ -202,7 +239,7 @@ public class DcrwController {
                 latestMissionDTO.setTotal(size);
                 latestMissionDTO.setRows(dcrws);
             }
-        }
+        }*/
         return latestMissionDTO;
     }
     //显示历史调查任务的界面，和显示最新调查任务差不多，仅仅只有几个方法不同而已
@@ -226,7 +263,7 @@ public class DcrwController {
             }
             //当用户为二级关区时
             if (user.getDcGqdj() == 1){
-                List<dcDcrw> dcrws = dcrwService.findHistoryDcrwByGqdm(user.getDcGqdm(),max);
+                /*List<dcDcrw> dcrws = dcrwService.findHistoryDcrwByGqdm(user.getDcGqdm(),max);
                 List<dcUser> users = userService.getUserList(user.getDcGqdm(),1);
                 if (users != null) {
                     //这一步非常重要，将两表的内容联系起来
@@ -238,11 +275,18 @@ public class DcrwController {
                     dcrws = dcrwService.getLatestMissionListPage(dcrws,page,rows,size);
                     latestMissionDTO.setTotal(size);
                     latestMissionDTO.setRows(dcrws);
-                }
+                }*/
+                List<dcDcrw> dcrws = dcrwService.findHistoryDcrwByGqdm(user.getDcGqdm(),max);
+                int size = dcrws.size();
+                //此方法仅仅用于分页
+                dcrws = dcrwService.getLatestMissionListPage(dcrws,page,rows,size);
+                latestMissionDTO.setTotal(size);
+                latestMissionDTO.setRows(dcrws);
             }
             //当用户为三级关区时（只能查看自己的任务）
             if (user.getDcGqdj() > 1){
-                List<dcDcrw> dcrws = dcrwService.findHistoryDcrwByGqdm(user.getDcGqdm(),max);
+                dcUser fUser = dcrwService.findFatherGq(user.getDcGqdm());
+                List<dcDcrw> dcrws = dcrwService.findHistoryDcrwForThrid(fUser.getDcGqdm(),user,max);
                 int size = dcrws.size();
                 dcrws = dcrwService.getLatestMissionListPage(dcrws,page,rows,size);
                 latestMissionDTO.setTotal(size);
@@ -299,6 +343,30 @@ public class DcrwController {
                          HttpServletResponse response){
         request.getSession().setAttribute("rwid",rwid);
         return "zwdcrw";
+    }
+
+    @RequestMapping(value = "/wslsjl",method = RequestMethod.GET)
+    public String toWslsjl(@RequestParam(value = "rwid") Integer rwid,
+                         HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().setAttribute("rwid",rwid);
+        return "wslsjl";
+    }
+
+    @RequestMapping(value = "/dwlsjl",method = RequestMethod.GET)
+    public String toDwlsjl(@RequestParam(value = "rwid") Integer rwid,
+                           HttpServletRequest request,
+                           HttpServletResponse response){
+        request.getSession().setAttribute("rwid",rwid);
+        return "dwlsjl";
+    }
+
+    @RequestMapping(value = "/zwlsjl",method = RequestMethod.GET)
+    public String toZwlsjl(@RequestParam(value = "rwid") Integer rwid,
+                           HttpServletRequest request,
+                           HttpServletResponse response){
+        request.getSession().setAttribute("rwid",rwid);
+        return "zwlsjl";
     }
 
     @ResponseBody

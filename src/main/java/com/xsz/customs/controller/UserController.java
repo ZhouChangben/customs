@@ -210,8 +210,12 @@ public class UserController {
             String gqdm = user.getDcGqdm();
             int gqdj = user.getDcGqdj();
             List<dcUser> users = userService.getUserList(gqdm, gqdj);
-            if (users != null){
+            //当前关区是非三级关区时
+            if (users != null && users.get(0).getDcGqdj() < 2){
                 users.add(user);
+            }
+            //这是为了方便修改三级关区的用户管理而设置的
+            if (users != null){
                 int size = users.size();
                 users = userService.getUserList(gqdm, gqdj,page,rows,size);
                 subUsersDTO.setTotal(size);

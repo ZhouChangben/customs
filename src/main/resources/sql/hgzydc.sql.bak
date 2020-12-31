@@ -46,8 +46,10 @@ CREATE TABLE `dc_user` (
   `dc_by1` varchar(100) default NULL,
   `dc_by2` varchar(100) default NULL,
   `dc_by3` varchar(100) default NULL,
+  `dc_wjqx` tinyint default 1 NOT NULL,
+  `dc_djqx` tinyint default 1 NOT NULL,
+  `dc_zjqx` tinyint default 1 NOT NULL,
   PRIMARY KEY  (`Id`)
-  UNIQUE (dc_gqdm)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 #

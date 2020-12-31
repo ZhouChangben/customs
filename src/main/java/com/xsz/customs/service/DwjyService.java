@@ -2,6 +2,7 @@ package com.xsz.customs.service;
 
 import com.xsz.customs.dto.DwjyDTO;
 import com.xsz.customs.dto.DwjyInfoDTO;
+import com.xsz.customs.mapper.dcDcrwExtMapper;
 import com.xsz.customs.mapper.dcDcrwMapper;
 import com.xsz.customs.mapper.dcDwjyMapper;
 import com.xsz.customs.mapper.dcUserMapper;
@@ -21,6 +22,9 @@ public class DwjyService {
 
     @Autowired
     private dcUserMapper userMapper;
+
+    @Autowired
+    private dcDcrwExtMapper dcrwExtMapper;
 
     public boolean updateDwjy(dcDwjy dwjy) {
         dcDwjyExample dwjyExample = new dcDwjyExample();
@@ -118,14 +122,43 @@ public class DwjyService {
             return true;
     }
 
-    public boolean historyOnceMoreDj(List<Integer> ids, int renwuid) {
+    public boolean historyOnceMoreDj(List<Integer> ids) {
         dcDcrw dcrw = new dcDcrw();
         dcDwjy dwjy = new dcDwjy();
-        dcrw = dcrwMapper.selectByPrimaryKey(renwuid);
+        dcDcrwExample dcrwExample = new dcDcrwExample();
         for (int id : ids) {
             dwjy = dwjyMapper.selectByPrimaryKey(id);
-            dwjy.setDcRenwumc(dcrw.getDcRenwumc());
-            dwjyMapper.insert(dwjy);
+            dwjy.setId(null);
+            int renwuid = dwjy.getDcRenwuid();
+            dcrw = dcrwMapper.selectByPrimaryKey(renwuid);
+            int xh = dcrwExtMapper.SelectTheLatestMission();
+            String dcrwGqName = dcrw.getDcRenwugqname();
+            String dcbName = dcrw.getDcDcbname();
+
+            dcrwExample.createCriteria()
+                    .andDcRenwuxhEqualTo(xh)
+                    .andDcRenwugqnameEqualTo(dcrwGqName)
+                    .andDcDcbnameEqualTo(dcbName);
+
+            List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
+            if (dcrws != null){
+                for (dcDcrw dcrwNewest : dcrws) {
+                    if (dcrwNewest.getDcDcbzt().equals("未提交")) {
+                        int renwuidNew = dcrwNewest.getId();
+                        String renwumc = dcrwNewest.getDcRenwumc();
+                        dwjy.setDcRenwumc(renwumc);
+                        dwjy.setDcRenwuid(renwuidNew);
+                        dwjyMapper.insert(dwjy);
+                    }
+                }
+                /*dcDcrw dcrwNewest = new dcDcrw();
+                dcrwNewest = dcrws.get(0);
+                int renwuidNew = dcrwNewest.getId();
+                String renwumc = dcrwNewest.getDcRenwumc();
+                dwjy.setDcRenwumc(renwumc);
+                dwjy.setDcRenwuid(renwuidNew);
+                dwjyMapper.insert(dwjy);*/
+            }
         }
         return true;
     }

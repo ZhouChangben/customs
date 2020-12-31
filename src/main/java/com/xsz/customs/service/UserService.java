@@ -138,7 +138,11 @@ public class UserService {
         }
         //当前用户是最低级的用户
         else{
-            return null;
+            example.createCriteria()
+                    .andDcGqdmEqualTo(gqdm);
+            List<dcUser> users = userMapper.selectByExample(example);
+            return users.subList(first,last);
+            /*return null;*/
         }
     }
 
@@ -162,7 +166,11 @@ public class UserService {
         }
         //当前用户是最低级的用户
         else{
-            return null;
+            example.createCriteria()
+                    .andDcGqdmEqualTo(gqdm);
+            List<dcUser> users = userMapper.selectByExample(example);
+            return users;
+            /*return null;*/
         }
     }
 

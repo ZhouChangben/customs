@@ -1,6 +1,7 @@
 package com.xsz.customs.controller;
 
 import com.xsz.customs.dto.*;
+import com.xsz.customs.model.dcDwjy;
 import com.xsz.customs.model.dcWsjy;
 import com.xsz.customs.model.dcZwjy;
 import com.xsz.customs.service.DcrwService;
@@ -75,6 +76,22 @@ public class ZwjyController {
                             Integer rows,
                             HttpServletRequest request,
                             HttpServletResponse response){
+        int renwuid = (int)request.getSession().getAttribute("rwid");
+        ShowZwjyDTO showZwjyDTO = new ShowZwjyDTO();
+        List<dcZwjy> zwjys = zwjyService.getZwjysByRenwuid(renwuid);
+        int size = zwjys.size();
+        zwjys = zwjyService.getZwjyListPage(zwjys,page,rows,size);
+        showZwjyDTO.setTotal(size);
+        showZwjyDTO.setRows(zwjys);
+        return showZwjyDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "zwlsjl",method = RequestMethod.POST)
+    public Object showZwjyls(Integer page,
+                             Integer rows,
+                             HttpServletRequest request,
+                             HttpServletResponse response){
         int renwuid = (int)request.getSession().getAttribute("rwid");
         ShowZwjyDTO showZwjyDTO = new ShowZwjyDTO();
         List<dcZwjy> zwjys = zwjyService.getZwjysByRenwuid(renwuid);
@@ -160,20 +177,19 @@ public class ZwjyController {
 
     //将历史任务中植物检疫表的表项选中后插入到当前任务中
     @ResponseBody
-    @RequestMapping(value = "zwjyHistoryOnceMore",method = RequestMethod.POST)
+    @RequestMapping(value = "HistoryOnceMoreZj",method = RequestMethod.POST)
     public Object historyOnceMoreWj(@RequestBody HistoryOnceMoreDTO historyOnceMoreDTO,
                                     HttpServletRequest request,
                                     HttpServletResponse response){
         ResultDTO resultDTO = new ResultDTO();
         List<Integer> ids = historyOnceMoreDTO.getIds();
-        int renwuid = historyOnceMoreDTO.getRenwuid();
-        boolean flag = zwjyService.historyOnceMore(ids,renwuid);
+        boolean flag = zwjyService.historyOnceMoreZj(ids);
         resultDTO.setSuccess(flag);
         if (flag == true){
-            resultDTO.setMessage("删除植物检疫表格成功");
+            resultDTO.setMessage("删除卫生检疫表格成功");
         }
         else {
-            resultDTO.setMessage("删除植物检疫表格失败");
+            resultDTO.setMessage("删除卫生检疫表格失败");
         }
         return resultDTO;
     }

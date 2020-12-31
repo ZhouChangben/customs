@@ -2,6 +2,7 @@ package com.xsz.customs.service;
 
 import com.xsz.customs.dto.WsjyDTO;
 import com.xsz.customs.dto.WsjyInfoDTO;
+import com.xsz.customs.mapper.dcDcrwExtMapper;
 import com.xsz.customs.mapper.dcDcrwMapper;
 import com.xsz.customs.mapper.dcUserMapper;
 import com.xsz.customs.mapper.dcWsjyMapper;
@@ -22,6 +23,8 @@ public class WsjyService {
     @Autowired
     private dcUserMapper userMapper;
 
+    @Autowired
+    private dcDcrwExtMapper dcrwExtMapper;
 
     public boolean updateTable(dcWsjy dcwsjy){
 
@@ -199,14 +202,36 @@ public class WsjyService {
     }
 
     //将历史任务中卫生检疫表的表项选中后插入到当前任务中
-    public boolean historyOnceMore(List<Integer> ids,int renwuid){
+    public boolean historyOnceMoreWj(List<Integer> ids){
         dcDcrw dcrw = new dcDcrw();
         dcWsjy wsjy = new dcWsjy();
-        dcrw = dcrwMapper.selectByPrimaryKey(renwuid);
+        dcDcrwExample dcrwExample = new dcDcrwExample();
         for (int id : ids) {
             wsjy = wsjyMapper.selectByPrimaryKey(id);
-            wsjy.setDcRenwumc(dcrw.getDcRenwumc());
-            wsjyMapper.insert(wsjy);
+            wsjy.setId(null);
+            int renwuid = wsjy.getDcRenwuid();
+            dcrw = dcrwMapper.selectByPrimaryKey(renwuid);
+            int xh = dcrwExtMapper.SelectTheLatestMission();
+            String dcrwGqName = dcrw.getDcRenwugqname();
+            String dcbName = dcrw.getDcDcbname();
+
+            dcrwExample.createCriteria()
+                    .andDcRenwuxhEqualTo(xh)
+                    .andDcRenwugqnameEqualTo(dcrwGqName)
+                    .andDcDcbnameEqualTo(dcbName);
+
+            List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
+            if (dcrws != null){
+                for (dcDcrw dcrwNewest : dcrws) {
+                    if (dcrwNewest.getDcDcbzt().equals("未提交")) {
+                        int renwuidNew = dcrwNewest.getId();
+                        String renwumc = dcrwNewest.getDcRenwumc();
+                        wsjy.setDcRenwumc(renwumc);
+                        wsjy.setDcRenwuid(renwuidNew);
+                        wsjyMapper.insert(wsjy);
+                    }
+                }
+            }
         }
         return true;
     }

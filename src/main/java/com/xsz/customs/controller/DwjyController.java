@@ -82,6 +82,22 @@ public class DwjyController {
         return showDwjyDTO;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "dwlsjl",method = RequestMethod.POST)
+    public Object showDwjyls(Integer page,
+                            Integer rows,
+                            HttpServletRequest request,
+                            HttpServletResponse response){
+        int renwuid = (int)request.getSession().getAttribute("rwid");
+        ShowDwjyDTO showDwjyDTO = new ShowDwjyDTO();
+        List<dcDwjy> dwjys = dwjyService.getDwjysByRenwuid(renwuid);
+        int size = dwjys.size();
+        dwjys = dwjyService.getDwjyListPage(dwjys,page,rows,size);
+        showDwjyDTO.setTotal(size);
+        showDwjyDTO.setRows(dwjys);
+        return showDwjyDTO;
+    }
+
     //点击添加数据时将联系人，联系电话、关区等返回给前台
     @ResponseBody
     @RequestMapping(value = "showDwDcrwinformation",method = RequestMethod.POST)
@@ -154,14 +170,13 @@ public class DwjyController {
 
     //将历史任务中动物检疫表的表项选中后插入到当前任务中
     @ResponseBody
-    @RequestMapping(value = "dwjyHistoryOnceMore",method = RequestMethod.POST)
+    @RequestMapping(value = "HistoryOnceMoreDj",method = RequestMethod.POST)
     public Object historyOnceMoreWj(@RequestBody HistoryOnceMoreDTO historyOnceMoreDTO,
                                     HttpServletRequest request,
                                     HttpServletResponse response){
         ResultDTO resultDTO = new ResultDTO();
         List<Integer> ids = historyOnceMoreDTO.getIds();
-        int renwuid = historyOnceMoreDTO.getRenwuid();
-        boolean flag = dwjyService.historyOnceMoreDj(ids,renwuid);
+        boolean flag = dwjyService.historyOnceMoreDj(ids);
         resultDTO.setSuccess(flag);
         if (flag == true){
             resultDTO.setMessage("删除动物检疫表格成功");

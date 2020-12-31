@@ -23,7 +23,8 @@ public class ZwjyService {
     @Autowired
     private dcZwjyMapper zwjyMapper;
 
-
+    @Autowired
+    private dcDcrwExtMapper dcrwExtMapper;
 
     public boolean insertNewTable(dcZwjy zwjy) {
         int flag = zwjyMapper.insert(zwjy);
@@ -80,15 +81,37 @@ public class ZwjyService {
             return true;
     }
 
-    public boolean historyOnceMore(List<Integer> ids, int renwuid) {
+    public boolean historyOnceMoreZj(List<Integer> ids) {
 
         dcDcrw dcrw = new dcDcrw();
         dcZwjy zwjy = new dcZwjy();
-        dcrw = dcrwMapper.selectByPrimaryKey(renwuid);
+        dcDcrwExample dcrwExample = new dcDcrwExample();
         for (int id : ids) {
             zwjy = zwjyMapper.selectByPrimaryKey(id);
-            zwjy.setDcRenwumc(dcrw.getDcRenwumc());
-            zwjyMapper.insert(zwjy);
+            zwjy.setId(null);
+            int renwuid = zwjy.getDcRenwuid();
+            dcrw = dcrwMapper.selectByPrimaryKey(renwuid);
+
+            int xh = dcrwExtMapper.SelectTheLatestMission();
+            String dcrwGqName = dcrw.getDcRenwugqname();
+            String dcbName = dcrw.getDcDcbname();
+            dcrwExample.createCriteria()
+                    .andDcRenwuxhEqualTo(xh)
+                    .andDcRenwugqnameEqualTo(dcrwGqName)
+                    .andDcDcbnameEqualTo(dcbName);
+
+            List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
+            if (dcrws != null){
+                for (dcDcrw dcrwNewest : dcrws) {
+                    if (dcrwNewest.getDcDcbzt().equals("未提交")) {
+                        int renwuidNew = dcrwNewest.getId();
+                        String renwumc = dcrwNewest.getDcRenwumc();
+                        zwjy.setDcRenwumc(renwumc);
+                        zwjy.setDcRenwuid(renwuidNew);
+                        zwjyMapper.insert(zwjy);
+                    }
+                }
+            }
         }
         return true;
     }

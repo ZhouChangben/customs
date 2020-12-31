@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -71,6 +72,22 @@ public class WsjyController {
                             Integer rows,
                             HttpServletRequest request,
                             HttpServletResponse response){
+        int renwuid = (int)request.getSession().getAttribute("rwid");
+        ShowWsjyDTO showWsjyDTO = new ShowWsjyDTO();
+        List<dcWsjy> wsjys = wsjyService.getWsjysByRenwuid(renwuid);
+        int size = wsjys.size();
+        wsjys = wsjyService.getWsjyListPage(wsjys,page,rows,size);
+        showWsjyDTO.setTotal(size);
+        showWsjyDTO.setRows(wsjys);
+        return showWsjyDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "wslsjl",method = RequestMethod.POST)
+    public Object showWsjyls(Integer page,
+                             Integer rows,
+                             HttpServletRequest request,
+                             HttpServletResponse response){
         int renwuid = (int)request.getSession().getAttribute("rwid");
         ShowWsjyDTO showWsjyDTO = new ShowWsjyDTO();
         List<dcWsjy> wsjys = wsjyService.getWsjysByRenwuid(renwuid);
@@ -153,14 +170,13 @@ public class WsjyController {
 
     //将历史任务中卫生检疫表的表项选中后插入到当前任务中
     @ResponseBody
-    @RequestMapping(value = "historyOnceMore",method = RequestMethod.POST)
+    @RequestMapping(value = "historyOnceMoreWs",method = RequestMethod.POST)
     public Object historyOnceMoreWj(@RequestBody HistoryOnceMoreDTO historyOnceMoreDTO,
                                     HttpServletRequest request,
                                     HttpServletResponse response){
         ResultDTO resultDTO = new ResultDTO();
         List<Integer> ids = historyOnceMoreDTO.getIds();
-        int renwuid = historyOnceMoreDTO.getRenwuid();
-        boolean flag = wsjyService.historyOnceMore(ids,renwuid);
+        boolean flag = wsjyService.historyOnceMoreWj(ids);
         resultDTO.setSuccess(flag);
         if (flag == true){
             resultDTO.setMessage("删除卫生检疫表格成功");
@@ -170,5 +186,31 @@ public class WsjyController {
         }
         return resultDTO;
     }
-
+    @ResponseBody
+    @RequestMapping(value = "historyOnceMore",method = RequestMethod.POST)
+    public Object historyOnceMore(@RequestBody HistoryOnceMoreDTO historyOnceMoreDTO,
+                                    HttpServletRequest request,
+                                    HttpServletResponse response){
+        /*System.out.println("111");
+        System.out.println(historyOnceMoreDTO);
+        ResultDTO resultDTO = new ResultDTO();
+        String ids = historyOnceMoreDTO.getIds();
+        System.out.println(ids);
+        String[] idstring = ids.split(",");
+        List<Integer> intId = new ArrayList<>();
+        for (String s : idstring) {
+            intId.add(Integer.parseInt(s));
+        }
+        System.out.println(intId);
+        boolean flag = wsjyService.historyOnceMoreWj(intId);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("删除卫生检疫表格成功");
+        }
+        else {
+            resultDTO.setMessage("删除卫生检疫表格失败");
+        }
+        return resultDTO;*/
+        return true;
+    }
 }
