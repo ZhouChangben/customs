@@ -271,6 +271,39 @@ public class UserService {
         userInfoDTOS.add(userInfoDTO1);
         return userInfoDTOS;
     }
+
+    public List<UserInfoDTO> getUserInfoForSub(dcUser user,dcUser fUser){
+        boolean wjqx = user.getDcWjqx();
+        boolean djqx = user.getDcDjqx();
+        boolean zjqx = user.getDcZjqx();
+
+
+        List<UserInfoDTO> userInfoDTOS = new ArrayList<>();
+        UserInfoDTO userInfoDTO1 = new UserInfoDTO();
+        userInfoDTO1.setGqdm(fUser.getDcGqdm());
+        userInfoDTO1.setGqName(fUser.getDcGqname());
+        if (djqx == true) {
+            userInfoDTO1.setDjLxr(fUser.getDcDjlxr());
+            userInfoDTO1.setDjLxdh(fUser.getDcDjlxdh());
+            userInfoDTO1.setDjFzr(fUser.getDcDjfzr());
+            userInfoDTO1.setDjFzrdh(fUser.getDcDjfzdh());
+        }
+        if (wjqx == true) {
+            userInfoDTO1.setWjLxr(fUser.getDcWjlxr());
+            userInfoDTO1.setWjLxdh(fUser.getDcWjlxdh());
+            userInfoDTO1.setWjFzr(fUser.getDcWjfzr());
+            userInfoDTO1.setWjFzrdh(fUser.getDcWjfzdh());
+        }
+        if (zjqx == true) {
+            userInfoDTO1.setZjLxr(fUser.getDcZjlxr());
+            userInfoDTO1.setZjLxdh(fUser.getDcZjlxdh());
+            userInfoDTO1.setZjFzr(fUser.getDcZjfzr());
+            userInfoDTO1.setZjFzrdh(fUser.getDcZjfzdh());
+        }
+        userInfoDTOS.add(userInfoDTO1);
+        return userInfoDTOS;
+    }
+
     public List<UserInfoDTO> getUserInfoListPage(List<UserInfoDTO> userInfoDTOS, Integer page, Integer rows, int size) {
         int first = (page-1)*rows;
         int last = (page-1)*rows + rows;
@@ -295,5 +328,19 @@ public class UserService {
             }
         }
         return false;
+    }
+
+    public dcUser findFatherGq(String gqdm) {
+        dcUser user = new dcUser();
+        dcUserExample example = new dcUserExample();
+        String subgqdm = gqdm.substring(0,4);
+        String fgqdm = subgqdm + "00";
+        example.createCriteria()
+                .andDcGqdmEqualTo(fgqdm);
+        List<dcUser> users = userMapper.selectByExample(example);
+        if (users != null){
+            return users.get(0);
+        }
+        return null;
     }
 }

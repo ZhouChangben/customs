@@ -250,8 +250,11 @@ public class UserController {
                               HttpServletRequest request,
                               HttpServletResponse response){
         dcUser user = (dcUser) request.getSession().getAttribute("user");
+        dcUser fUser = userService.findFatherGq(user.getDcGqdm());
+
         ShowUserInfoDTO showUserInfoDTO = new ShowUserInfoDTO();
-        List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
+        /*List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);*/
+        List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user,fUser);
         int size = userInfoDTOS.size();
         userInfoDTOS = userService.getUserInfoListPage(userInfoDTOS,page,rows,size);
         showUserInfoDTO.setTotal(size);
@@ -265,8 +268,9 @@ public class UserController {
     public Object showUserInfo(HttpServletRequest request,
                                HttpServletResponse response){
         dcUser user = (dcUser)request.getSession().getAttribute("user");
-        String gqdm = user.getDcGqdm();
-        List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user,null);
+        dcUser fUser = userService.findFatherGq(user.getDcGqdm());
+        /*List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user,null);*/
+        List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user,fUser);
         UserInfoDTO userInfoDTO = userInfoDTOS.get(0);
         return userInfoDTO;
     }
