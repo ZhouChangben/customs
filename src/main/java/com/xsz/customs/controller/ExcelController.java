@@ -1,11 +1,13 @@
 package com.xsz.customs.controller;
 
 import com.xsz.customs.model.dcDwjy;
+import com.xsz.customs.model.dcUser;
 import com.xsz.customs.model.dcWsjy;
 import com.xsz.customs.model.dcZwjy;
 import com.xsz.customs.service.DwjyService;
 import com.xsz.customs.service.WsjyService;
 import com.xsz.customs.service.ZwjyService;
+import jdk.internal.util.xml.impl.ReaderUTF8;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.IndexedColors;
@@ -42,6 +44,7 @@ public class ExcelController {
     public void djExcelDownload(HttpServletRequest request,
                               HttpServletResponse response) throws IOException {
         int renwuid = (int)request.getSession().getAttribute("rwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         //表头数据
         String[] header = {"序号", "关区", "业务领域", "类别", "名称", "英文名(简称）","毒（菌）株型/血清型","病原微生物分类","细胞型","内部保存编号","传次","状态\\形式","毒株传代细胞","宿主","来源国家/地区","获得渠道","数量","保存条件","保存时间","基本情况","获得地点","保存位置\n" +
                 "（省市区，隶属关/部门）","联系人","联络电话","负责人","联络电话","备注"};
@@ -140,8 +143,9 @@ public class ExcelController {
         //八进制输出流
         response.setContentType("application/octet-stream");
 
-        //这后面可以设置导出Excel的名称，此例中名为student.xls
-        response.setHeader("Content-disposition", "attachment;filename=dwjy.xls");
+        //这后面可以设置导出Excel的名称，此例中名为“关区名称+动物检疫.xls”
+        String fileName = new String((user.getDcGqname()+"动物检疫").getBytes(),"ISO8859-1");
+        response.setHeader("Content-disposition", "attachment;filename="+fileName+".xls");
 
         //刷新缓冲
         response.flushBuffer();
@@ -154,6 +158,7 @@ public class ExcelController {
     public void wjExcelDownload(HttpServletRequest request,
                                 HttpServletResponse response) throws IOException {
         int renwuid = (int)request.getSession().getAttribute("rwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         //表头数据
         String[] header = {"序号", "关区", "业务领域", "类别", "名称", "拉丁学名（细胞株英文名）","株系（仅适用于细胞株）","传次（仅适用于细胞株）","内部保存编号","保存形式","来源","来源宿主或环境","样本量","保存状态","获得地点","获取途径","保存条件","保存时间","保存位置","联系人","联络电话","负责人","联络电话","备注"};
 
@@ -245,8 +250,9 @@ public class ExcelController {
         //八进制输出流
         response.setContentType("application/octet-stream");
 
-        //这后面可以设置导出Excel的名称，此例中名为student.xls
-        response.setHeader("Content-disposition", "attachment;filename=wsjy.xls");
+        //这后面可以设置导出Excel的名称，此例中名为“关区名称+卫生检疫.xls”
+        String fileName = new String((user.getDcGqname()+"卫生检疫").getBytes(),"ISO8859-1");
+        response.setHeader("Content-disposition", "attachment;filename="+fileName+".xls");
 
         //刷新缓冲
         response.flushBuffer();
@@ -259,6 +265,7 @@ public class ExcelController {
     public void zjExcelDownload(HttpServletRequest request,
                                 HttpServletResponse response) throws IOException {
         int renwuid = (int)request.getSession().getAttribute("rwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         //表头数据
         String[] header = {"序号", "关区", "业务领域", "类别", "中文名称", "拉丁学名","世代/种下阶元","内部保存编号","检疫地位","检疫业务类别","货物类别","寄主","保存形式","来源","来源国家/地区","样本数量","保存状态","获得地点","保存部门(省市区，隶属关/部门)","保存条件","保存时间","鉴定人","联络电话","负责人","联络电话","备注"};
 
@@ -354,8 +361,9 @@ public class ExcelController {
         //八进制输出流
         response.setContentType("application/octet-stream");
 
-        //这后面可以设置导出Excel的名称，此例中名为student.xls
-        response.setHeader("Content-disposition", "attachment;filename=zwjy.xls");
+        //这后面可以设置导出Excel的名称，此例中名为“关区名称+植物检疫.xls”
+        String fileName = new String((user.getDcGqname()+"植物检疫").getBytes(),"ISO8859-1");
+        response.setHeader("Content-disposition", "attachment;filename="+fileName+".xls");
 
         //刷新缓冲
         response.flushBuffer();

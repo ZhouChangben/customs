@@ -117,7 +117,6 @@ public class UserController {
         return insertUserResultDTO;
     }
 
-
     @ResponseBody
     @RequestMapping(value = "/preupdate",method = RequestMethod.POST)
     public Object preUpdateuser(@RequestBody UpdateUserFirstDTO updateUserFirstDTO,
@@ -203,7 +202,6 @@ public class UserController {
                               Integer rows,
                               HttpServletRequest request,
                               HttpServletResponse response){
-        //System.out.println(page);
         dcUser user = (dcUser) request.getSession().getAttribute("user");
         SubUsersDTO subUsersDTO = new SubUsersDTO();
         if (user != null){
@@ -250,16 +248,28 @@ public class UserController {
                               HttpServletRequest request,
                               HttpServletResponse response){
         dcUser user = (dcUser) request.getSession().getAttribute("user");
-        dcUser fUser = userService.findFatherGq(user.getDcGqdm());
+
 
         ShowUserInfoDTO showUserInfoDTO = new ShowUserInfoDTO();
         /*List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);*/
-        List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user,fUser);
-        int size = userInfoDTOS.size();
-        userInfoDTOS = userService.getUserInfoListPage(userInfoDTOS,page,rows,size);
-        showUserInfoDTO.setTotal(size);
-        showUserInfoDTO.setRows(userInfoDTOS);
-        return showUserInfoDTO;
+        if (user.getDcGqdj() != 0){
+            dcUser fUser = userService.findFatherGq(user.getDcGqdm());
+            List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user,fUser);
+            int size = userInfoDTOS.size();
+            userInfoDTOS = userService.getUserInfoListPage(userInfoDTOS,page,rows,size);
+            showUserInfoDTO.setTotal(size);
+            showUserInfoDTO.setRows(userInfoDTOS);
+            return showUserInfoDTO;
+        }
+        else {
+            List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
+            int size = userInfoDTOS.size();
+            userInfoDTOS = userService.getUserInfoListPage(userInfoDTOS,page,rows,size);
+            showUserInfoDTO.setTotal(size);
+            showUserInfoDTO.setRows(userInfoDTOS);
+            return showUserInfoDTO;
+        }
+
     }
 
     //编辑前的数据写入
@@ -268,11 +278,18 @@ public class UserController {
     public Object showUserInfo(HttpServletRequest request,
                                HttpServletResponse response){
         dcUser user = (dcUser)request.getSession().getAttribute("user");
-        dcUser fUser = userService.findFatherGq(user.getDcGqdm());
-        /*List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user,null);*/
-        List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user,fUser);
-        UserInfoDTO userInfoDTO = userInfoDTOS.get(0);
-        return userInfoDTO;
+        if (user.getDcGqdj() != 0) {
+            dcUser fUser = userService.findFatherGq(user.getDcGqdm());
+            /*List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user,null);*/
+            List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user, fUser);
+            UserInfoDTO userInfoDTO = userInfoDTOS.get(0);
+            return userInfoDTO;
+        }
+        else if (user.getDcGqdj() == 0){
+            List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
+            return userInfoDTOS.get(0);
+        }
+        return null;
     }
 
     @ResponseBody
@@ -289,21 +306,38 @@ public class UserController {
 
         dcUser user = (dcUser)request.getSession().getAttribute("user");
         ResultDTO resultDTO = new ResultDTO();
-
-        user.setDcWjlxr(userInfoDTO.getWjLxr());
-        user.setDcWjlxdh(userInfoDTO.getWjLxdh());
-        user.setDcWjfzr(userInfoDTO.getWjFzr());
-        user.setDcWjfzdh(userInfoDTO.getWjFzrdh());
-        user.setDcDjlxr(userInfoDTO.getDjLxr());
-        user.setDcDjlxdh(userInfoDTO.getDjLxdh());
-        user.setDcDjfzr(userInfoDTO.getDjFzr());
-        user.setDcDjfzdh(userInfoDTO.getDjFzrdh());
-        user.setDcZjlxr(userInfoDTO.getZjLxr());
-        user.setDcZjlxdh(userInfoDTO.getZjLxdh());
-        user.setDcZjfzr(userInfoDTO.getZjFzr());
-        user.setDcZjfzdh(userInfoDTO.getZjFzrdh());
-
-        boolean flag = userService.updateUserInfomation(user);
+        boolean flag;
+        if (user.getDcGqdj() > 1){
+            dcUser fUser = userService.findFatherGq(user.getDcGqdm());
+            fUser.setDcWjlxr(userInfoDTO.getWjLxr());
+            fUser.setDcWjlxdh(userInfoDTO.getWjLxdh());
+            fUser.setDcWjfzr(userInfoDTO.getWjFzr());
+            fUser.setDcWjfzdh(userInfoDTO.getWjFzrdh());
+            fUser.setDcDjlxr(userInfoDTO.getDjLxr());
+            fUser.setDcDjlxdh(userInfoDTO.getDjLxdh());
+            fUser.setDcDjfzr(userInfoDTO.getDjFzr());
+            fUser.setDcDjfzdh(userInfoDTO.getDjFzrdh());
+            fUser.setDcZjlxr(userInfoDTO.getZjLxr());
+            fUser.setDcZjlxdh(userInfoDTO.getZjLxdh());
+            fUser.setDcZjfzr(userInfoDTO.getZjFzr());
+            fUser.setDcZjfzdh(userInfoDTO.getZjFzrdh());
+            flag = userService.updateUserInfomation(fUser);
+        }
+        else {
+            user.setDcWjlxr(userInfoDTO.getWjLxr());
+            user.setDcWjlxdh(userInfoDTO.getWjLxdh());
+            user.setDcWjfzr(userInfoDTO.getWjFzr());
+            user.setDcWjfzdh(userInfoDTO.getWjFzrdh());
+            user.setDcDjlxr(userInfoDTO.getDjLxr());
+            user.setDcDjlxdh(userInfoDTO.getDjLxdh());
+            user.setDcDjfzr(userInfoDTO.getDjFzr());
+            user.setDcDjfzdh(userInfoDTO.getDjFzrdh());
+            user.setDcZjlxr(userInfoDTO.getZjLxr());
+            user.setDcZjlxdh(userInfoDTO.getZjLxdh());
+            user.setDcZjfzr(userInfoDTO.getZjFzr());
+            user.setDcZjfzdh(userInfoDTO.getZjFzrdh());
+            flag = userService.updateUserInfomation(user);
+        }
         resultDTO.setSuccess(flag);
         if (flag == true){
             resultDTO.setMessage("更新联系人成功");

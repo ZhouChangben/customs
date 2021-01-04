@@ -22,6 +22,14 @@
         <input type="hidden" name="id">
         <table>
             <tr>
+                <td>检疫类别</td>
+                <td>
+                    <input type="checkbox" value="0" id="wsjy" name="wsjy" >卫生检疫
+                    <input type="checkbox" value="0" id="dwjy" name="dwjy" >动物检疫
+                    <input type="checkbox" value="0" id="zwjy" name="zwjy" >植物检疫
+                </td>
+            </tr>
+            <tr>
                 <td>关区编号</td>
                 <td><input type="text" id="gqdm" name="gqdm" class="easyui-validatebox" data-options="required:true" disabled="true"></td>
             </tr>
@@ -54,7 +62,30 @@
 </div>
 <script type="text/javascript">
     $(function () {
-
+        $("#wsjy").click(function () {
+            var wsjy=$("#wsjy").val();
+            if (wsjy==1){
+                $("#wsjy").val(0)
+            }else {
+                $("#wsjy").val(1)
+            }
+        })
+        $("#dwjy").click(function () {
+            var dwjy=$("#dwjy").val();
+            if (dwjy==1){
+                $("#dwjy").val(0)
+            }else {
+                $("#dwjy").val(1)
+            }
+        })
+        $("#zwjy").click(function () {
+            var zwjy=$("#wsjy").val();
+            if (zwjy==1){
+                $("#zwjy").val(0)
+            }else {
+                $("#zwjy").val(1)
+            }
+        })
         $('#dg').datagrid({
             //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
             url:'http://localhost:8080/userManage',

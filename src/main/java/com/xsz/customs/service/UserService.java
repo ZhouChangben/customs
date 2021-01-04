@@ -190,7 +190,7 @@ public class UserService {
         /*System.out.println(frontdm);*/
         int maxNum = userExtMapper.GetTheNextGqdm(frontdm+"%");
         String reardm = Integer.toString(maxNum);
-        System.out.println(frontdm+reardm);
+        //System.out.println(frontdm+reardm);
         return frontdm+reardm;
     }
 
@@ -267,8 +267,8 @@ public class UserService {
         userInfoDTO1.setZjLxdh(user.getDcZjlxdh());
         userInfoDTO1.setZjFzr(user.getDcZjfzr());
         userInfoDTO1.setZjFzrdh(user.getDcZjfzdh());
-
         userInfoDTOS.add(userInfoDTO1);
+
         return userInfoDTOS;
     }
 
@@ -331,7 +331,7 @@ public class UserService {
     }
 
     public dcUser findFatherGq(String gqdm) {
-        dcUser user = new dcUser();
+        //dcUser user = new dcUser();
         dcUserExample example = new dcUserExample();
         String subgqdm = gqdm.substring(0,4);
         String fgqdm = subgqdm + "00";
