@@ -20,12 +20,12 @@
 
 <body class="easyui-layout">
 <!--顶部-->
-<div data-options="region:'north',split:true" style="height:60px;">
+<div data-options="region:'north',split:true" style="height:60px;background-color: #224178">
     <div id="logo">
-        <img src="easyUI/images/hg.jpeg" alt="" width="320">
+        <img src="/images/hg.jpeg" alt="" width="320">
     </div>
-    <div id="loginDiv" style="position: absolute;right: 20px;top: 20px">
-        欢迎，[<a th:text="${session.user.getDcGqname()}"></a>]，<a href="/logout">退出</a>
+    <div id="loginDiv" style="position: absolute;right: 20px;top: 20px;color: white">
+        欢迎，[<a th:text="${session.user.getDcGqname()}"></a>]，<a href="/logout" style="color: yellow">退出</a>
     </div>
 
 

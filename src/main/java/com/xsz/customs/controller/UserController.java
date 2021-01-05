@@ -106,6 +106,9 @@ public class UserController {
         user.setDcLxr(insertUserDTO.getGqlxr());
         user.setDcLxdh(insertUserDTO.getGqlxdh());
         user.setDcGqpword(insertUserDTO.getGqpwd());
+        user.setDcWjqx(insertUserDTO.isWsjy());
+        user.setDcZjqx(insertUserDTO.isZwjy());
+        user.setDcDjqx(insertUserDTO.isDwjy());
         boolean flag = userService.create(user);
         InsertUserResultDTO insertUserResultDTO = new InsertUserResultDTO();
         insertUserResultDTO.setSuccess(flag);
@@ -131,6 +134,9 @@ public class UserController {
             updateUserSecondDTO.setGqpwd(user.getDcGqpword());
             updateUserSecondDTO.setGqlxr(user.getDcLxr());
             updateUserSecondDTO.setGqlxdh(user.getDcLxdh());
+            updateUserSecondDTO.setDwjy(user.getDcDjqx());
+            updateUserSecondDTO.setWsjy(user.getDcWjqx());
+            updateUserSecondDTO.setZwjy(user.getDcZjqx());
         }
         return updateUserSecondDTO;
     }
@@ -155,11 +161,20 @@ public class UserController {
         String gqpwd = updateUserSecondDTO.getGqpwd();
         String gqlxr = updateUserSecondDTO.getGqlxr();
         String gqlxdh = updateUserSecondDTO.getGqlxdh();
+        boolean wsjy = updateUserSecondDTO.isWsjy();
+        boolean dwjy = updateUserSecondDTO.isDwjy();
+        boolean zwjy = updateUserSecondDTO.isZwjy();
+        /*System.out.println("卫生检疫"+wsjy);
+        System.out.println("动物检疫"+dwjy);
+        System.out.println("植物检疫"+zwjy);*/
         user.setDcGqdm(gqdm);
         user.setDcGqname(gqname);
         user.setDcGqpword(gqpwd);
         user.setDcLxr(gqlxr);
         user.setDcLxdh(gqlxdh);
+        user.setDcWjqx(wsjy);
+        user.setDcDjqx(dwjy);
+        user.setDcZjqx(zwjy);
         boolean flag = userService.update(user);
         insertUserResultDTO.setSuccess(flag);
         if (flag){

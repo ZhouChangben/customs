@@ -38,9 +38,11 @@
             //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
             url: 'http://localhost:8080/dwlsjl',
             rownumbers: true,
+            checkOnSelect:false,
             columns: [
                 [
                     //展示列数据
+                    {checkbox:true,field: 'ck'},
                     {field: 'dcRenwugqname', title: '关区', width: 100},
                     {field: 'djYwly', title: '业务领域', width: 100},
                     {field: 'djLb', title: '类别', width: 100},

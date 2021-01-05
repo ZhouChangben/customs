@@ -24,9 +24,9 @@
             <tr>
                 <td>检疫类别</td>
                 <td>
-                    <input type="checkbox" value="0" id="wsjy" name="wsjy" >卫生检疫
-                    <input type="checkbox" value="0" id="dwjy" name="dwjy" >动物检疫
-                    <input type="checkbox" value="0" id="zwjy" name="zwjy" >植物检疫
+                    <input type="checkbox" id="wsjy" name="wsjy" >卫生检疫
+                    <input type="checkbox" id="dwjy" name="dwjy" >动物检疫
+                    <input type="checkbox" id="zwjy" name="zwjy" >植物检疫
                 </td>
             </tr>
             <tr>
@@ -53,7 +53,7 @@
                 <td>
                     <a href="#" id="save" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="display: none">保存</a>
                     <a href="#" id="editsave" class="easyui-linkbutton" data-options="iconCls:'icon-save'" style="display: none">保存</a>
-                    <a href="#" id="reset" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">取消</a>
+                    <a href="#" id="cancel" class="easyui-linkbutton" data-options="iconCls:'icon-reload'">取消</a>
                 </td>
             </tr>
         </table>
@@ -62,36 +62,15 @@
 </div>
 <script type="text/javascript">
     $(function () {
-        $("#wsjy").click(function () {
-            var wsjy=$("#wsjy").val();
-            if (wsjy==1){
-                $("#wsjy").val(0)
-            }else {
-                $("#wsjy").val(1)
-            }
-        })
-        $("#dwjy").click(function () {
-            var dwjy=$("#dwjy").val();
-            if (dwjy==1){
-                $("#dwjy").val(0)
-            }else {
-                $("#dwjy").val(1)
-            }
-        })
-        $("#zwjy").click(function () {
-            var zwjy=$("#wsjy").val();
-            if (zwjy==1){
-                $("#zwjy").val(0)
-            }else {
-                $("#zwjy").val(1)
-            }
-        })
+
         $('#dg').datagrid({
             //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
             url:'http://localhost:8080/userManage',
+            /*checkOnSelect:false,*/
             columns:[
                 [
                     //展示列数据
+                    {checkbox:true,field: 'ck'},
                     {field:'dcGqdm',title:'关区编号',width:100},
                     {field:'dcGqname',title:'关区名称',width:100},
                     {field:'dcLxr',title:'联系人',width:100},
@@ -138,12 +117,33 @@
                             success:function (data) {
 
                                 $("#editForm").form("load",{
+                                    wsjy:data.wsjy,
+                                    dwjy:data.dwjy,
+                                    zwjy:data.zwjy,
                                     gqdm:data.gqdm,
                                     gqname:data.gqname,
                                     gqpwd:data.gqpwd,
                                     gqlxr:data.gqlxr,
                                     gqlxdh:data.gqlxdh
                                 });
+                                if (data.wsjy){
+                                    $("#wsjy").prop("checked",true)
+                                }
+                                else {
+                                    $("#wsjy").prop("checked",false)
+                                }
+                                if (data.dwjy){
+                                    $("#dwjy").prop("checked",true)
+                                }
+                                else {
+                                    $("#dwjy").prop("checked",false)
+                                }
+                                if (data.zwjy){
+                                    $("#zwjy").prop("checked",true)
+                                }
+                                else {
+                                    $("#zwjy").prop("checked",false)
+                                }
                             }
                         })
                         //填弹出编辑窗口
@@ -183,23 +183,16 @@
                                 }
                             }
                         })
-                        /*$.post("product_delete.action",{"ids":ids},function (data) {
-                            if (data.success){
-                                $("#dg").datagrid("reload");
-                                $.messager.show({
-                                    title:"提示",
-                                    msg:"删除成功"
-                                })
-                            }else {
-                                $.messager.alert("提示","删除失败:"+data.msg,"error");
-                            }
-                        })*/
+
                     }
                 }
             ],
         });
         //添加保存
         $("#save").click(function () {
+            var wsjy=$("#wsjy").is(":checked");
+            var dwjy=$("#dwjy").is(":checked");
+            var zwjy=$("#zwjy").is(":checked");
             var gqdm=$("#gqdm").val();
             var gqname=$("#gqname").val();
             var gqpwd=$("#gqpwd").val();
@@ -208,7 +201,7 @@
             $.ajax({
                 url:'http://localhost:8080/register',
                 type:"post",
-                data:JSON.stringify({"gqdm":gqdm,"gqname":gqname,"gqpwd":gqpwd,"gqlxr":gqlxr,"gqlxdh":gqlxdh}),
+                data:JSON.stringify({"wsjy":wsjy,"dwjy":dwjy,"zwjy":zwjy,"gqdm":gqdm,"gqname":gqname,"gqpwd":gqpwd,"gqlxr":gqlxr,"gqlxdh":gqlxdh}),
                 dataType:"json",
                 contentType:"application/json",
                 success:function (data) {
@@ -232,6 +225,9 @@
         })
         //编辑保存
         $("#editsave").click(function () {
+            var wsjy=$("#wsjy").is(":checked");
+            var dwjy=$("#dwjy").is(":checked");
+            var zwjy=$("#zwjy").is(":checked");
             var gqdm=$("#gqdm").val();
             var gqname=$("#gqname").val();
             var gqpwd=$("#gqpwd").val();
@@ -240,7 +236,7 @@
             $.ajax({
                 url:'http://localhost:8080/update',
                 type:"post",
-                data:JSON.stringify({"gqdm":gqdm,"gqname":gqname,"gqpwd":gqpwd,"gqlxr":gqlxr,"gqlxdh":gqlxdh}),
+                data:JSON.stringify({"wsjy":wsjy,"dwjy":dwjy,"zwjy":zwjy,"gqdm":gqdm,"gqname":gqname,"gqpwd":gqpwd,"gqlxr":gqlxr,"gqlxdh":gqlxdh}),
                 dataType:"json",
                 contentType:"application/json",
                 success:function (data) {
@@ -263,34 +259,8 @@
             })
         })
 
-        /*$("#save").click(function () {
-            $("#editForm").form("submit",{
-                contentType:"application/json",
-                url:"http://localhost:8080/register",
-                onSubmit:function () {
-                    return $("#editForm").form("validate")
-                },
-                success:function (data) {
-                    // data=eval("("+data+")");
-                    alert(data)
-                    if(data.success){
-                        //表单清空
-                        $("#editForm").form("clear")
-                        //关闭窗口
-                        $("#editWin").window("close")
-                        //刷新datagrid
-                        $("#dg").datagrid("reload")
-                        $.messager.show({
-                            title:"提示",
-                            msg:"保存成功"
-                        })
-                    }else{
-                        $.messager.alert("提示","保存失败"+data.msg,"error")
-                    }
-                }
-            })
-        })*/
-        $("#reset").click(function () {
+
+        $("#cancel").click(function () {
             $("#editWin").window("close")
         })
     })

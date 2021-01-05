@@ -1,5 +1,6 @@
 package com.xsz.customs.controller;
 
+import com.xsz.customs.dto.ResultDTO;
 import com.xsz.customs.model.dcDwjy;
 import com.xsz.customs.model.dcUser;
 import com.xsz.customs.model.dcWsjy;
@@ -14,6 +15,8 @@ import org.apache.poi.ss.usermodel.IndexedColors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,7 +39,7 @@ public class ExcelController {
 
     /**
      * Excel表格导出接口
-     * http://localhost:8080/excelDownloadDw
+     * http://localhost:8080/excelDownloadXj
      * @param response response对象
      * @throws IOException 抛IO异常
      */
@@ -266,6 +269,7 @@ public class ExcelController {
                                 HttpServletResponse response) throws IOException {
         int renwuid = (int)request.getSession().getAttribute("rwid");
         dcUser user = (dcUser)request.getSession().getAttribute("user");
+        ResultDTO resultDTO = new ResultDTO();
         //表头数据
         String[] header = {"序号", "关区", "业务领域", "类别", "中文名称", "拉丁学名","世代/种下阶元","内部保存编号","检疫地位","检疫业务类别","货物类别","寄主","保存形式","来源","来源国家/地区","样本数量","保存状态","获得地点","保存部门(省市区，隶属关/部门)","保存条件","保存时间","鉴定人","联络电话","负责人","联络电话","备注"};
 
@@ -355,7 +359,6 @@ public class ExcelController {
             //第25列备注
             row1.createCell(25).setCellValue(new HSSFRichTextString(zwjys.get(i).getZjBy1()));
         }
-
 
         //准备将Excel的输出流通过response输出到页面下载
         //八进制输出流
