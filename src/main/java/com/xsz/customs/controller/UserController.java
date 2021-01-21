@@ -164,9 +164,6 @@ public class UserController {
         boolean wsjy = updateUserSecondDTO.isWsjy();
         boolean dwjy = updateUserSecondDTO.isDwjy();
         boolean zwjy = updateUserSecondDTO.isZwjy();
-        /*System.out.println("卫生检疫"+wsjy);
-        System.out.println("动物检疫"+dwjy);
-        System.out.println("植物检疫"+zwjy);*/
         user.setDcGqdm(gqdm);
         user.setDcGqname(gqname);
         user.setDcGqpword(gqpwd);

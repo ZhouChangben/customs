@@ -325,7 +325,7 @@ public class DcrwController {
     public String toWsjy(@RequestParam(value = "rwid") Integer rwid,
                        HttpServletRequest request,
                        HttpServletResponse response){
-        request.getSession().setAttribute("rwid",rwid);
+        request.getSession().setAttribute("wsrwid",rwid);
         return "wsdcrw";
     }
 
@@ -333,7 +333,7 @@ public class DcrwController {
     public String toDwjy(@RequestParam(value = "rwid") Integer rwid,
                          HttpServletRequest request,
                          HttpServletResponse response){
-        request.getSession().setAttribute("rwid",rwid);
+        request.getSession().setAttribute("dwrwid",rwid);
         return "dwdcrw";
     }
 
@@ -341,7 +341,7 @@ public class DcrwController {
     public String toZwjy(@RequestParam(value = "rwid") Integer rwid,
                          HttpServletRequest request,
                          HttpServletResponse response){
-        request.getSession().setAttribute("rwid",rwid);
+        request.getSession().setAttribute("zwrwid",rwid);
         return "zwdcrw";
     }
 
@@ -349,7 +349,7 @@ public class DcrwController {
     public String toWslsjl(@RequestParam(value = "rwid") Integer rwid,
                          HttpServletRequest request,
                          HttpServletResponse response){
-        request.getSession().setAttribute("rwid",rwid);
+        request.getSession().setAttribute("wslsrwid",rwid);
         return "wslsjl";
     }
 
@@ -357,7 +357,7 @@ public class DcrwController {
     public String toDwlsjl(@RequestParam(value = "rwid") Integer rwid,
                            HttpServletRequest request,
                            HttpServletResponse response){
-        request.getSession().setAttribute("rwid",rwid);
+        request.getSession().setAttribute("dwlsrwid",rwid);
         return "dwlsjl";
     }
 
@@ -365,7 +365,7 @@ public class DcrwController {
     public String toZwlsjl(@RequestParam(value = "rwid") Integer rwid,
                            HttpServletRequest request,
                            HttpServletResponse response){
-        request.getSession().setAttribute("rwid",rwid);
+        request.getSession().setAttribute("zwlsrwid",rwid);
         return "zwlsjl";
     }
 

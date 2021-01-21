@@ -62,6 +62,23 @@ public class WsjyService {
         return wsjys;
     }
 
+    public List<dcWsjy> getWsjysByRenwuidForSub(int renwuid,dcUser user){
+        dcWsjyExample dcWsjyExample = new dcWsjyExample();
+        List<dcWsjy> wsjys;
+        if (user.getDcGqdj() < 2){
+            dcWsjyExample.createCriteria()
+                    .andDcRenwuidEqualTo(renwuid);
+            wsjys = wsjyMapper.selectByExample(dcWsjyExample);
+        }
+        else {
+            dcWsjyExample.createCriteria()
+                    .andDcRenwuidEqualTo(renwuid)
+                    .andDcRenwugqdm2EqualTo(user.getDcGqdm());
+            wsjys = wsjyMapper.selectByExample(dcWsjyExample);
+        }
+        return wsjys;
+    }
+
     //这个方法是用来给卫生检疫表项的列表分页的
     public List<dcWsjy> getWsjyListPage(List<dcWsjy> wsjys, int page, int rows, int size){
         int first = (page-1)*rows;

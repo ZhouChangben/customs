@@ -29,7 +29,7 @@ public class DwjyService {
     public boolean updateDwjy(dcDwjy dwjy) {
         dcDwjyExample dwjyExample = new dcDwjyExample();
         dwjyExample.createCriteria()
-                .andDcRenwuidEqualTo(dwjy.getId());
+                .andIdEqualTo(dwjy.getId());
         int flag = dwjyMapper.updateByExampleSelective(dwjy,dwjyExample);
         if (flag == 0)
             return false;
@@ -65,6 +65,25 @@ public class DwjyService {
             return null;
     }
 
+    public List<dcDwjy> getDwjysByRenwuidForSub(int renwuid,dcUser user) {
+        dcDwjyExample dwjyExample = new dcDwjyExample();
+        List<dcDwjy> dwjys;
+        //如果为高级关区，就展示所有表项
+        if (user.getDcGqdj()<2){
+            dwjyExample.createCriteria()
+                    .andDcRenwuidEqualTo(renwuid);
+            dwjys = dwjyMapper.selectByExample(dwjyExample);
+        }
+        //当前用户为三级填报用户
+        else {
+            dwjyExample.createCriteria()
+                    .andDcRenwuidEqualTo(renwuid)
+                    .andDcRenwugqdm2EqualTo(user.getDcGqdm());
+            dwjys = dwjyMapper.selectByExample(dwjyExample);
+        }
+        return dwjys;
+    }
+
     public List<dcDwjy> getDwjysByRenwuid(int renwuid) {
         dcDwjyExample dwjyExample = new dcDwjyExample();
         dwjyExample.createCriteria()
@@ -72,9 +91,6 @@ public class DwjyService {
         List<dcDwjy> dwjys = dwjyMapper.selectByExample(dwjyExample);
         return dwjys;
     }
-
-
-
 
     public List<dcDwjy> getDwjyListPage(List<dcDwjy> dwjys, Integer page, Integer rows, int size) {
         int first = (page-1)*rows;

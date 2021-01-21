@@ -50,6 +50,23 @@ public class ZwjyService {
         return zwjys;
     }
 
+    public List<dcZwjy> getZwjysByRenwuidForSub(int renwuid,dcUser user) {
+        dcZwjyExample zwjyExample = new dcZwjyExample();
+        List<dcZwjy> zwjys;
+        if (user.getDcGqdj() < 2){
+            zwjyExample.createCriteria()
+                    .andDcRenwuidEqualTo(renwuid);
+            zwjys = zwjyMapper.selectByExample(zwjyExample);
+        }
+        else {
+            zwjyExample.createCriteria()
+                    .andDcRenwuidEqualTo(renwuid)
+                    .andDcRenwugqdm2EqualTo(user.getDcGqdm());
+            zwjys = zwjyMapper.selectByExample(zwjyExample);
+        }
+        return zwjys;
+    }
+
     public List<dcZwjy> getZwjyListPage(List<dcZwjy> zwjys, Integer page, Integer rows, int size) {
         int first = (page-1)*rows;
         int last = (page-1)*rows + rows;

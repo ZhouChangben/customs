@@ -1,5 +1,6 @@
 package com.xsz.customs.controller;
 
+import com.sun.org.apache.bcel.internal.generic.IF_ACMPEQ;
 import com.xsz.customs.dto.ResultDTO;
 import com.xsz.customs.model.dcDwjy;
 import com.xsz.customs.model.dcUser;
@@ -81,7 +82,13 @@ public class ExcelController {
         }
 
         //获取所有的employee
-        List<dcDwjy> dwjys= dwjyService.getDwjysByRenwuid(renwuid);
+        List<dcDwjy> dwjys;
+        if (user.getDcGqdj() < 2){
+            dwjys = dwjyService.getDwjysByRenwuid(renwuid);
+        }
+        else {
+            dwjys = dwjyService.getDwjysByRenwuidForSub(renwuid,user);
+        }
         for(int i=0;i<dwjys.size();i++){
             //创建一行
             HSSFRow row1 = sheet.createRow(i+1);
@@ -194,7 +201,13 @@ public class ExcelController {
         }
 
         //获取所有的employee
-        List<dcWsjy> wsjys = wsjyService.getWsjysByRenwuid(renwuid);
+        List<dcWsjy> wsjys;
+        if (user.getDcGqdj() < 2){
+           wsjys = wsjyService.getWsjysByRenwuid(renwuid);
+        }
+        else {
+            wsjys = wsjyService.getWsjysByRenwuidForSub(renwuid,user);
+        }
         for(int i=0;i<wsjys.size();i++){
             //创建一行
             HSSFRow row1 = sheet.createRow(i+1);
@@ -247,7 +260,6 @@ public class ExcelController {
             //第26列备注
             row1.createCell(23).setCellValue(new HSSFRichTextString(wsjys.get(i).getWjBy1()));
         }
-
 
         //准备将Excel的输出流通过response输出到页面下载
         //八进制输出流
@@ -370,7 +382,6 @@ public class ExcelController {
 
         //刷新缓冲
         response.flushBuffer();
-
         //workbook将Excel写入到response的输出流中，供页面下载
         workbook.write(response.getOutputStream());
     }

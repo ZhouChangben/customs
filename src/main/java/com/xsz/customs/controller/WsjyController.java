@@ -2,11 +2,10 @@ package com.xsz.customs.controller;
 
 import com.xsz.customs.dto.*;
 import com.xsz.customs.model.dcDwjy;
+import com.xsz.customs.model.dcLog;
+import com.xsz.customs.model.dcUser;
 import com.xsz.customs.model.dcWsjy;
-import com.xsz.customs.service.DcrwService;
-import com.xsz.customs.service.DwjyService;
-import com.xsz.customs.service.WsjyService;
-import com.xsz.customs.service.ZwjyService;
+import com.xsz.customs.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -31,16 +30,28 @@ public class WsjyController {
     @Autowired
     private DcrwService dcrwService;
 
+    @Autowired
+    private LogService logService;
+
     @ResponseBody
     @RequestMapping(value = "addWsjy",method = RequestMethod.POST)
     public Object addDwjy(@RequestBody WsjyDTO wsjyDTO,
                           HttpServletRequest request,
                           HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("添加一条卫生检疫表项");
+        logService.InsertLog(log);
+
+        int renwuid = (int)request.getSession().getAttribute("wsrwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         ResultDTO resultDTO = new ResultDTO();
         dcWsjy wsjy = new dcWsjy();
         wsjy = wsjyService.transformDTOToWsjy(wsjyDTO);
         wsjy.setDcRenwuid(renwuid);
+        wsjy.setDcRenwugqdm2(user.getDcGqdm());
         boolean flag = wsjyService.insertNewTable(wsjy);
         resultDTO.setSuccess(flag);
         if (flag == true){
@@ -72,9 +83,10 @@ public class WsjyController {
                             Integer rows,
                             HttpServletRequest request,
                             HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("wsrwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         ShowWsjyDTO showWsjyDTO = new ShowWsjyDTO();
-        List<dcWsjy> wsjys = wsjyService.getWsjysByRenwuid(renwuid);
+        List<dcWsjy> wsjys = wsjyService.getWsjysByRenwuidForSub(renwuid,user);
         int size = wsjys.size();
         wsjys = wsjyService.getWsjyListPage(wsjys,page,rows,size);
         showWsjyDTO.setTotal(size);
@@ -88,9 +100,10 @@ public class WsjyController {
                              Integer rows,
                              HttpServletRequest request,
                              HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("wslsrwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         ShowWsjyDTO showWsjyDTO = new ShowWsjyDTO();
-        List<dcWsjy> wsjys = wsjyService.getWsjysByRenwuid(renwuid);
+        List<dcWsjy> wsjys = wsjyService.getWsjysByRenwuidForSub(renwuid,user);
         int size = wsjys.size();
         wsjys = wsjyService.getWsjyListPage(wsjys,page,rows,size);
         showWsjyDTO.setTotal(size);
@@ -103,7 +116,7 @@ public class WsjyController {
     @RequestMapping(value = "showinformation",method = RequestMethod.POST)
     public Object showInformationAlreadyKnow(HttpServletRequest request,
                                              HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("wsrwid");
         WsjyInfoDTO wsjyInfoDTO = new WsjyInfoDTO();
         wsjyInfoDTO.setRwid(renwuid);
         wsjyInfoDTO = wsjyService.showInformationAlreadyKnow(wsjyInfoDTO);
@@ -116,6 +129,13 @@ public class WsjyController {
     public Object moodifyWsjy(@RequestBody WsjyDTO wsjyDTO,
                               HttpServletRequest request,
                               HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("修改一条卫生检疫表项");
+        logService.InsertLog(log);
+
         ResultDTO resultDTO = new ResultDTO();
         dcWsjy wsjy = new dcWsjy();
 
@@ -137,6 +157,13 @@ public class WsjyController {
     public Object deleteWsjy(@RequestBody ShowTableDTO showTableDTO,
                             HttpServletRequest request,
                             HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("删除一条卫生检疫表项");
+        logService.InsertLog(log);
+
         ResultDTO resultDTO = new ResultDTO();
         int id = showTableDTO.getId();
         boolean flag = wsjyService.deleteWsjyById(id);
@@ -156,7 +183,7 @@ public class WsjyController {
     public Object submit(HttpServletRequest request,
                          HttpServletResponse response){
         ResultDTO resultDTO = new ResultDTO();
-        int rwid = (int)request.getSession().getAttribute("rwid");
+        int rwid = (int)request.getSession().getAttribute("wsrwid");
         boolean flag = dcrwService.modifyStatusToSubmit(rwid);
         resultDTO.setSuccess(flag);
         if (flag == true){
@@ -174,6 +201,13 @@ public class WsjyController {
     public Object historyOnceMoreWj(@RequestBody HistoryOnceMoreDTO historyOnceMoreDTO,
                                     HttpServletRequest request,
                                     HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("添加一条历史卫生检疫表项");
+        logService.InsertLog(log);
+
         ResultDTO resultDTO = new ResultDTO();
         List<Integer> ids = historyOnceMoreDTO.getIds();
         boolean flag = wsjyService.historyOnceMoreWj(ids);

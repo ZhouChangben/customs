@@ -3,6 +3,8 @@ package com.xsz.customs.controller;
 import com.xsz.customs.dto.*;
 import com.xsz.customs.model.dcDwjy;
 import com.xsz.customs.model.dcDwjy;
+import com.xsz.customs.model.dcLog;
+import com.xsz.customs.model.dcUser;
 import com.xsz.customs.service.*;
 import com.xsz.customs.service.DwjyService;
 import com.xsz.customs.service.DwjyService;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -28,6 +29,8 @@ public class DwjyController {
     @Autowired
     private DcrwService dcrwService;
 
+    @Autowired
+    private LogService logService;
 
 
     @ResponseBody
@@ -35,12 +38,21 @@ public class DwjyController {
     public Object addDwjy(@RequestBody DwjyDTO dwjyDTO,
                           HttpServletRequest request,
                           HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("添加一条动物检疫表项");
+        logService.InsertLog(log);
+
+        int renwuid = (int)request.getSession().getAttribute("dwrwid");
+        dcUser user = (dcUser) request.getSession().getAttribute("user");
         ResultDTO resultDTO = new ResultDTO();
         dcDwjy dwjy = new dcDwjy();
         dwjy = dwjyService.transformDTOToDwjy(dwjyDTO);
 
         dwjy.setDcRenwuid(renwuid);
+        dwjy.setDcRenwugqdm2(user.getDcGqdm());
         boolean flag = dwjyService.insertNewTable(dwjy);
         resultDTO.setSuccess(flag);
         if (flag == true){
@@ -72,9 +84,10 @@ public class DwjyController {
                             Integer rows,
                             HttpServletRequest request,
                             HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("dwrwid");
+        dcUser user = (dcUser) request.getSession().getAttribute("user");
         ShowDwjyDTO showDwjyDTO = new ShowDwjyDTO();
-        List<dcDwjy> dwjys = dwjyService.getDwjysByRenwuid(renwuid);
+        List<dcDwjy> dwjys = dwjyService.getDwjysByRenwuidForSub(renwuid,user);
         int size = dwjys.size();
         dwjys = dwjyService.getDwjyListPage(dwjys,page,rows,size);
         showDwjyDTO.setTotal(size);
@@ -88,9 +101,10 @@ public class DwjyController {
                             Integer rows,
                             HttpServletRequest request,
                             HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("dwlsrwid");
+        dcUser user = (dcUser) request.getSession().getAttribute("user");
         ShowDwjyDTO showDwjyDTO = new ShowDwjyDTO();
-        List<dcDwjy> dwjys = dwjyService.getDwjysByRenwuid(renwuid);
+        List<dcDwjy> dwjys = dwjyService.getDwjysByRenwuidForSub(renwuid,user);
         int size = dwjys.size();
         dwjys = dwjyService.getDwjyListPage(dwjys,page,rows,size);
         showDwjyDTO.setTotal(size);
@@ -103,7 +117,7 @@ public class DwjyController {
     @RequestMapping(value = "showDwDcrwinformation",method = RequestMethod.POST)
     public Object showInformationAlreadyKnow(HttpServletRequest request,
                                              HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("dwrwid");
         DwjyInfoDTO dwjyInfoDTO = new DwjyInfoDTO();
         dwjyInfoDTO.setRwid(renwuid);
         dwjyInfoDTO = dwjyService.showInformationAlreadyKnow(dwjyInfoDTO);
@@ -116,9 +130,15 @@ public class DwjyController {
     public Object moodifyDwjy(@RequestBody DwjyDTO dwjyDTO,
                               HttpServletRequest request,
                               HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("修改一条动物检疫表项");
+        logService.InsertLog(log);
+
         ResultDTO resultDTO = new ResultDTO();
         dcDwjy dwjy = new dcDwjy();
-
         dwjy = dwjyService.transformDTOToDwjy(dwjyDTO);
         boolean flag = dwjyService.updateDwjy(dwjy);
         resultDTO.setSuccess(flag);
@@ -137,6 +157,13 @@ public class DwjyController {
     public Object deleteDwjy(@RequestBody ShowTableDTO showTableDTO,
                              HttpServletRequest request,
                              HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("删除一条动物检疫表项");
+        logService.InsertLog(log);
+
         ResultDTO resultDTO = new ResultDTO();
         int id = showTableDTO.getId();
         boolean flag = dwjyService.deleteDwjyById(id);
@@ -156,7 +183,7 @@ public class DwjyController {
     public Object submit(HttpServletRequest request,
                          HttpServletResponse response){
         ResultDTO resultDTO = new ResultDTO();
-        int rwid = (int)request.getSession().getAttribute("rwid");
+        int rwid = (int)request.getSession().getAttribute("dwrwid");
         boolean flag = dcrwService.modifyStatusToSubmit(rwid);
         resultDTO.setSuccess(flag);
         if (flag == true){
@@ -174,6 +201,13 @@ public class DwjyController {
     public Object historyOnceMoreWj(@RequestBody HistoryOnceMoreDTO historyOnceMoreDTO,
                                     HttpServletRequest request,
                                     HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("添加一条历史动物检疫表项");
+        logService.InsertLog(log);
+
         ResultDTO resultDTO = new ResultDTO();
         List<Integer> ids = historyOnceMoreDTO.getIds();
         boolean flag = dwjyService.historyOnceMoreDj(ids);
@@ -186,5 +220,4 @@ public class DwjyController {
         }
         return resultDTO;
     }
-
 }

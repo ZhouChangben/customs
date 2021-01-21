@@ -1,13 +1,8 @@
 package com.xsz.customs.controller;
 
 import com.xsz.customs.dto.*;
-import com.xsz.customs.model.dcDwjy;
-import com.xsz.customs.model.dcWsjy;
-import com.xsz.customs.model.dcZwjy;
-import com.xsz.customs.service.DcrwService;
-import com.xsz.customs.service.DwjyService;
-import com.xsz.customs.service.WsjyService;
-import com.xsz.customs.service.ZwjyService;
+import com.xsz.customs.model.*;
+import com.xsz.customs.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,17 +28,28 @@ public class ZwjyController {
     @Autowired
     private DcrwService dcrwService;
 
+    @Autowired
+    private LogService logService;
+
     @ResponseBody
     @RequestMapping(value = "addZwjy",method = RequestMethod.POST)
     public Object addZwjy(@RequestBody ZwjyDTO zwjyDTO,
                           HttpServletRequest request,
                           HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
-        System.out.println("进入到添加植物检疫方法");
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("添加一条植物检疫表项");
+        logService.InsertLog(log);
+
+        int renwuid = (int)request.getSession().getAttribute("zwrwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         ResultDTO resultDTO = new ResultDTO();
         dcZwjy zwjy = new dcZwjy();
         zwjy = zwjyService.transformDTOToZwjy(zwjyDTO);
         zwjy.setDcRenwuid(renwuid);
+        zwjy.setDcRenwugqdm2(user.getDcGqdm());
         boolean flag = zwjyService.insertNewTable(zwjy);
         resultDTO.setSuccess(flag);
         if (flag == true){
@@ -65,7 +71,6 @@ public class ZwjyController {
         int id = showTableDTO.getId();
         dcZwjy zwjy = zwjyService.findZwjyById(id);
         zwjyDTO = zwjyService.transformZwjyToDTO(zwjy);
-        System.out.println(zwjyDTO);
         return zwjyDTO;
     }
 
@@ -76,9 +81,10 @@ public class ZwjyController {
                             Integer rows,
                             HttpServletRequest request,
                             HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("zwrwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         ShowZwjyDTO showZwjyDTO = new ShowZwjyDTO();
-        List<dcZwjy> zwjys = zwjyService.getZwjysByRenwuid(renwuid);
+        List<dcZwjy> zwjys = zwjyService.getZwjysByRenwuidForSub(renwuid,user);
         int size = zwjys.size();
         zwjys = zwjyService.getZwjyListPage(zwjys,page,rows,size);
         showZwjyDTO.setTotal(size);
@@ -92,9 +98,10 @@ public class ZwjyController {
                              Integer rows,
                              HttpServletRequest request,
                              HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("zwlsrwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         ShowZwjyDTO showZwjyDTO = new ShowZwjyDTO();
-        List<dcZwjy> zwjys = zwjyService.getZwjysByRenwuid(renwuid);
+        List<dcZwjy> zwjys = zwjyService.getZwjysByRenwuidForSub(renwuid,user);
         int size = zwjys.size();
         zwjys = zwjyService.getZwjyListPage(zwjys,page,rows,size);
         showZwjyDTO.setTotal(size);
@@ -107,7 +114,7 @@ public class ZwjyController {
     @RequestMapping(value = "showZwDcrwinformation",method = RequestMethod.POST)
     public Object showInformationAlreadyKnow(HttpServletRequest request,
                                              HttpServletResponse response){
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("zwrwid");
         ZwjyInfoDTO zwjyInfoDTO = new ZwjyInfoDTO();
         zwjyInfoDTO.setRwid(renwuid);
         zwjyInfoDTO = zwjyService.showInformationAlreadyKnow(zwjyInfoDTO);
@@ -120,12 +127,16 @@ public class ZwjyController {
     public Object moodifyWsjy(@RequestBody ZwjyDTO zwjyDTO,
                               HttpServletRequest request,
                               HttpServletResponse response){
-        System.out.println("controller层");
-        System.out.println(zwjyDTO);
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("修改一条植物检疫表项");
+        logService.InsertLog(log);
+
         ResultDTO resultDTO = new ResultDTO();
         dcZwjy zwjy = new dcZwjy();
         zwjy = zwjyService.transformDTOToZwjy(zwjyDTO);
-        System.out.println(zwjy.getId());
         boolean flag = zwjyService.updateZwjy(zwjy);
 
         resultDTO.setSuccess(flag);
@@ -144,6 +155,13 @@ public class ZwjyController {
     public Object deleteWsjy(@RequestBody ShowTableDTO showTableDTO,
                              HttpServletRequest request,
                              HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("删除一条植物检疫表项");
+        logService.InsertLog(log);
+
         ResultDTO resultDTO = new ResultDTO();
         int id = showTableDTO.getId();
         boolean flag = zwjyService.deleteZwjyById(id);
@@ -163,8 +181,8 @@ public class ZwjyController {
     public Object submit(HttpServletRequest request,
                          HttpServletResponse response){
         ResultDTO resultDTO = new ResultDTO();
-        int rwid = (int)request.getSession().getAttribute("rwid");
-        boolean flag = dcrwService.modifyStatusToSubmit(rwid);
+        int renwuid = (int)request.getSession().getAttribute("zwrwid");
+        boolean flag = dcrwService.modifyStatusToSubmit(renwuid);
         resultDTO.setSuccess(flag);
         if (flag == true){
             resultDTO.setMessage("删除植物检疫表格成功");
@@ -181,6 +199,13 @@ public class ZwjyController {
     public Object historyOnceMoreWj(@RequestBody HistoryOnceMoreDTO historyOnceMoreDTO,
                                     HttpServletRequest request,
                                     HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("插入一条历史植物检疫表项");
+        logService.InsertLog(log);
+
         ResultDTO resultDTO = new ResultDTO();
         List<Integer> ids = historyOnceMoreDTO.getIds();
         boolean flag = zwjyService.historyOnceMoreZj(ids);
