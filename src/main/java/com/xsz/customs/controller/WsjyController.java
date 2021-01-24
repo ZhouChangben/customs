@@ -1,7 +1,6 @@
 package com.xsz.customs.controller;
 
 import com.xsz.customs.dto.*;
-import com.xsz.customs.model.dcDwjy;
 import com.xsz.customs.model.dcLog;
 import com.xsz.customs.model.dcUser;
 import com.xsz.customs.model.dcWsjy;
@@ -9,10 +8,8 @@ import com.xsz.customs.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -117,9 +114,10 @@ public class WsjyController {
     public Object showInformationAlreadyKnow(HttpServletRequest request,
                                              HttpServletResponse response){
         int renwuid = (int)request.getSession().getAttribute("wsrwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         WsjyInfoDTO wsjyInfoDTO = new WsjyInfoDTO();
         wsjyInfoDTO.setRwid(renwuid);
-        wsjyInfoDTO = wsjyService.showInformationAlreadyKnow(wsjyInfoDTO);
+        wsjyInfoDTO = wsjyService.showInformationAlreadyKnow(wsjyInfoDTO,user.getDcGqdm());
         return wsjyInfoDTO;
     }
 
@@ -220,12 +218,12 @@ public class WsjyController {
         }
         return resultDTO;
     }
-    @ResponseBody
+    /*@ResponseBody
     @RequestMapping(value = "historyOnceMore",method = RequestMethod.POST)
     public Object historyOnceMore(@RequestBody HistoryOnceMoreDTO historyOnceMoreDTO,
                                     HttpServletRequest request,
                                     HttpServletResponse response){
-        /*System.out.println("111");
+        *//*System.out.println("111");
         System.out.println(historyOnceMoreDTO);
         ResultDTO resultDTO = new ResultDTO();
         String ids = historyOnceMoreDTO.getIds();
@@ -244,7 +242,21 @@ public class WsjyController {
         else {
             resultDTO.setMessage("删除卫生检疫表格失败");
         }
-        return resultDTO;*/
+        return resultDTO;*//*
         return true;
+    }*/
+    @ResponseBody
+    @RequestMapping(value = "wsjySearch",method = RequestMethod.POST)
+    public Object wsjySearch(@RequestBody SeasrchContentDTO seasrchContentDTO,
+                             HttpServletRequest request,
+                             HttpServletResponse response){
+        dcUser user = (dcUser) request.getSession().getAttribute("user");
+        String content = seasrchContentDTO.getContent();
+        content = '%' + content + '%';
+        List<dcWsjy> wsjys = wsjyService.searchWj(content,"010001");
+        ShowWsjyDTO showWsjyDTO = new ShowWsjyDTO();
+        showWsjyDTO.setRows(wsjys);
+        showWsjyDTO.setTotal(wsjys.size());
+        return showWsjyDTO;
     }
 }

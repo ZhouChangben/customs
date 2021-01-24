@@ -15,9 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Controller
 public class UserController {
@@ -82,11 +80,48 @@ public class UserController {
                                HttpServletResponse response){
         HttpSession session = request.getSession();
         dcUser user = (dcUser)session.getAttribute("user");
-        String gqdm = userService.getMaxSubUserDm(user.getDcGqdm());
         NextGqdmDTO nextGqdmDTO = new NextGqdmDTO();
-        nextGqdmDTO.setGqdm(gqdm);
+        if (user.getDcGqdj() == 0){
+            return nextGqdmDTO;
+        }
+        else if (user.getDcGqdj() == 1) {
+            String gqdm = userService.getMaxSubUserDm(user.getDcGqdm());
+            nextGqdmDTO.setGqdm(gqdm);
+            return nextGqdmDTO;
+        }
         return nextGqdmDTO;
     }
+
+    @ResponseBody
+    @RequestMapping(value = "/preregisterForMaxUser",method = RequestMethod.GET)
+    public  Object preRegisterForMaxUser(HttpServletRequest request,
+                               HttpServletResponse response){
+        HttpSession session = request.getSession();
+        dcUser user = (dcUser)session.getAttribute("user");
+        NextGqdmDTO nextGqdmDTO = new NextGqdmDTO();
+        if (user.getDcGqdj() == 0){
+
+            return nextGqdmDTO;
+        }
+        return nextGqdmDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/personalInfo",method = RequestMethod.GET)
+    public  Object personalInfo(HttpServletRequest request,
+                                         HttpServletResponse response){
+        HttpSession session = request.getSession();
+        dcUser user = (dcUser)session.getAttribute("user");
+        String gqdm = user.getDcGqdm();
+        dcUser user1 = userService.findUserByGqdm(gqdm);
+        List<dcUser> users = new ArrayList<>();
+        users.add(user1);
+        SubUsersDTO subUsersDTO = new SubUsersDTO();
+        subUsersDTO.setTotal(1);
+        subUsersDTO.setRows(users);
+        return subUsersDTO;
+    }
+
 
     @ResponseBody
     @RequestMapping(value = "/register",method = RequestMethod.POST)
@@ -221,9 +256,9 @@ public class UserController {
             int gqdj = user.getDcGqdj();
             List<dcUser> users = userService.getUserList(gqdm, gqdj);
             //当前关区是非三级关区时
-            if (users != null && users.get(0).getDcGqdj() < 2){
+            /*if (users != null && users.get(0).getDcGqdj() < 2){
                 users.add(user);
-            }
+            }*/
             //这是为了方便修改三级关区的用户管理而设置的
             if (users != null){
                 int size = users.size();
@@ -290,9 +325,9 @@ public class UserController {
     public Object showUserInfo(HttpServletRequest request,
                                HttpServletResponse response){
         dcUser user = (dcUser)request.getSession().getAttribute("user");
-        if (user.getDcGqdj() != 0) {
+        /*if (user.getDcGqdj() != 0) {
             dcUser fUser = userService.findFatherGq(user.getDcGqdm());
-            /*List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user,null);*/
+            *//*List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user,null);*//*
             List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user, fUser);
             UserInfoDTO userInfoDTO = userInfoDTOS.get(0);
             return userInfoDTO;
@@ -300,8 +335,105 @@ public class UserController {
         else if (user.getDcGqdj() == 0){
             List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
             return userInfoDTOS.get(0);
+        }*/
+        List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user, user);
+        UserInfoDTO userInfoDTO = userInfoDTOS.get(0);
+        return userInfoDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateUserWjInfo",method = RequestMethod.POST)
+    public Object updateUserWjInfo(@RequestBody UserWjInfoDTO userWjInfoDTO,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("更新卫检联系方式");
+        logService.InsertLog(log);
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
+        ResultDTO resultDTO = new ResultDTO();
+        boolean flag;
+
+        user.setDcWjlxr(userWjInfoDTO.getWjLxr());
+        user.setDcWjlxdh(userWjInfoDTO.getWjLxdh());
+        user.setDcWjfzr(userWjInfoDTO.getWjFzr());
+        user.setDcWjfzdh(userWjInfoDTO.getWjFzrdh());
+
+        flag = userService.updateUserInfomation(user);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("更新卫检联系人成功");
         }
-        return null;
+        else {
+            resultDTO.setMessage("更新卫检联系人失败");
+        }
+        return resultDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateUserDjInfo",method = RequestMethod.POST)
+    public Object updateUserDjInfo(@RequestBody UserDjInfoDTO userDjInfoDTO,
+                                   HttpServletRequest request,
+                                   HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("更新动检联系方式");
+        logService.InsertLog(log);
+
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
+        ResultDTO resultDTO = new ResultDTO();
+        boolean flag;
+
+        user.setDcDjlxr(userDjInfoDTO.getDjLxr());
+        user.setDcDjlxdh(userDjInfoDTO.getDjLxdh());
+        user.setDcDjfzr(userDjInfoDTO.getDjFzr());
+        user.setDcDjfzdh(userDjInfoDTO.getDjFzrdh());
+
+        flag = userService.updateUserInfomation(user);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("更新动检联系人成功");
+        }
+        else {
+            resultDTO.setMessage("更新动检联系人失败");
+        }
+        return resultDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateUserZjInfo",method = RequestMethod.POST)
+    public Object updateUserZjInfo(@RequestBody UserZjInfoDTO userZjInfoDTO,
+                                   HttpServletRequest request,
+                                   HttpServletResponse response){
+        //日志记录
+        dcLog log = new dcLog();
+        log.setIp(request.getRemoteAddr());
+        log.setTime(System.currentTimeMillis());
+        log.setMovement("更新植检联系方式");
+        logService.InsertLog(log);
+
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
+        ResultDTO resultDTO = new ResultDTO();
+        boolean flag;
+
+        user.setDcZjlxr(userZjInfoDTO.getZjLxr());
+        user.setDcZjlxdh(userZjInfoDTO.getZjLxdh());
+        user.setDcZjfzr(userZjInfoDTO.getZjFzr());
+        user.setDcZjfzdh(userZjInfoDTO.getZjFzrdh());
+
+        flag = userService.updateUserInfomation(user);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("更新植检联系人成功");
+        }
+        else {
+            resultDTO.setMessage("更新植检联系人失败");
+        }
+        return resultDTO;
     }
 
     @ResponseBody
@@ -319,7 +451,7 @@ public class UserController {
         dcUser user = (dcUser)request.getSession().getAttribute("user");
         ResultDTO resultDTO = new ResultDTO();
         boolean flag;
-        if (user.getDcGqdj() > 1){
+        /*if (user.getDcGqdj() > 1){
             dcUser fUser = userService.findFatherGq(user.getDcGqdm());
             fUser.setDcWjlxr(userInfoDTO.getWjLxr());
             fUser.setDcWjlxdh(userInfoDTO.getWjLxdh());
@@ -334,8 +466,7 @@ public class UserController {
             fUser.setDcZjfzr(userInfoDTO.getZjFzr());
             fUser.setDcZjfzdh(userInfoDTO.getZjFzrdh());
             flag = userService.updateUserInfomation(fUser);
-        }
-        else {
+        }*/
             user.setDcWjlxr(userInfoDTO.getWjLxr());
             user.setDcWjlxdh(userInfoDTO.getWjLxdh());
             user.setDcWjfzr(userInfoDTO.getWjFzr());
@@ -349,13 +480,33 @@ public class UserController {
             user.setDcZjfzr(userInfoDTO.getZjFzr());
             user.setDcZjfzdh(userInfoDTO.getZjFzrdh());
             flag = userService.updateUserInfomation(user);
-        }
+
         resultDTO.setSuccess(flag);
         if (flag == true){
             resultDTO.setMessage("更新联系人成功");
         }
         else {
             resultDTO.setMessage("更新联系人失败");
+        }
+        return resultDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/updateUserPwd",method = RequestMethod.POST)
+    public Object updateUserPwd(@RequestBody UserPsdDTO userPsdDTO,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response){
+        dcUser user = new dcUser();
+        ResultDTO resultDTO = new ResultDTO();
+        user.setDcGqdm(userPsdDTO.getGqdm());
+        user.setDcGqpword(userPsdDTO.getPassword());
+        boolean flag = userService.updateUserInfomation(user);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("更新用户密码成功");
+        }
+        else {
+            resultDTO.setMessage("更新用户密码失败");
         }
         return resultDTO;
     }

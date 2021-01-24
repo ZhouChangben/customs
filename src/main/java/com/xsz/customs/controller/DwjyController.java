@@ -1,12 +1,9 @@
 package com.xsz.customs.controller;
 
 import com.xsz.customs.dto.*;
+import com.xsz.customs.model.*;
 import com.xsz.customs.model.dcDwjy;
-import com.xsz.customs.model.dcDwjy;
-import com.xsz.customs.model.dcLog;
-import com.xsz.customs.model.dcUser;
 import com.xsz.customs.service.*;
-import com.xsz.customs.service.DwjyService;
 import com.xsz.customs.service.DwjyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -118,9 +115,10 @@ public class DwjyController {
     public Object showInformationAlreadyKnow(HttpServletRequest request,
                                              HttpServletResponse response){
         int renwuid = (int)request.getSession().getAttribute("dwrwid");
+        dcUser user = (dcUser) request.getSession().getAttribute("user");
         DwjyInfoDTO dwjyInfoDTO = new DwjyInfoDTO();
         dwjyInfoDTO.setRwid(renwuid);
-        dwjyInfoDTO = dwjyService.showInformationAlreadyKnow(dwjyInfoDTO);
+        dwjyInfoDTO = dwjyService.showInformationAlreadyKnow(dwjyInfoDTO,user.getDcGqdm());
         return dwjyInfoDTO;
     }
 
@@ -219,5 +217,20 @@ public class DwjyController {
             resultDTO.setMessage("删除动物检疫表格失败");
         }
         return resultDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "dwjySearch",method = RequestMethod.POST)
+    public Object wsjySearch(@RequestBody SeasrchContentDTO seasrchContentDTO,
+                             HttpServletRequest request,
+                             HttpServletResponse response){
+        dcUser user = (dcUser) request.getSession().getAttribute("user");
+        String content = seasrchContentDTO.getContent();
+        content = '%' + content + '%';
+        List<dcDwjy> dwjys = dwjyService.searchDj(content,user.getDcGqdm());
+        ShowDwjyDTO showDwjyDTO = new ShowDwjyDTO();
+        showDwjyDTO.setRows(dwjys);
+        showDwjyDTO.setTotal(dwjys.size());
+        return showDwjyDTO;
     }
 }

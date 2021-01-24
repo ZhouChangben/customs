@@ -2,10 +2,7 @@ package com.xsz.customs.service;
 
 import com.xsz.customs.dto.WsjyDTO;
 import com.xsz.customs.dto.WsjyInfoDTO;
-import com.xsz.customs.mapper.dcDcrwExtMapper;
-import com.xsz.customs.mapper.dcDcrwMapper;
-import com.xsz.customs.mapper.dcUserMapper;
-import com.xsz.customs.mapper.dcWsjyMapper;
+import com.xsz.customs.mapper.*;
 import com.xsz.customs.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +22,9 @@ public class WsjyService {
 
     @Autowired
     private dcDcrwExtMapper dcrwExtMapper;
+
+    @Autowired
+    private dcWsjyExtMapper wsjyExtMapper;
 
     public boolean updateTable(dcWsjy dcwsjy){
 
@@ -90,14 +90,14 @@ public class WsjyService {
     }
 
     //返回一些在填写卫生检疫表时需要自动显示的数据
-    public WsjyInfoDTO showInformationAlreadyKnow(WsjyInfoDTO wsjyInfoDTO){
+    public WsjyInfoDTO showInformationAlreadyKnow(WsjyInfoDTO wsjyInfoDTO,String gqdm){
         int rwid = wsjyInfoDTO.getRwid();
         dcDcrwExample dcrwexample = new dcDcrwExample();
         dcrwexample.createCriteria()
                 .andIdEqualTo(rwid);
         List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwexample);
         dcDcrw dcrw = dcrws.get(0);
-        String gqdm = dcrw.getDcRenwugqdm();
+        /*String gqdm = dcrw.getDcRenwugqdm();*/
         wsjyInfoDTO.setGqdm(gqdm);
         wsjyInfoDTO.setGqName(dcrw.getDcRenwugqname());
         wsjyInfoDTO.setRwmc(dcrw.getDcRenwumc());
@@ -110,10 +110,10 @@ public class WsjyService {
         List<dcUser> users = userMapper.selectByExample(userExample);
         dcUser user = users.get(0);
 
-        wsjyInfoDTO.setContact(user.getDcLxr());
-        wsjyInfoDTO.setPrincipal(user.getDcLxr());
-        wsjyInfoDTO.setLxrPhone(user.getDcLxdh());
-        wsjyInfoDTO.setFzrPhone(user.getDcLxdh());
+        wsjyInfoDTO.setContact(user.getDcWjlxr());
+        wsjyInfoDTO.setPrincipal(user.getDcWjfzr());
+        wsjyInfoDTO.setLxrPhone(user.getDcWjlxdh());
+        wsjyInfoDTO.setFzrPhone(user.getDcWjfzdh());
 
         return wsjyInfoDTO;
     }
@@ -251,5 +251,10 @@ public class WsjyService {
             }
         }
         return true;
+    }
+
+    public List<dcWsjy> searchWj(String content,String gqdm){
+        List<dcWsjy> wsjys = wsjyExtMapper.SearchWjContent(content,gqdm);
+        return wsjys;
     }
 }

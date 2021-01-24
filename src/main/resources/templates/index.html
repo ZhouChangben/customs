@@ -57,7 +57,7 @@
         <div title="用户" data-options="iconCls:'icon-reload',selected:true" style="padding:10px;">
             <ul>
                 <li><a href="javascript:void(0)" pageUrl="userInfo">用户信息</a></li>
-                <li><a href="javascript:void(0)" pageUrl="userMP">用户管理</a></li>
+                <li th:if="${session.user.getDcGqdj()<2}"><a href="javascript:void(0)" pageUrl="userMP">用户管理</a></li>
             </ul>
         </div>
     </div>

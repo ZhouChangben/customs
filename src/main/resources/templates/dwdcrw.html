@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -16,6 +17,7 @@
     <link id="themeLink" rel="stylesheet" type="text/css" href="./easyUI/themes/default/easyui.css">
 </head>
 <body>
+<input type="hidden" id="hid" th:value="${session.user.getDcGqdj()}">
 <div id="loading" style="position:absolute;z-index:1000;top:0px;left:0px;width:100%;height:100%;background:#DDDDDB;text-align :center;padding-top:20%;">
     <h1><font color="#15428B">加载中....</font></h1>
 </div>
@@ -192,6 +194,8 @@
         return obj;
     })()
     $(function () {
+
+
 
         //页面加载数据
         $('#dg').datagrid({
@@ -404,6 +408,58 @@
                 }
             ],
 
+            onDblClickRow:function (index,row) {
+                $.ajax({
+                    url: "http://localhost:8080/showDwjyTable",
+                    type: "post",
+                    data: JSON.stringify({"id": row.id}),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+
+                        $("#editFormAnimal").form("load", {
+                            id:data.id,
+                            rwid: data.rwid,
+                            rwmc: data.rwmc,
+                            rwxh: data.rwxh,
+                            gqdm: data.gqdm,
+                            gqName: data.gqName,
+                            ywly: data.ywly,
+                            name:data.name,
+                            ename:data.ename,
+                            category:data.category,
+                            dzxq:data.dzxq,
+                            bywswCategory:data.bywswCategory,
+                            cell:data.cell,
+                            code:data.code,
+                            chuanci:data.chuanci,
+                            condition:data.condition,
+                            cdCell:data.cdCell,
+                            suzhu:data.suzhu,
+                            sourceSite:data.sourceSite,
+                            obtainApproach:data.obtainApproach,
+                            number:data.number,
+                            danwei:data.danwei,
+                            saveCondition:data.saveCondition,
+                            saveTime:data.saveTime,
+                            obtainLocation:data.obtainLocation,
+                            saveLocation: data.saveLocation,
+                            situation:data.situation,
+                            contact: data.contact,
+                            lxrPhone: data.lxrPhone,
+                            principal: data.principal,
+                            fzrPhone: data.fzrPhone,
+                            remark: data.remark,
+                        });
+                    }
+                })
+                //填弹出编辑窗口
+                $("#saveAnimal").css("display", "none");
+                $("#editsaveAnimal").css("display", "inline-block");
+                $("#editWinAnimal").window({title: "编辑记录"});
+                $("#editWinAnimal").window("open")
+            }
+
         });
 
 
@@ -549,6 +605,12 @@
             $("#editFormAnimal").form("clear")
             $("#editWinAnimal").window("close")
         })
+
+
+        var gqdj=$("#hid").val();
+        if (gqdj==0||gqdj==2){
+            $('div.datagrid-toolbar a').eq(3).hide();
+        }
     })
 </script>
 </body>

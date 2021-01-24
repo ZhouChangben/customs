@@ -115,9 +115,10 @@ public class ZwjyController {
     public Object showInformationAlreadyKnow(HttpServletRequest request,
                                              HttpServletResponse response){
         int renwuid = (int)request.getSession().getAttribute("zwrwid");
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         ZwjyInfoDTO zwjyInfoDTO = new ZwjyInfoDTO();
         zwjyInfoDTO.setRwid(renwuid);
-        zwjyInfoDTO = zwjyService.showInformationAlreadyKnow(zwjyInfoDTO);
+        zwjyInfoDTO = zwjyService.showInformationAlreadyKnow(zwjyInfoDTO,user.getDcGqdm());
         return zwjyInfoDTO;
     }
 
@@ -217,6 +218,21 @@ public class ZwjyController {
             resultDTO.setMessage("删除卫生检疫表格失败");
         }
         return resultDTO;
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "zwjySearch",method = RequestMethod.POST)
+    public Object zwjySearch(@RequestBody SeasrchContentDTO seasrchContentDTO,
+                             HttpServletRequest request,
+                             HttpServletResponse response){
+        dcUser user = (dcUser) request.getSession().getAttribute("user");
+        String content = seasrchContentDTO.getContent();
+        content = '%' + content + '%';
+        List<dcZwjy> zwjys = zwjyService.searchZj(content,user.getDcGqdm());
+        ShowZwjyDTO showZwjyDTO = new ShowZwjyDTO();
+        showZwjyDTO.setRows(zwjys);
+        showZwjyDTO.setTotal(zwjys.size());
+        return showZwjyDTO;
     }
 
 }

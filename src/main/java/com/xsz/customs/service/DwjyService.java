@@ -2,10 +2,7 @@ package com.xsz.customs.service;
 
 import com.xsz.customs.dto.DwjyDTO;
 import com.xsz.customs.dto.DwjyInfoDTO;
-import com.xsz.customs.mapper.dcDcrwExtMapper;
-import com.xsz.customs.mapper.dcDcrwMapper;
-import com.xsz.customs.mapper.dcDwjyMapper;
-import com.xsz.customs.mapper.dcUserMapper;
+import com.xsz.customs.mapper.*;
 import com.xsz.customs.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,6 +15,9 @@ public class DwjyService {
     private dcDwjyMapper dwjyMapper;
 
     @Autowired
+    private dcDwjyExtMapper dwjyExtMapper;
+
+    @Autowired
     private dcDcrwMapper dcrwMapper;
 
     @Autowired
@@ -25,6 +25,8 @@ public class DwjyService {
 
     @Autowired
     private dcDcrwExtMapper dcrwExtMapper;
+
+
 
     public boolean updateDwjy(dcDwjy dwjy) {
         dcDwjyExample dwjyExample = new dcDwjyExample();
@@ -101,14 +103,14 @@ public class DwjyService {
         return dwjys.subList(first,last);
     }
 
-    public DwjyInfoDTO showInformationAlreadyKnow(DwjyInfoDTO dwjyInfoDTO) {
+    public DwjyInfoDTO showInformationAlreadyKnow(DwjyInfoDTO dwjyInfoDTO,String gqdm) {
         int rwid = dwjyInfoDTO.getRwid();
         dcDcrwExample dcrwexample = new dcDcrwExample();
         dcrwexample.createCriteria()
                 .andIdEqualTo(rwid);
         List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwexample);
         dcDcrw dcrw = dcrws.get(0);
-        String gqdm = dcrw.getDcRenwugqdm();
+        /*String gqdm = dcrw.getDcRenwugqdm();*/
         dwjyInfoDTO.setGqdm(gqdm);
         dwjyInfoDTO.setGqName(dcrw.getDcRenwugqname());
         dwjyInfoDTO.setRwmc(dcrw.getDcRenwumc());
@@ -121,10 +123,10 @@ public class DwjyService {
         List<dcUser> users = userMapper.selectByExample(userExample);
         dcUser user = users.get(0);
 
-        dwjyInfoDTO.setContact(user.getDcLxr());
-        dwjyInfoDTO.setPrincipal(user.getDcLxr());
-        dwjyInfoDTO.setLxrPhone(user.getDcLxdh());
-        dwjyInfoDTO.setFzrPhone(user.getDcLxdh());
+        dwjyInfoDTO.setContact(user.getDcDjlxr());
+        dwjyInfoDTO.setPrincipal(user.getDcDjfzr());
+        dwjyInfoDTO.setLxrPhone(user.getDcDjlxdh());
+        dwjyInfoDTO.setFzrPhone(user.getDcDjfzdh());
 
         return dwjyInfoDTO;
     }
@@ -177,6 +179,11 @@ public class DwjyService {
             }
         }
         return true;
+    }
+
+    public List<dcDwjy> searchDj(String content,String gqdm){
+        List<dcDwjy> dwjys = dwjyExtMapper.SearchDjContent(content,gqdm);
+        return dwjys;
     }
 
     public DwjyDTO transformDwjyToDTO(dcDwjy dwjy) {

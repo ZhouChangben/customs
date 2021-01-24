@@ -121,23 +121,23 @@ public class UserService {
                     .andDcGqdjEqualTo(1);
             List<dcUser> users1 = userMapper.selectByExample(example);
 
-            dcUserExample example1 = new dcUserExample();
+            /*dcUserExample example1 = new dcUserExample();
             example1.createCriteria()
                     .andDcGqdmEqualTo(gqdm);
             List<dcUser> users = userMapper.selectByExample(example1);
-            users.addAll(users1);
-            return users.subList(first,last);
+            users.addAll(users1);*/
+            return users1.subList(first,last);
         }
         //当前用户是二级海关部门
         else if (gqdj == 1){
             String frontdm = gqdm.substring(0,4);
             //String reardm = gqdm.substring(4);
             List<dcUser> users1 = userExtMapper.SelectByFrontDm(frontdm+"%");
-            example.createCriteria()
+            /*example.createCriteria()
                     .andDcGqdmEqualTo(gqdm);
             List<dcUser> users = userMapper.selectByExample(example);
-            users.addAll(users1);
-            return users.subList(first,last);
+            users.addAll(users1);*/
+            return users1.subList(first,last);
         }
         //当前用户是最低级的用户
         else{

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -16,6 +17,7 @@
     <link id="themeLink" rel="stylesheet" type="text/css" href="./easyUI/themes/default/easyui.css">
 </head>
 <body>
+<input type="hidden" id="hid" th:value="${session.user.getDcGqdj()}">
 <div id="loading" style="position:absolute;z-index:1000;top:0px;left:0px;width:100%;height:100%;background:#DDDDDB;text-align :center;padding-top:20%;">
     <h1><font color="#15428B">加载中....</font></h1>
 </div>
@@ -420,6 +422,55 @@
                 }
             ],
 
+            onDblClickRow:function (index,row) {
+                $.ajax({
+                    url: "http://localhost:8080/showWsjyTable",
+                    type: "post",
+                    data: JSON.stringify({"id": row.id}),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+
+                        $("#editFormHealth").form("load", {
+                            id:data.id,
+                            rwid: data.rwid,
+                            rwmc: data.rwmc,
+                            rwxh: data.rwxh,
+                            gqdm: data.gqdm,
+                            gqName: data.gqName,
+                            ywly: data.ywly,
+                            category: data.category,
+                            saveType: data.saveType,
+                            name: data.name,
+                            ename: data.ename,
+                            zhuxi: data.zhuxi,
+                            chuanci: data.chuanci,
+                            source: data.source,
+                            szhj: data.szhj,
+                            number: data.number,
+                            danwei:data.danwei,
+                            saveStatus: data.saveStatus,
+                            obtainSite: data.obtainSite,
+                            obtainApproach: data.obtainApproach,
+                            saveCondition: data.saveCondition,
+                            saveTime: data.saveTime,
+                            code: data.code,
+                            saveLocation: data.saveLocation,
+                            contact: data.contact,
+                            lxrPhone: data.lxrPhone,
+                            principal: data.principal,
+                            fzrPhone: data.fzrPhone,
+                            remark: data.remark,
+                        });
+                    }
+                })
+                //填弹出编辑窗口
+                $("#saveHealth").css("display", "none");
+                $("#editsaveHealth").css("display", "inline-block");
+                $("#editWinHealth").window({title: "编辑记录"});
+                $("#editWinHealth").window("open")
+            }
+
         });
 
 
@@ -565,6 +616,11 @@
             $("#editFormHealth").form("clear")
             $("#editWinHealth").window("close")
         })
+
+        var gqdj=$("#hid").val();
+        if (gqdj==0||gqdj==2){
+            $('div.datagrid-toolbar a').eq(3).hide();
+        }
     })
 </script>
 </body>

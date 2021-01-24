@@ -24,6 +24,9 @@ public class ZwjyService {
     private dcZwjyMapper zwjyMapper;
 
     @Autowired
+    private dcZwjyExtMapper zwjyExtMapper;
+
+    @Autowired
     private dcDcrwExtMapper dcrwExtMapper;
 
     public boolean insertNewTable(dcZwjy zwjy) {
@@ -133,7 +136,7 @@ public class ZwjyService {
         return true;
     }
 
-    public ZwjyInfoDTO showInformationAlreadyKnow(ZwjyInfoDTO zwjyInfoDTO) {
+    public ZwjyInfoDTO showInformationAlreadyKnow(ZwjyInfoDTO zwjyInfoDTO,String gqdm) {
 
         int rwid = zwjyInfoDTO.getRwid();
         dcDcrwExample dcrwexample = new dcDcrwExample();
@@ -141,7 +144,7 @@ public class ZwjyService {
                 .andIdEqualTo(rwid);
         List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwexample);
         dcDcrw dcrw = dcrws.get(0);
-        String gqdm = dcrw.getDcRenwugqdm();
+        /*String gqdm = dcrw.getDcRenwugqdm();*/
         zwjyInfoDTO.setGqdm(gqdm);
         zwjyInfoDTO.setGqName(dcrw.getDcRenwugqname());
         zwjyInfoDTO.setRwmc(dcrw.getDcRenwumc());
@@ -154,13 +157,19 @@ public class ZwjyService {
         List<dcUser> users = userMapper.selectByExample(userExample);
         dcUser user = users.get(0);
 
-        zwjyInfoDTO.setContact(user.getDcLxr());
-        zwjyInfoDTO.setPrincipal(user.getDcLxr());
-        zwjyInfoDTO.setLxrPhone(user.getDcLxdh());
-        zwjyInfoDTO.setFzrPhone(user.getDcLxdh());
+        zwjyInfoDTO.setContact(user.getDcZjlxr());
+        zwjyInfoDTO.setPrincipal(user.getDcZjfzr());
+        zwjyInfoDTO.setLxrPhone(user.getDcZjlxdh());
+        zwjyInfoDTO.setFzrPhone(user.getDcZjfzdh());
 
         return zwjyInfoDTO;
     }
+
+    public List<dcZwjy> searchZj(String content,String gqdm){
+        List<dcZwjy> zwjys = zwjyExtMapper.SearchZjContent(content,gqdm);
+        return zwjys;
+    }
+
 /*"rwxh":rwxh,"gqdm":gqdm,"rwmc":rwmc,"rwid":rwid,"gqName":gqName,"ywly": ywly,"category":category,
             "saveType":saveType,"name":name,"ename":ename,"source":source,"shidai":shidai,"jydw":jydw,"jyywlb":jyywlb,
             "number":number,"danwei":danwei,"saveStatus":saveStatus,"hwlb":hwlb,"jizhu":jizhu,

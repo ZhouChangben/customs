@@ -47,7 +47,7 @@ public class ExcelController {
     @RequestMapping("/excelDownloadDj")
     public void djExcelDownload(HttpServletRequest request,
                               HttpServletResponse response) throws IOException {
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("dwrwid");
         dcUser user = (dcUser)request.getSession().getAttribute("user");
         //表头数据
         String[] header = {"序号", "关区", "业务领域", "类别", "名称", "英文名(简称）","毒（菌）株型/血清型","病原微生物分类","细胞型","内部保存编号","传次","状态\\形式","毒株传代细胞","宿主","来源国家/地区","获得渠道","数量","保存条件","保存时间","基本情况","获得地点","保存位置\n" +
@@ -167,7 +167,7 @@ public class ExcelController {
     @RequestMapping("/excelDownloadWj")
     public void wjExcelDownload(HttpServletRequest request,
                                 HttpServletResponse response) throws IOException {
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("wsrwid");
         dcUser user = (dcUser)request.getSession().getAttribute("user");
         //表头数据
         String[] header = {"序号", "关区", "业务领域", "类别", "名称", "拉丁学名（细胞株英文名）","株系（仅适用于细胞株）","传次（仅适用于细胞株）","内部保存编号","保存形式","来源","来源宿主或环境","样本量","保存状态","获得地点","获取途径","保存条件","保存时间","保存位置","联系人","联络电话","负责人","联络电话","备注"};
@@ -279,7 +279,7 @@ public class ExcelController {
     @RequestMapping("/excelDownloadZj")
     public void zjExcelDownload(HttpServletRequest request,
                                 HttpServletResponse response) throws IOException {
-        int renwuid = (int)request.getSession().getAttribute("rwid");
+        int renwuid = (int)request.getSession().getAttribute("zwrwid");
         dcUser user = (dcUser)request.getSession().getAttribute("user");
         ResultDTO resultDTO = new ResultDTO();
         //表头数据
@@ -313,7 +313,13 @@ public class ExcelController {
             cell.setCellStyle(headerStyle);
         }
         //"序号", "关区", "业务领域", "类别", "中文名称", "拉丁学名","世代/种下阶元","内部保存编号","检疫地位","检疫业务类别","货物类别","寄主","保存形式","来源","来源国家/地区","样本数量","保存状态","获得地点","保存部门(省市区，隶属关/部门)","保存条件","保存时间","鉴定人","联络电话","负责人","联络电话","备注"
-        List<dcZwjy> zwjys = zwjyService.getZwjysByRenwuid(renwuid);
+        List<dcZwjy> zwjys;
+        if (user.getDcGqdj() < 2){
+            zwjys = zwjyService.getZwjysByRenwuid(renwuid);
+        }
+        else {
+            zwjys = zwjyService.getZwjysByRenwuidForSub(renwuid,user);
+        }
         for(int i=0;i<zwjys.size();i++){
             //创建一行
             HSSFRow row1 = sheet.createRow(i+1);

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
@@ -16,6 +17,7 @@
     <link id="themeLink" rel="stylesheet" type="text/css" href="./easyUI/themes/default/easyui.css">
 </head>
 <body>
+<input type="hidden" id="hid" th:value="${session.user.getDcGqdj()}">
 <div id="loading" style="position:absolute;z-index:1000;top:0px;left:0px;width:100%;height:100%;background:#DDDDDB;text-align :center;padding-top:20%;">
     <h1><font color="#15428B">加载中....</font></h1>
 </div>
@@ -409,6 +411,56 @@
                     }
                 }
             ],
+            onDblClickRow:function (index,row) {
+                $.ajax({
+                    url: "http://localhost:8080/showZwjyTable",
+                    type: "post",
+                    data: JSON.stringify({"id": row.id}),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+
+                        $("#editFormPlant").form("load", {
+                            id:data.id,
+                            rwid: data.rwid,
+                            rwmc: data.rwmc,
+                            rwxh: data.rwxh,
+                            gqdm: data.gqdm,
+                            gqName: data.gqName,
+                            ywly: data.ywly,
+                            name: data.name,
+                            ename: data.ename,
+                            category: data.category,
+                            shidai: data.shidai,
+                            code: data.code,
+                            jydw:data.jydw,
+                            jyywlb:data.jyywlb,
+                            hwlb: data.hwlb,
+                            jizhu: data.jizhu,
+                            saveType:data.saveType,
+                            source:data.source,
+                            sourceSite:data.sourceSite,
+                            number: data.number,
+                            danwei:data.danwei,
+                            saveStatus: data.saveStatus,
+                            saveCondition: data.saveCondition,
+                            saveTime: data.saveTime,
+                            obtainSite:data.obtainSite,
+                            saveLocation: data.saveLocation,
+                            contact: data.contact,
+                            lxrPhone: data.lxrPhone,
+                            principal: data.principal,
+                            fzrPhone: data.fzrPhone,
+                            remark: data.remark,
+                        });
+                    }
+                })
+                //填弹出编辑窗口
+                $("#savePlant").css("display", "none");
+                $("#editsavePlant").css("display", "inline-block");
+                $("#editWinPlant").window({title: "编辑记录"});
+                $("#editWinPlant").window("open")
+            }
 
         });
 
@@ -555,6 +607,11 @@
             $("#editFormPlant").form("clear")
             $("#editWinPlant").window("close")
         })
+
+        var gqdj=$("#hid").val();
+        if (gqdj==0||gqdj==2){
+            $('div.datagrid-toolbar a').eq(3).hide();
+        }
     })
 </script>
 </body>
