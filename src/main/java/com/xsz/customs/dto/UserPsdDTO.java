@@ -5,5 +5,6 @@ import lombok.Data;
 @Data
 public class UserPsdDTO {
     String gqdm;
+
     String password;
 }

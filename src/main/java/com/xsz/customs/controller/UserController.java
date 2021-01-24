@@ -491,6 +491,7 @@ public class UserController {
         return resultDTO;
     }
 
+    //修改用户密码
     @ResponseBody
     @RequestMapping(value = "/updateUserPwd",method = RequestMethod.POST)
     public Object updateUserPwd(@RequestBody UserPsdDTO userPsdDTO,
@@ -505,6 +506,7 @@ public class UserController {
         if (flag == true){
             resultDTO.setMessage("更新用户密码成功");
         }
+
         else {
             resultDTO.setMessage("更新用户密码失败");
         }
