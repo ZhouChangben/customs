@@ -165,8 +165,17 @@ public class ZwjyService {
         return zwjyInfoDTO;
     }
 
-    public List<dcZwjy> searchZj(String content,String gqdm){
-        List<dcZwjy> zwjys = zwjyExtMapper.SearchZjContent(content,gqdm);
+    public List<dcZwjy> searchZj(String content,dcUser user){
+        List<dcZwjy> zwjys;
+        if (user.getDcGqdj() > 1){
+            zwjys = zwjyExtMapper.SearchZjContent(content,user.getDcGqdm());
+        }
+        else if (user.getDcGqdj() == 1){
+            zwjys = zwjyExtMapper.SearchZjContentForSecond(content,user.getDcGqname());
+        }
+        else {
+            zwjys = zwjyExtMapper.SearchZjContentForMax(content);
+        }
         return zwjys;
     }
 

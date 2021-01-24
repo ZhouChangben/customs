@@ -52,4 +52,16 @@
       AND
       dc_renwugqdm2 = #{gqdm,jdbcType=VARCHAR}
     </select>
+    <select id="SearchDjContentForSecond" parameterType="java.lang.String" resultMap="BaseResultMap">
+      select *
+      from dc_dwjy
+      where (dj_name like #{content,jdbcType=VARCHAR} OR dj_lb like #{content,jdbcType=VARCHAR})
+      AND
+      dc_renwugqname = #{gqName,jdbcType=VARCHAR}
+    </select>
+    <select id="SearchDjContentForMax" parameterType="java.lang.String" resultMap="BaseResultMap">
+      select *
+      from dc_dwjy
+      where dj_name like #{content,jdbcType=VARCHAR} OR dj_lb like #{content,jdbcType=VARCHAR}
+    </select>
 </mapper>

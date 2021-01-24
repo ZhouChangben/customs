@@ -181,8 +181,17 @@ public class DwjyService {
         return true;
     }
 
-    public List<dcDwjy> searchDj(String content,String gqdm){
-        List<dcDwjy> dwjys = dwjyExtMapper.SearchDjContent(content,gqdm);
+    public List<dcDwjy> searchDj(String content,dcUser user){
+        List<dcDwjy> dwjys;
+        if (user.getDcGqdj() > 1) {
+            dwjys = dwjyExtMapper.SearchDjContent(content, user.getDcGqdm());
+        }
+        else if(user.getDcGqdj() == 1){
+            dwjys = dwjyExtMapper.SearchDjContentForSecond(content,user.getDcGqname());
+        }
+        else {
+            dwjys = dwjyExtMapper.SearchDjContentForMax(content);
+        }
         return dwjys;
     }
 

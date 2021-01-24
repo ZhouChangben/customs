@@ -280,7 +280,6 @@ public class UserService {
         boolean djqx = user.getDcDjqx();
         boolean zjqx = user.getDcZjqx();
 
-
         List<UserInfoDTO> userInfoDTOS = new ArrayList<>();
         UserInfoDTO userInfoDTO1 = new UserInfoDTO();
         userInfoDTO1.setGqdm(fUser.getDcGqdm());

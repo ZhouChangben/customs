@@ -175,13 +175,32 @@ public class DwjyController {
         return resultDTO;
     }
 
-    //提交动物检疫表,DTO是借用的
+    //提交动物检疫表,DTO是借用的,在具体表项页提交
     @ResponseBody
     @RequestMapping(value = "submitDwjy",method = RequestMethod.POST)
     public Object submit(HttpServletRequest request,
                          HttpServletResponse response){
         ResultDTO resultDTO = new ResultDTO();
         int rwid = (int)request.getSession().getAttribute("dwrwid");
+        boolean flag = dcrwService.modifyStatusToSubmit(rwid);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("删除动物检疫表格成功");
+        }
+        else {
+            resultDTO.setMessage("删除动物检疫表格失败");
+        }
+        return resultDTO;
+    }
+
+    //在外部提交动物检疫任务
+    @ResponseBody
+    @RequestMapping(value = "submitDwjyOut",method = RequestMethod.POST)
+    public Object submitOut(@RequestBody DwjyDTO dwjyDTO,
+                            HttpServletRequest request,
+                         HttpServletResponse response){
+        ResultDTO resultDTO = new ResultDTO();
+        int rwid = dwjyDTO.getRwid();
         boolean flag = dcrwService.modifyStatusToSubmit(rwid);
         resultDTO.setSuccess(flag);
         if (flag == true){
@@ -227,7 +246,7 @@ public class DwjyController {
         dcUser user = (dcUser) request.getSession().getAttribute("user");
         String content = seasrchContentDTO.getContent();
         content = '%' + content + '%';
-        List<dcDwjy> dwjys = dwjyService.searchDj(content,user.getDcGqdm());
+        List<dcDwjy> dwjys = dwjyService.searchDj(content,user);
         ShowDwjyDTO showDwjyDTO = new ShowDwjyDTO();
         showDwjyDTO.setRows(dwjys);
         showDwjyDTO.setTotal(dwjys.size());

@@ -4,6 +4,7 @@ import com.xsz.customs.dto.*;
 import com.xsz.customs.model.dcLog;
 import com.xsz.customs.model.dcUser;
 import com.xsz.customs.model.dcWsjy;
+import com.xsz.customs.model.wjLblx;
 import com.xsz.customs.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,6 +30,9 @@ public class WsjyController {
 
     @Autowired
     private LogService logService;
+
+    @Autowired
+    private LblxService lblxService;
 
     @ResponseBody
     @RequestMapping(value = "addWsjy",method = RequestMethod.POST)
@@ -175,13 +179,32 @@ public class WsjyController {
         return resultDTO;
     }
 
-    //提交卫生检疫表,DTO是借用的
+    //提交卫生检疫表,DTO是借用的，在具体表项页提交
     @ResponseBody
     @RequestMapping(value = "submit",method = RequestMethod.POST)
     public Object submit(HttpServletRequest request,
                          HttpServletResponse response){
         ResultDTO resultDTO = new ResultDTO();
         int rwid = (int)request.getSession().getAttribute("wsrwid");
+        boolean flag = dcrwService.modifyStatusToSubmit(rwid);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("删除卫生检疫表格成功");
+        }
+        else {
+            resultDTO.setMessage("删除卫生检疫表格失败");
+        }
+        return resultDTO;
+    }
+
+    //在外部提交卫生检疫任务
+    @ResponseBody
+    @RequestMapping(value = "submitWsjyOut",method = RequestMethod.POST)
+    public Object submitOut(@RequestBody WsjyDTO wsjyDTO,
+                            HttpServletRequest request,
+                            HttpServletResponse response){
+        ResultDTO resultDTO = new ResultDTO();
+        int rwid = wsjyDTO.getRwid();
         boolean flag = dcrwService.modifyStatusToSubmit(rwid);
         resultDTO.setSuccess(flag);
         if (flag == true){
@@ -253,10 +276,32 @@ public class WsjyController {
         dcUser user = (dcUser) request.getSession().getAttribute("user");
         String content = seasrchContentDTO.getContent();
         content = '%' + content + '%';
-        List<dcWsjy> wsjys = wsjyService.searchWj(content,"010001");
+        List<dcWsjy> wsjys = wsjyService.searchWj(content,user);
         ShowWsjyDTO showWsjyDTO = new ShowWsjyDTO();
         showWsjyDTO.setRows(wsjys);
         showWsjyDTO.setTotal(wsjys.size());
         return showWsjyDTO;
+    }
+
+    //卫生检疫统计功能
+    @ResponseBody
+    @RequestMapping(value = "wsjyStatistics",method = RequestMethod.POST)
+    public Object wsjyStatistics(@RequestBody StatisticTypeDTO statisticTypeDTO,
+                                 HttpServletRequest request,
+                             HttpServletResponse response){
+        List<wjLblx> allWjLbs = lblxService.getAllWjlx();
+        StatisticWjResultDTO statisticWjResultDTO = new StatisticWjResultDTO();
+        //选择统计所有关区的资源数量
+        /*if (statisticTypeDTO.isAll() *//*&& user.getDcGqdj() == 0*//*){
+            statisticWjResultDTO = wsjyService.countType(allWjLbs);
+            System.out.println("到我了");
+        }
+        else {
+            String gqName = statisticTypeDTO.getGqName();
+            wsjyService.countTypeForOneGq(allWjLbs,gqName);
+
+        }*/
+        statisticWjResultDTO = wsjyService.countType(allWjLbs);
+        return statisticWjResultDTO;
     }
 }

@@ -299,7 +299,7 @@ public class UserController {
 
         ShowUserInfoDTO showUserInfoDTO = new ShowUserInfoDTO();
         /*List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);*/
-        if (user.getDcGqdj() != 0){
+        /*if (user.getDcGqdj() != 0){
             dcUser fUser = userService.findFatherGq(user.getDcGqdm());
             List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user,fUser);
             int size = userInfoDTOS.size();
@@ -315,8 +315,13 @@ public class UserController {
             showUserInfoDTO.setTotal(size);
             showUserInfoDTO.setRows(userInfoDTOS);
             return showUserInfoDTO;
-        }
-
+        }*/
+        List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
+        int size = userInfoDTOS.size();
+        userInfoDTOS = userService.getUserInfoListPage(userInfoDTOS,page,rows,size);
+        showUserInfoDTO.setTotal(size);
+        showUserInfoDTO.setRows(userInfoDTOS);
+        return showUserInfoDTO;
     }
 
     //编辑前的数据写入
@@ -325,18 +330,7 @@ public class UserController {
     public Object showUserInfo(HttpServletRequest request,
                                HttpServletResponse response){
         dcUser user = (dcUser)request.getSession().getAttribute("user");
-        /*if (user.getDcGqdj() != 0) {
-            dcUser fUser = userService.findFatherGq(user.getDcGqdm());
-            *//*List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user,null);*//*
-            List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user, fUser);
-            UserInfoDTO userInfoDTO = userInfoDTOS.get(0);
-            return userInfoDTO;
-        }
-        else if (user.getDcGqdj() == 0){
-            List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
-            return userInfoDTOS.get(0);
-        }*/
-        List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user, user);
+        List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
         UserInfoDTO userInfoDTO = userInfoDTOS.get(0);
         return userInfoDTO;
     }

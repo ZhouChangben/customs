@@ -194,6 +194,25 @@ public class ZwjyController {
         return resultDTO;
     }
 
+    //在外部提交植物检疫任务
+    @ResponseBody
+    @RequestMapping(value = "submitZwjyOut",method = RequestMethod.POST)
+    public Object submitOut(@RequestBody ZwjyDTO zwjyDTO,
+                            HttpServletRequest request,
+                            HttpServletResponse response){
+        ResultDTO resultDTO = new ResultDTO();
+        int rwid = zwjyDTO.getRwid();
+        boolean flag = dcrwService.modifyStatusToSubmit(rwid);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("删除植物检疫表格成功");
+        }
+        else {
+            resultDTO.setMessage("删除植物检疫表格失败");
+        }
+        return resultDTO;
+    }
+
     //将历史任务中植物检疫表的表项选中后插入到当前任务中
     @ResponseBody
     @RequestMapping(value = "HistoryOnceMoreZj",method = RequestMethod.POST)
@@ -228,7 +247,7 @@ public class ZwjyController {
         dcUser user = (dcUser) request.getSession().getAttribute("user");
         String content = seasrchContentDTO.getContent();
         content = '%' + content + '%';
-        List<dcZwjy> zwjys = zwjyService.searchZj(content,user.getDcGqdm());
+        List<dcZwjy> zwjys = zwjyService.searchZj(content,user);
         ShowZwjyDTO showZwjyDTO = new ShowZwjyDTO();
         showZwjyDTO.setRows(zwjys);
         showZwjyDTO.setTotal(zwjys.size());

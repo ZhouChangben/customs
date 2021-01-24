@@ -1,5 +1,7 @@
 package com.xsz.customs.service;
 
+import com.xsz.customs.dto.StatisticWjResultDTO;
+import com.xsz.customs.dto.StatisticWjSingleResultDTO;
 import com.xsz.customs.dto.WsjyDTO;
 import com.xsz.customs.dto.WsjyInfoDTO;
 import com.xsz.customs.mapper.*;
@@ -7,6 +9,7 @@ import com.xsz.customs.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -253,8 +256,86 @@ public class WsjyService {
         return true;
     }
 
-    public List<dcWsjy> searchWj(String content,String gqdm){
-        List<dcWsjy> wsjys = wsjyExtMapper.SearchWjContent(content,gqdm);
+    public List<dcWsjy> searchWj(String content,dcUser user){
+        List<dcWsjy> wsjys;
+        if (user.getDcGqdj() > 1){
+            wsjys = wsjyExtMapper.SearchWjContent(content,user.getDcGqdm());
+        }
+        else if (user.getDcGqdj() == 1){
+            wsjys = wsjyExtMapper.SearchWjContentForSecond(content,user.getDcGqname());
+        }
+        else {
+            wsjys = wsjyExtMapper.SearchWjContentForMax(content);
+        }
         return wsjys;
+    }
+
+    //统计所有关区的某资源数量
+    public StatisticWjResultDTO countType(List<wjLblx> wjLblxes){
+        dcUserExample userExample = new dcUserExample();
+        userExample.createCriteria()
+                .andDcGqdjEqualTo(1);
+        List<dcUser> users = userMapper.selectByExample(userExample);
+        ArrayList<StatisticWjSingleResultDTO> singleResultDTOS = new ArrayList<>();
+        for (dcUser user:users) {
+            ArrayList<Integer> counts = new ArrayList<>();
+            for (wjLblx lblx : wjLblxes){
+                dcWsjyExample example = new dcWsjyExample();
+                example.createCriteria()
+                        .andWjLbEqualTo(lblx.getWjlbMc())
+                        .andDcRenwugqdmEqualTo(user.getDcGqdm());
+                int size = (int)wsjyMapper.countByExample(example);
+                /*List<dcWsjy> wsjies = wsjyMapper.selectByExample(example);
+                int size = wsjies.size();*/
+                //System.out.println(user.getDcGqname()+lblx.getWjlbMc()+wsjies.size());
+                counts.add(size);
+            }
+            StatisticWjSingleResultDTO singleResultDTO = new StatisticWjSingleResultDTO();
+            singleResultDTO.setSourceCount(wjLblxes.size());
+            singleResultDTO.setGqName(user.getDcGqname());
+            singleResultDTO.setCounts(counts);
+            for (int i = 0;i < counts.size();i++){
+                switch(i){
+                    case 0:{
+                        singleResultDTO.setBmsw(counts.get(0));
+                        break;
+                    }
+                    case 1:{
+                        singleResultDTO.setYxyb(counts.get(1));
+                        break;
+                    }
+                    case 2:{
+                        singleResultDTO.setDz(counts.get(2));
+                        break;
+                    }
+                    case 3:{
+                        singleResultDTO.setJz(counts.get(3));
+                        break;
+                    }
+                    case 4:{
+                        singleResultDTO.setXbz(counts.get(4));
+                        break;
+                    }
+                    case 5:{
+                        singleResultDTO.setHsdb(counts.get(5));
+                        break;
+                    }
+                    default:{
+                        break;
+                    }
+                }
+            }
+            System.out.println(singleResultDTO);
+            singleResultDTOS.add(singleResultDTO);
+        }
+        StatisticWjResultDTO resultDTO = new StatisticWjResultDTO();
+        resultDTO.setRows(singleResultDTOS);
+        resultDTO.setTotal(singleResultDTOS.size());
+        return resultDTO;
+    }
+
+    public int countTypeForOneGq(List<wjLblx> wjLblxes,String gqName){
+
+        return 1;
     }
 }
