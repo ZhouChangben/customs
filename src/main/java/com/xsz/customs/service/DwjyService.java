@@ -300,19 +300,15 @@ public class DwjyService {
                         break;
                     }
                     case 4:{
-                        singleResultDTO.setXbz(counts.get(4));
+                        singleResultDTO.setZz(counts.get(4));
                         break;
                     }
                     case 5:{
-                        singleResultDTO.setZz(counts.get(5));
+                        singleResultDTO.setSwbb(counts.get(5));
                         break;
                     }
                     case 6:{
-                        singleResultDTO.setSwbb(counts.get(6));
-                        break;
-                    }
-                    case 7:{
-                        singleResultDTO.setQt(counts.get(7));
+                        singleResultDTO.setQt(counts.get(6));
                         break;
                     }
                     default:{

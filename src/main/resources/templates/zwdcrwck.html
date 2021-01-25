@@ -82,7 +82,15 @@
             // pagination:true,
             //设置每次只能选择一条数据
             singleSelect: true,
-
+            toolbar: [
+                {
+                    iconCls: 'icon-print',
+                    text: "导出Excel表",
+                    handler: function () {
+                        window.parent.location.href="http://localhost:8080/excelDownloadZj";
+                    }
+                }
+            ]
         })
     })
 </script>
