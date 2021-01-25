@@ -66,4 +66,11 @@ public class IndexController {
     public String toDjTj(){return "djtj";}
     @GetMapping("/zjtj")
     public String toZjTj(){return "zjtj";}
+
+    @GetMapping("/wjSearch")
+    public String toWjSearch(){return "wjsearch";}
+    @GetMapping("/djSearch")
+    public String toDjSearch(){return "djsearch";}
+    @GetMapping("/zjSearch")
+    public String toZjSearch(){return "zjsearch";}
 }

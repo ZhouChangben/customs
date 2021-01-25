@@ -22,7 +22,7 @@
     <h1><font color="#15428B">加载中....</font></h1>
 </div>
 <table id="dg"></table>
-<div id="editWinHealth" class="easyui-window" data-options="width:650,height:410,closed:true,closable: false,collapsible:false,minimizable:false,maximizable:false">
+<div id="editWinHealth" class="easyui-window" data-options="width:700,height:450,closed:true,">
     <form action="" method="post" id="editFormHealth">
         <input type="hidden" id="rwid" name="rwid">
         <input type="hidden" id="rwmc" name="rwmc">
@@ -259,7 +259,7 @@
             singleSelect: true,
             toolbar: [{
                 iconCls: 'icon-add',
-                text: "添加记录",
+                text: "新增记录",
                 handler: function () {
                     $.ajax({
                         url: "http://localhost:8080/showinformation",
@@ -385,7 +385,7 @@
 
                     }
                 },
-                {
+                /*{
                     iconCls: 'icon-ok',
                     text: "提交",
                     handler: function () {
@@ -412,7 +412,7 @@
                             }
                         })
                     }
-                },
+                },*/
                 {
                     iconCls: 'icon-print',
                     text: "导出Excel表",
@@ -619,7 +619,7 @@
 
         var gqdj=$("#hid").val();
         if (gqdj==0||gqdj==2){
-            $('div.datagrid-toolbar a').eq(3).hide();
+            // $('div.datagrid-toolbar a').eq(3).hide();
         }
     })
 </script>

@@ -200,7 +200,7 @@ public class DwjyController {
         return resultDTO;
     }
 
-    //在外部提交动物检疫任务
+    /*//在外部提交动物检疫任务
     @ResponseBody
     @RequestMapping(value = "submitDwjyOut",method = RequestMethod.POST)
     public Object submitOut(@RequestBody DwjyDTO dwjyDTO,
@@ -217,7 +217,7 @@ public class DwjyController {
             resultDTO.setMessage("删除动物检疫表格失败");
         }
         return resultDTO;
-    }
+    }*/
 
     //将历史任务中动物检疫表的表项选中后插入到当前任务中
     @ResponseBody
@@ -246,12 +246,11 @@ public class DwjyController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "dwjySearch",method = RequestMethod.POST)
-    public Object wsjySearch(@RequestBody SeasrchContentDTO seasrchContentDTO,
+    @RequestMapping(value = "dwjySearch",method = RequestMethod.GET)
+    public Object wsjySearch(@RequestParam String content,
                              HttpServletRequest request,
                              HttpServletResponse response){
         dcUser user = (dcUser) request.getSession().getAttribute("user");
-        String content = seasrchContentDTO.getContent();
         content = '%' + content + '%';
         List<dcDwjy> dwjys = dwjyService.searchDj(content,user);
         ShowDwjyDTO showDwjyDTO = new ShowDwjyDTO();
@@ -272,17 +271,21 @@ public class DwjyController {
         List<djLblx> allDjLbs = lblxService.getAllDjlx();
         StatisticDjResultDTO statisticDjResultDTO = new StatisticDjResultDTO();
         List<StatisticDjSingleResultDTO> singleResultDTOS;
+        int size;
         //选择统计所有关区的资源数量
         if (isAll){
             singleResultDTOS= dwjyService.countType(allDjLbs);
+            size = singleResultDTOS.size();
+            singleResultDTOS = dwjyService.getDjTjListPage(singleResultDTOS,page,rows,size);
+            statisticDjResultDTO.setTotal(size);
+            statisticDjResultDTO.setRows(singleResultDTOS);
         }
         else {
             singleResultDTOS = dwjyService.countTypeForOneGq(allDjLbs,gqName);
+            size = singleResultDTOS.size();
+            statisticDjResultDTO.setTotal(size);
+            statisticDjResultDTO.setRows(singleResultDTOS);
         }
-        int size = singleResultDTOS.size();
-        singleResultDTOS = dwjyService.getDjTjListPage(singleResultDTOS,page,rows,size);
-        statisticDjResultDTO.setTotal(size);
-        statisticDjResultDTO.setRows(singleResultDTOS);
         return statisticDjResultDTO;
     }
 }

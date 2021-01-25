@@ -320,6 +320,23 @@ public class DcrwController {
         return resultDTO;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "submitOut",method = RequestMethod.POST)
+    public Object submitOut(@RequestBody WithdrawDTO withdrawDTO,
+                            HttpServletRequest request,
+                            HttpServletResponse response){
+        ResultDTO resultDTO = new ResultDTO();
+        int rwid = withdrawDTO.getRenwuid();
+        boolean flag = dcrwService.modifyStatusToSubmit(rwid);
+        resultDTO.setSuccess(flag);
+        if (flag == true){
+            resultDTO.setMessage("提交成功");
+        }
+        else {
+            resultDTO.setMessage("提交失败");
+        }
+        return resultDTO;
+    }
 
     @RequestMapping(value = "/wsdcrw",method = RequestMethod.GET)
     public String toWsjy(@RequestParam(value = "rwid") Integer rwid,
@@ -327,6 +344,14 @@ public class DcrwController {
                        HttpServletResponse response){
         request.getSession().setAttribute("wsrwid",rwid);
         return "wsdcrw";
+    }
+
+    @RequestMapping(value = "/wsdcrwck",method = RequestMethod.GET)
+    public String toWsjyck(@RequestParam(value = "rwid") Integer rwid,
+                         HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().setAttribute("wsrwid",rwid);
+        return "wsdcrwck";
     }
 
     @RequestMapping(value = "/dwdcrw",method = RequestMethod.GET)
@@ -337,12 +362,28 @@ public class DcrwController {
         return "dwdcrw";
     }
 
+    @RequestMapping(value = "/dwdcrwck",method = RequestMethod.GET)
+    public String toDwjyck(@RequestParam(value = "rwid") Integer rwid,
+                         HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().setAttribute("dwrwid",rwid);
+        return "dwdcrwck";
+    }
+
     @RequestMapping(value = "/zwdcrw",method = RequestMethod.GET)
     public String toZwjy(@RequestParam(value = "rwid") Integer rwid,
                          HttpServletRequest request,
                          HttpServletResponse response){
         request.getSession().setAttribute("zwrwid",rwid);
         return "zwdcrw";
+    }
+
+    @RequestMapping(value = "/zwdcrwck",method = RequestMethod.GET)
+    public String toZwjyck(@RequestParam(value = "rwid") Integer rwid,
+                         HttpServletRequest request,
+                         HttpServletResponse response){
+        request.getSession().setAttribute("zwrwid",rwid);
+        return "zwdcrwck";
     }
 
     @RequestMapping(value = "/wslsjl",method = RequestMethod.GET)

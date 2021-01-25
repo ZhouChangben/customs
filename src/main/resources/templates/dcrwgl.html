@@ -126,46 +126,88 @@
         edit = function (row) {
             if (row.dcDcbname == "卫生检疫") {
                 // alert("http://localhost:8080/wsdcrw?rwid=" + row.id)
-                    var jq=top.jQuery;
-                    if (jq("#tt").tabs('exists',row.dcDcbname)){
-                        jq("#tt").tabs('select',row.dcDcbname)
-                    }else {
-                        jq("#tt").tabs("add", {
-                            title: row.dcDcbname,
-                            // content:"<iframe src='http://localhost:8080/"+pageUrl+"' width='100%' height='100%' frameborder='0'></iframe>",
-                            content: "<iframe src='http://localhost:8080/wsdcrw?rwid="+row.id+"' width='100%' height='100%' frameborder='0'></iframe>",
-                            closable: true
-                        })
-                    }
-
-            } else if (row.dcDcbname == "动物检疫") {
-                var jq=top.jQuery;
-                if (jq("#tt").tabs('exists',row.dcDcbname)){
-                    jq("#tt").tabs('select',row.dcDcbname)
-                }else {
+                var jq = top.jQuery;
+                if (jq("#tt").tabs('exists', row.dcDcbname)) {
+                    jq("#tt").tabs('select', row.dcDcbname)
+                } else {
                     jq("#tt").tabs("add", {
                         title: row.dcDcbname,
                         // content:"<iframe src='http://localhost:8080/"+pageUrl+"' width='100%' height='100%' frameborder='0'></iframe>",
-                        content: "<iframe src='http://localhost:8080/dwdcrw?rwid="+row.id+"' width='100%' height='100%' frameborder='0'></iframe>",
+                        content: "<iframe src='http://localhost:8080/wsdcrw?rwid=" + row.id + "' width='100%' height='100%' frameborder='0'></iframe>",
+                        closable: true
+                    })
+                }
+
+            } else if (row.dcDcbname == "动物检疫") {
+                var jq = top.jQuery;
+                if (jq("#tt").tabs('exists', row.dcDcbname)) {
+                    jq("#tt").tabs('select', row.dcDcbname)
+                } else {
+                    jq("#tt").tabs("add", {
+                        title: row.dcDcbname,
+                        // content:"<iframe src='http://localhost:8080/"+pageUrl+"' width='100%' height='100%' frameborder='0'></iframe>",
+                        content: "<iframe src='http://localhost:8080/dwdcrw?rwid=" + row.id + "' width='100%' height='100%' frameborder='0'></iframe>",
                         closable: true
                     })
                 }
             } else if (row.dcDcbname == "植物检疫") {
-                var jq=top.jQuery;
-                if (jq("#tt").tabs('exists',row.dcDcbname)){
-                    jq("#tt").tabs('select',row.dcDcbname)
-                }else {
+                var jq = top.jQuery;
+                if (jq("#tt").tabs('exists', row.dcDcbname)) {
+                    jq("#tt").tabs('select', row.dcDcbname)
+                } else {
                     jq("#tt").tabs("add", {
                         title: row.dcDcbname,
                         // content:"<iframe src='http://localhost:8080/"+pageUrl+"' width='100%' height='100%' frameborder='0'></iframe>",
-                        content: "<iframe src='http://localhost:8080/zwdcrw?rwid="+row.id+"' width='100%' height='100%' frameborder='0'></iframe>",
+                        content: "<iframe src='http://localhost:8080/zwdcrw?rwid=" + row.id + "' width='100%' height='100%' frameborder='0'></iframe>",
                         closable: true
                     })
                 }
             }
+        }
+            check = function (row) {
+                if (row.dcDcbname == "卫生检疫") {
+                    /*alert(JSON.stringify(row))*/
+                    // alert("http://localhost:8080/wsdcrw?rwid=" + row.id)
+                    var jq=top.jQuery;
+                    if (jq("#tt").tabs('exists',row.dcRenwugqname+row.dcDcbname)){
+                        jq("#tt").tabs('select',row.dcRenwugqname+row.dcDcbname)
+                    }else {
+                        jq("#tt").tabs("add", {
+                            title: row.dcRenwugqname+row.dcDcbname,
+                            // content:"<iframe src='http://localhost:8080/"+pageUrl+"' width='100%' height='100%' frameborder='0'></iframe>",
+                            content: "<iframe src='http://localhost:8080/wsdcrwck?rwid="+row.id+"' width='100%' height='100%' frameborder='0'></iframe>",
+                            closable: true
+                        })
+                    }
+                } else if (row.dcDcbname == "动物检疫") {
+                    /*alert(JSON.stringify(row))*/
+                    var jq=top.jQuery;
+                    if (jq("#tt").tabs('exists',row.dcRenwugqname+row.dcDcbname)){
+                        jq("#tt").tabs('select',row.dcRenwugqname+row.dcDcbname)
+                    }else {
+                        jq("#tt").tabs("add", {
+                            title: row.dcRenwugqname+row.dcDcbname,
+                            // content:"<iframe src='http://localhost:8080/"+pageUrl+"' width='100%' height='100%' frameborder='0'></iframe>",
+                            content: "<iframe src='http://localhost:8080/dwdcrwck?rwid="+row.id+"' width='100%' height='100%' frameborder='0'></iframe>",
+                            closable: true
+                        })
+                    }
+                } else if (row.dcDcbname == "植物检疫") {
+                    var jq=top.jQuery;
+                    if (jq("#tt").tabs('exists',row.dcRenwugqname+row.dcDcbname)){
+                        jq("#tt").tabs('select',row.dcRenwugqname+row.dcDcbname)
+                    }else {
+                        jq("#tt").tabs("add", {
+                            title: row.dcRenwugqname+row.dcDcbname,
+                            // content:"<iframe src='http://localhost:8080/"+pageUrl+"' width='100%' height='100%' frameborder='0'></iframe>",
+                            content: "<iframe src='http://localhost:8080/zwdcrwck?rwid="+row.id+"' width='100%' height='100%' frameborder='0'></iframe>",
+                            closable: true
+                        })
+                    }
+                }
         };
         withdraw = function(row){
-            alert(JSON.stringify(row));
+            /*alert(JSON.stringify(row));*/
                 $.ajax({
                     url:'http://localhost:8080/withdraw',
                     type:"post",
@@ -181,9 +223,8 @@
                     }
                 })
         }
-
         accept = function(row){
-            alert(JSON.stringify(row));
+            /*alert(JSON.stringify(row));*/
                 $.ajax({
                     url:'http://localhost:8080/accept',
                     type:"post",
@@ -198,6 +239,23 @@
                         }
                     }
                 })
+        }
+        submit = function(row){
+            /*alert(JSON.stringify(row));*/
+            $.ajax({
+                url:'http://localhost:8080/submitOut',
+                type:"post",
+                data:JSON.stringify({"renwuid":row.id}),
+                dataType:"json",
+                contentType:"application/json",
+                success:function (data) {
+                    if(data.success==false){
+                        $.messager.alert("提示","发生错误","error")
+                    }else if (data.success==true){
+                        $("#dg").datagrid("reload");
+                    }
+                }
+            })
         }
 
 
@@ -216,6 +274,7 @@
             columns: [
                 [
                     //展示列数据
+                    {checkbox:true,field: 'ck'},
                     {field: 'dcRenwumc', title: '调查任务名称', width: 100},
                     {field: 'dcRenwugqdm', title: '关区代码', width: 100},
                     {field: 'dcRenwugqname', title: '关区名称', width: 100},
@@ -229,32 +288,48 @@
                             }else {
                                 return "<font color='red'>未提交</font>"
                             }
-
-
                         }
                     },
                     {
                         field: "operate", title: "操作", width: 100, formatter: function (value, row, index) {
                             var str,str1,str2,str3;
-                            if (row.dcDcbzt=='未提交'){
-                                str1 = '<a href="#" onclick=edit(' + JSON.stringify(row) + ') name="opera" class="easyui-linkbutton" style="background-color: red;color: white"></a>';
+                            if (row.dcDcbzt=='未提交'&&gqdj>=2){
+                                str3 = '<a href="#" onclick=edit(' + JSON.stringify(row) + ') name="opera" class="easyui-linkbutton" style="background-color: red;color: white"></a>';
+                                return str3;
+                            } else if (row.dcDcbzt=='未提交'){
+                                str1 = '<a href="#" onclick=edit(' + JSON.stringify(row) + ') name="opera" class="easyui-linkbutton" style="background-color: red;color: white"></a>'+
+                                    '<a href="#" onclick=check(' + JSON.stringify(row) + ') name="opera3" class="easyui-linkbutton" style="background-color: deeppink;color: white"></a>'+
+                                    '<a href="#" onclick=submit(' + JSON.stringify(row) + ') name="opera4" class="easyui-linkbutton" style="background-color: green;color: white"></a>';
                                 return str1;
                             }else if (row.dcDcbzt=='已提交'){
                                 str2=  '<a href="#"  onclick=withdraw(' + JSON.stringify(row) + ') name="opera1" class="easyui-linkbutton" style="background-color: orange;color: white"></a>'+
+                                    '<a href="#" onclick=check(' + JSON.stringify(row) + ') name="opera3" class="easyui-linkbutton" style="background-color: deeppink;color: white"></a>'+
                                     '<a href="#" onclick=accept(' + JSON.stringify(row) + ') name="opera2" class="easyui-linkbutton" style="background-color: green;color: white"></a>';
                                 return str2;
+                            }else if (row.dcDcbzt=='接受'){
+                                str= '<a href="#" onclick=check(' + JSON.stringify(row) + ') name="opera3" class="easyui-linkbutton" style="background-color: deeppink;color: white"></a>';
+                                return str;
+
                             }
-
-
                         }
                     }
                 ]
             ],
             onLoadSuccess: function () {
-                $("a[name='opera']").linkbutton({text: '填报', plain: true, height: 20});
+                if (gqdj>=2){
+                    $("a[name='opera']").linkbutton({text: '填报', plain: true, height: 20});
+                    $("a[name='opera3']").linkbutton({text: '查看', plain: true, height: 20});
+                }
+                if (gqdj==1){
+                    $("a[name='opera4']").linkbutton({text: '提交', plain: true, height: 20});
+                    $("a[name='opera3']").linkbutton({text: '查看', plain: true, height: 20});
+                }
+
                 $("a[name='opera1']").linkbutton({text: '撤回', plain: true, height: 20});
+
                 if (gqdj==0){
                     $("a[name='opera2']").linkbutton({text: '接收', plain: true, height: 20});
+                    $("a[name='opera3']").linkbutton({text: '查看', plain: true, height: 20});
                 }
 
 
@@ -263,14 +338,14 @@
             toolbar: [
                 {
                     iconCls: 'icon-add',
-                    text: "发布所有调查任务",
+                    text: "生成一次调查任务",
                     id: "addBtn",
                     handler: function () {
                         $("#editWin1").window({title: "发布所有调查任务"});
                         $("#editWin1").window("open");
                     }
                 },
-                {
+                /*{
                     iconCls: 'icon-edit',
                     text: "发布单个调查任务",
                     url: "http://localhost:8080/allsubuser",
@@ -278,7 +353,7 @@
                         $("#editWin").window({title: "发布单个调查任务"});
                         $("#editWin").window("open");
                     }
-                },
+                },*/
 
                 {
                     iconCls: 'icon-remove',

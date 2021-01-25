@@ -23,7 +23,7 @@
 </div>
 <table id="dg"></table>
 
-<div id="editWinAnimal" class="easyui-window" data-options="width:650,height:410,closed:true,closable: false,collapsible:false,minimizable:false,maximizable:false">
+<div id="editWinAnimal" class="easyui-window" data-options="width:700,height:500,closed:true,">
     <form action="" method="post" id="editFormAnimal">
         <input type="hidden" id="rwid" name="rwid">
         <input type="hidden" id="rwmc" name="rwmc">
@@ -32,6 +32,9 @@
         <input type="hidden" id="gqName" name="gqName">
         <input type="hidden" id="id" name="id">
         <table>
+            <tr>
+                <td></td>
+            </tr>
             <tr>
                 <td style="text-align: right;padding-right: 0.5em">业务领域</td>
                 <td><input type="text" id="ywly" name="ywly" value="动物检疫"></td>
@@ -159,7 +162,7 @@
             <tr>
                 <td style="text-align: right;padding-right: 0.5em">备注</td>
                 <td>
-                    <textarea name="remark" id="remark" cols="16" rows="5" style="resize: none"></textarea>
+                    <textarea name="remark" id="remark" cols="20" rows="5" style="resize: none"></textarea>
                 </td>
                 <td></td>
                 <td style="vertical-align: bottom">
@@ -243,7 +246,7 @@
             singleSelect: true,
             toolbar: [{
                 iconCls: 'icon-add',
-                text: "添加记录",
+                text: "新增记录",
                 handler: function () {
                     $.ajax({
                         url: "http://localhost:8080/showDwDcrwinformation",
@@ -371,7 +374,7 @@
 
                     }
                 },
-                {
+                /*{
                     iconCls: 'icon-ok',
                     text: "提交",
                     handler: function () {
@@ -398,7 +401,7 @@
                             }
                         })
                     }
-                },
+                },*/
                 {
                     iconCls: 'icon-print',
                     text: "导出Excel表",
@@ -609,7 +612,7 @@
 
         var gqdj=$("#hid").val();
         if (gqdj==0||gqdj==2){
-            $('div.datagrid-toolbar a').eq(3).hide();
+            // $('div.datagrid-toolbar a').eq(3).hide();
         }
     })
 </script>

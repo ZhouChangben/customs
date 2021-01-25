@@ -135,15 +135,29 @@ public class UserController {
         log.setMovement("新增用户");
         logService.InsertLog(log);
 
+        dcUser user1 = (dcUser)request.getSession().getAttribute("user");
         dcUser user = new dcUser();
-        user.setDcGqdm(insertUserDTO.getGqdm());
-        user.setDcGqname(insertUserDTO.getGqname());
-        user.setDcLxr(insertUserDTO.getGqlxr());
-        user.setDcLxdh(insertUserDTO.getGqlxdh());
-        user.setDcGqpword(insertUserDTO.getGqpwd());
-        user.setDcWjqx(insertUserDTO.isWsjy());
-        user.setDcZjqx(insertUserDTO.isZwjy());
-        user.setDcDjqx(insertUserDTO.isDwjy());
+        if (user1.getDcGqdj() == 0){
+            user.setDcGqdm(insertUserDTO.getGqdm());
+            user.setDcGqname(insertUserDTO.getGqname());
+            user.setDcLxr(insertUserDTO.getGqlxr());
+            user.setDcLxdh(insertUserDTO.getGqlxdh());
+            user.setDcGqpword(insertUserDTO.getGqpwd());
+            user.setDcGqdj(1);
+            user.setDcWjqx(true);
+            user.setDcZjqx(true);
+            user.setDcDjqx(true);
+        }
+        else {
+            user.setDcGqdm(insertUserDTO.getGqdm());
+            user.setDcGqname(insertUserDTO.getGqname());
+            user.setDcLxr(insertUserDTO.getGqlxr());
+            user.setDcLxdh(insertUserDTO.getGqlxdh());
+            user.setDcGqpword(insertUserDTO.getGqpwd());
+            user.setDcWjqx(insertUserDTO.isWsjy());
+            user.setDcZjqx(insertUserDTO.isZwjy());
+            user.setDcDjqx(insertUserDTO.isDwjy());
+        }
         boolean flag = userService.create(user);
         InsertUserResultDTO insertUserResultDTO = new InsertUserResultDTO();
         insertUserResultDTO.setSuccess(flag);
@@ -295,27 +309,7 @@ public class UserController {
                               HttpServletRequest request,
                               HttpServletResponse response){
         dcUser user = (dcUser) request.getSession().getAttribute("user");
-
-
         ShowUserInfoDTO showUserInfoDTO = new ShowUserInfoDTO();
-        /*List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);*/
-        /*if (user.getDcGqdj() != 0){
-            dcUser fUser = userService.findFatherGq(user.getDcGqdm());
-            List<UserInfoDTO> userInfoDTOS = userService.getUserInfoForSub(user,fUser);
-            int size = userInfoDTOS.size();
-            userInfoDTOS = userService.getUserInfoListPage(userInfoDTOS,page,rows,size);
-            showUserInfoDTO.setTotal(size);
-            showUserInfoDTO.setRows(userInfoDTOS);
-            return showUserInfoDTO;
-        }
-        else {
-            List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
-            int size = userInfoDTOS.size();
-            userInfoDTOS = userService.getUserInfoListPage(userInfoDTOS,page,rows,size);
-            showUserInfoDTO.setTotal(size);
-            showUserInfoDTO.setRows(userInfoDTOS);
-            return showUserInfoDTO;
-        }*/
         List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
         int size = userInfoDTOS.size();
         userInfoDTOS = userService.getUserInfoListPage(userInfoDTOS,page,rows,size);
@@ -445,35 +439,19 @@ public class UserController {
         dcUser user = (dcUser)request.getSession().getAttribute("user");
         ResultDTO resultDTO = new ResultDTO();
         boolean flag;
-        /*if (user.getDcGqdj() > 1){
-            dcUser fUser = userService.findFatherGq(user.getDcGqdm());
-            fUser.setDcWjlxr(userInfoDTO.getWjLxr());
-            fUser.setDcWjlxdh(userInfoDTO.getWjLxdh());
-            fUser.setDcWjfzr(userInfoDTO.getWjFzr());
-            fUser.setDcWjfzdh(userInfoDTO.getWjFzrdh());
-            fUser.setDcDjlxr(userInfoDTO.getDjLxr());
-            fUser.setDcDjlxdh(userInfoDTO.getDjLxdh());
-            fUser.setDcDjfzr(userInfoDTO.getDjFzr());
-            fUser.setDcDjfzdh(userInfoDTO.getDjFzrdh());
-            fUser.setDcZjlxr(userInfoDTO.getZjLxr());
-            fUser.setDcZjlxdh(userInfoDTO.getZjLxdh());
-            fUser.setDcZjfzr(userInfoDTO.getZjFzr());
-            fUser.setDcZjfzdh(userInfoDTO.getZjFzrdh());
-            flag = userService.updateUserInfomation(fUser);
-        }*/
-            user.setDcWjlxr(userInfoDTO.getWjLxr());
-            user.setDcWjlxdh(userInfoDTO.getWjLxdh());
-            user.setDcWjfzr(userInfoDTO.getWjFzr());
-            user.setDcWjfzdh(userInfoDTO.getWjFzrdh());
-            user.setDcDjlxr(userInfoDTO.getDjLxr());
-            user.setDcDjlxdh(userInfoDTO.getDjLxdh());
-            user.setDcDjfzr(userInfoDTO.getDjFzr());
-            user.setDcDjfzdh(userInfoDTO.getDjFzrdh());
-            user.setDcZjlxr(userInfoDTO.getZjLxr());
-            user.setDcZjlxdh(userInfoDTO.getZjLxdh());
-            user.setDcZjfzr(userInfoDTO.getZjFzr());
-            user.setDcZjfzdh(userInfoDTO.getZjFzrdh());
-            flag = userService.updateUserInfomation(user);
+        user.setDcWjlxr(userInfoDTO.getWjLxr());
+        user.setDcWjlxdh(userInfoDTO.getWjLxdh());
+        user.setDcWjfzr(userInfoDTO.getWjFzr());
+        user.setDcWjfzdh(userInfoDTO.getWjFzrdh());
+        user.setDcDjlxr(userInfoDTO.getDjLxr());
+        user.setDcDjlxdh(userInfoDTO.getDjLxdh());
+        user.setDcDjfzr(userInfoDTO.getDjFzr());
+        user.setDcDjfzdh(userInfoDTO.getDjFzrdh());
+        user.setDcZjlxr(userInfoDTO.getZjLxr());
+        user.setDcZjlxdh(userInfoDTO.getZjLxdh());
+        user.setDcZjfzr(userInfoDTO.getZjFzr());
+        user.setDcZjfzdh(userInfoDTO.getZjFzrdh());
+        flag = userService.updateUserInfomation(user);
 
         resultDTO.setSuccess(flag);
         if (flag == true){
@@ -500,7 +478,6 @@ public class UserController {
         if (flag == true){
             resultDTO.setMessage("更新用户密码成功");
         }
-
         else {
             resultDTO.setMessage("更新用户密码失败");
         }

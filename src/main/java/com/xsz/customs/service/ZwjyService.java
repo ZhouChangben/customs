@@ -250,7 +250,7 @@ public class ZwjyService {
         }
         return singleResultDTOS;
     }
-
+    
     public List<StatisticZjSingleResultDTO> countTypeForOneGq(List<zjLblx> zjLblxes,String gqName){
         dcUserExample userExample = new dcUserExample();
         userExample.createCriteria()

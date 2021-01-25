@@ -205,7 +205,7 @@ public class WsjyController {
     }
 
     //在外部提交卫生检疫任务
-    @ResponseBody
+    /*@ResponseBody
     @RequestMapping(value = "submitWsjyOut",method = RequestMethod.POST)
     public Object submitOut(@RequestBody WsjyDTO wsjyDTO,
                             HttpServletRequest request,
@@ -221,7 +221,7 @@ public class WsjyController {
             resultDTO.setMessage("删除卫生检疫表格失败");
         }
         return resultDTO;
-    }
+    }*/
 
     //将历史任务中卫生检疫表的表项选中后插入到当前任务中
     @ResponseBody
@@ -276,12 +276,11 @@ public class WsjyController {
         return true;
     }*/
     @ResponseBody
-    @RequestMapping(value = "wsjySearch",method = RequestMethod.POST)
-    public Object wsjySearch(@RequestBody SeasrchContentDTO seasrchContentDTO,
+    @RequestMapping(value = "wsjySearch",method = RequestMethod.GET)
+    public Object wsjySearch(@RequestParam String content,
                              HttpServletRequest request,
                              HttpServletResponse response){
         dcUser user = (dcUser) request.getSession().getAttribute("user");
-        String content = seasrchContentDTO.getContent();
         content = '%' + content + '%';
         List<dcWsjy> wsjys = wsjyService.searchWj(content,user);
         ShowWsjyDTO showWsjyDTO = new ShowWsjyDTO();
@@ -289,37 +288,6 @@ public class WsjyController {
         showWsjyDTO.setTotal(wsjys.size());
         return showWsjyDTO;
     }
-
-    //卫生检疫统计功能
-    /*@ResponseBody
-    @RequestMapping(value = "wsjyStatistics",method = RequestMethod.POST)
-    public Object wsjyStatistics(@RequestBody StatisticTypeDTO statisticTypeDTO,
-                                 Integer page,
-                                 Integer rows,
-                                 HttpServletRequest request,
-                             HttpServletResponse response){
-        List<wjLblx> allWjLbs = lblxService.getAllWjlx();
-        StatisticWjResultDTO statisticWjResultDTO = new StatisticWjResultDTO();
-        List<StatisticWjSingleResultDTO> singleResultDTOS;
-
-        singleResultDTOS= wsjyService.countType(allWjLbs);
-        //选择统计所有关区的资源数量
-        *//*if (statisticTypeDTO.isAll()){
-            singleResultDTOS= wsjyService.countType(allWjLbs);
-        }
-        else {
-            String gqName = statisticTypeDTO.getGqName();
-            singleResultDTOS = wsjyService.countTypeForOneGq(allWjLbs,gqName);
-        }*//*
-        int size = singleResultDTOS.size();
-        System.out.println(size);
-        System.out.println(page);
-        System.out.println(rows);
-        singleResultDTOS = wsjyService.getWjTjListPage(singleResultDTOS,page,rows,size);
-        statisticWjResultDTO.setTotal(size);
-        statisticWjResultDTO.setRows(singleResultDTOS);
-        return statisticWjResultDTO;
-    }*/
 
     //卫生检疫统计功能
     @ResponseBody
@@ -333,17 +301,21 @@ public class WsjyController {
         List<wjLblx> allWjLbs = lblxService.getAllWjlx();
         StatisticWjResultDTO statisticWjResultDTO = new StatisticWjResultDTO();
         List<StatisticWjSingleResultDTO> singleResultDTOS;
+        int size;
         //选择统计所有关区的资源数量
         if (isAll){
             singleResultDTOS= wsjyService.countType(allWjLbs);
+            size = singleResultDTOS.size();
+            singleResultDTOS = wsjyService.getWjTjListPage(singleResultDTOS,page,rows,size);
+            statisticWjResultDTO.setTotal(size);
+            statisticWjResultDTO.setRows(singleResultDTOS);
         }
         else {
             singleResultDTOS = wsjyService.countTypeForOneGq(allWjLbs,gqName);
+            size = singleResultDTOS.size();
+            statisticWjResultDTO.setTotal(size);
+            statisticWjResultDTO.setRows(singleResultDTOS);
         }
-        int size = singleResultDTOS.size();
-        singleResultDTOS = wsjyService.getWjTjListPage(singleResultDTOS,page,rows,size);
-        statisticWjResultDTO.setTotal(size);
-        statisticWjResultDTO.setRows(singleResultDTOS);
         return statisticWjResultDTO;
     }
 }

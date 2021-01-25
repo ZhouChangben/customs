@@ -32,7 +32,6 @@ public class UserService {
         else {
             return null;
         }
-
     }
 
     public boolean create(dcUser user){
@@ -43,13 +42,18 @@ public class UserService {
         //若通过海关编号没有查到用户，则说明此处需要注册一个用户
         if (users.size() == 0){
             //这里的user还不能直接插入，需要判断一下用户等级然后加入数据库中
-            String gqdm = user.getDcGqdm();
-            /*System.out.println(gqdm+"  xxc");*/
-            String gqdj = gqdm.substring(4);
-            int dj = Integer.parseInt(gqdj) + 1;
-            user.setDcGqdj(dj);
-            userMapper.insert(user);
-            return true;
+            //此处是判断新增的是二级用户还是三级用户
+            if (user.getDcGqdj()!=null && user.getDcGqdj() == 1){
+                userMapper.insert(user);
+                return true;
+            }else {
+                String gqdm = user.getDcGqdm();
+                String gqdj = gqdm.substring(4);
+                int dj = Integer.parseInt(gqdj) + 1;
+                user.setDcGqdj(dj);
+                userMapper.insert(user);
+                return true;
+            }
         }else
             return false;
     }

@@ -47,20 +47,21 @@
 </div>
 <!--系统菜单-->
 <div data-options="region:'west',title:'系统菜单',split:true" style="width:200px;">
-    <div id="aa" class="easyui-accordion" style="width:193px" data-options="border:0,multiple:true">
-        <div title="调查任务" data-options="iconCls:'icon-save'" style="overflow:auto;padding:10px;">
+    <div id="aa" class="easyui-accordion" style="width:193px" data-options="border:0">
+        <div title="调查任务" data-options="iconCls:'icon-save',selected:true" style="overflow:auto;padding:10px;">
             <ul>
-                <li><a href="javascript:void(0)" pageUrl="dcrwGL">调查任务管理</a></li>
+                <li th:if="${session.user.getDcGqdj()==0}"><a href="javascript:void(0)" pageUrl="dcrwGL">调查任务管理</a></li>
+                <li th:if="${session.user.getDcGqdj()!=0}"><a href="javascript:void(0)" pageUrl="dcrwGL">资源记录填报</a></li>
                 <li><a href="javascript:void(0)" pageUrl="lsdcrw">历史调查任务</a></li>
             </ul>
         </div>
-        <div title="用户" data-options="iconCls:'icon-reload',selected:true" style="padding:10px;">
+        <div title="用户" data-options="iconCls:'icon-reload'" style="padding:10px;">
             <ul>
                 <li><a href="javascript:void(0)" pageUrl="userInfo">用户信息</a></li>
                 <li th:if="${session.user.getDcGqdj()<2}"><a href="javascript:void(0)" pageUrl="userMP">用户管理</a></li>
             </ul>
         </div>
-        <div title="统计" data-options="iconCls:'icon-sum'" >
+        <div title="统计" data-options="iconCls:'icon-sum'" th:if="${session.user.getDcGqdj()==0}">
             <ul>
                 <li><a href="javascript:void(0)" pageUrl="wjtj">卫生检疫统计</a></li>
                 <li><a href="javascript:void(0)" pageUrl="djtj">动物检疫统计</a></li>
@@ -69,9 +70,9 @@
         </div>
         <div title="查询" data-options="iconCls:'icon-search'" >
             <ul>
-                <li><a href="javascript:void(0)" pageUrl="wjsearch.html">卫生检疫</a></li>
-                <li><a href="javascript:void(0)" pageUrl="djsearch.html">动物检疫</a></li>
-                <li><a href="javascript:void(0)" pageUrl="zjsearch.html">植物检疫</a></li>
+                <li><a href="javascript:void(0)" pageUrl="wjSearch">卫生检疫查询</a></li>
+                <li><a href="javascript:void(0)" pageUrl="djSearch">动物检疫查询</a></li>
+                <li><a href="javascript:void(0)" pageUrl="zjSearch">植物检疫查询</a></li>
             </ul>
         </div>
     </div>

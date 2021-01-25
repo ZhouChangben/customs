@@ -201,7 +201,7 @@ public class ZwjyController {
         return resultDTO;
     }
 
-    //在外部提交植物检疫任务
+    /*//在外部提交植物检疫任务
     @ResponseBody
     @RequestMapping(value = "submitZwjyOut",method = RequestMethod.POST)
     public Object submitOut(@RequestBody ZwjyDTO zwjyDTO,
@@ -218,7 +218,7 @@ public class ZwjyController {
             resultDTO.setMessage("删除植物检疫表格失败");
         }
         return resultDTO;
-    }
+    }*/
 
     //将历史任务中植物检疫表的表项选中后插入到当前任务中
     @ResponseBody
@@ -247,12 +247,11 @@ public class ZwjyController {
     }
 
     @ResponseBody
-    @RequestMapping(value = "zwjySearch",method = RequestMethod.POST)
-    public Object zwjySearch(@RequestBody SeasrchContentDTO seasrchContentDTO,
+    @RequestMapping(value = "zwjySearch",method = RequestMethod.GET)
+    public Object zwjySearch(@RequestParam String content,
                              HttpServletRequest request,
                              HttpServletResponse response){
         dcUser user = (dcUser) request.getSession().getAttribute("user");
-        String content = seasrchContentDTO.getContent();
         content = '%' + content + '%';
         List<dcZwjy> zwjys = zwjyService.searchZj(content,user);
         ShowZwjyDTO showZwjyDTO = new ShowZwjyDTO();
@@ -272,17 +271,21 @@ public class ZwjyController {
         List<zjLblx> allZjLbs = lblxService.getAllZjlx();
         StatisticZjResultDTO statisticZjResultDTO = new StatisticZjResultDTO();
         List<StatisticZjSingleResultDTO> singleResultDTOS;
+        int size;
         //选择统计所有关区的资源数量
         if (isAll){
             singleResultDTOS= zwjyService.countType(allZjLbs);
+            size = singleResultDTOS.size();
+            singleResultDTOS = zwjyService.getZjTjListPage(singleResultDTOS,page,rows,size);
+            statisticZjResultDTO.setTotal(size);
+            statisticZjResultDTO.setRows(singleResultDTOS);
         }
         else {
             singleResultDTOS = zwjyService.countTypeForOneGq(allZjLbs,gqName);
+            size = singleResultDTOS.size();
+            statisticZjResultDTO.setTotal(size);
+            statisticZjResultDTO.setRows(singleResultDTOS);
         }
-        int size = singleResultDTOS.size();
-        singleResultDTOS = zwjyService.getZjTjListPage(singleResultDTOS,page,rows,size);
-        statisticZjResultDTO.setTotal(size);
-        statisticZjResultDTO.setRows(singleResultDTOS);
         return statisticZjResultDTO;
     }
 }

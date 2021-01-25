@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+
     <!--    导入jQuery的js文件-->
     <script type="text/javascript" src="./easyUI/jquery.min.js"></script>
     <!--    导入easyUI的js文件-->
@@ -15,11 +17,13 @@
     <link id="themeLink" rel="stylesheet" type="text/css" href="./easyUI/themes/default/easyui.css">
 </head>
 <body>
+<input type="hidden" id="hid" th:value="${session.user.getDcGqdj()}">
 <div id="loading" style="position:absolute;z-index:1000;top:0px;left:0px;width:100%;height:100%;background:#DDDDDB;text-align :center;padding-top:20%;">
     <h1><font color="#15428B">加载中....</font></h1>
 </div>
 <table id="dg"></table>
-</body>
+
+
 <script type="text/javascript">
     var pc;
     //不要放在$(function(){});中
@@ -32,17 +36,27 @@
             $(this).remove();
         });
     }
-
+    var request = (function (){
+        var obj = {};
+        var arr = window.location.search.slice(1).split("&");
+        for (var i = 0, len = arr.length; i < len; i++) {
+            var nv = arr[i].split("=");
+            obj[unescape(nv[0]).toLowerCase()] = unescape(nv[1]);
+        }
+        return obj;
+    })()
     $(function () {
+
+
+        //页面加载数据
         $('#dg').datagrid({
             //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
-            url: 'http://localhost:8080/wslsjl',
+            url: 'http://localhost:8080/wsdcrw',
             rownumbers: true,
-            checkOnSelect:false,
+            pagination: true,
             columns: [
                 [
                     //展示列数据
-                    {checkbox:true,field: 'ck'},
                     {field: 'dcRenwugqname', title: '关区', width: 100},
                     {field: 'wjYwly', title: '业务领域', width: 100},
                     {field: 'wjLb', title: '类别', width: 100},
@@ -73,42 +87,13 @@
 
                 ]
             ],
-            pagination: true,
-            toolbar: [{
-                iconCls: 'icon-add',
-                text: "新增选定记录到当前任务",
-                handler: function () {
-                    //获取选择的数据
-                    var rows=$("#dg").datagrid("getSelections");
-                    //将获取的数据插入数组
-                    var ids=new Array();
-                    $(rows).each(function (i) {
-                        ids.push(rows[i].id)
-                    });
-                    /*ids=ids.join(",");*/
-                    alert(ids);
-                    $.ajax({
-                        url: "http://localhost:8080/historyOnceMoreWs",
-                        type: "post",
-                        data: JSON.stringify({"ids": ids}),
-                        dataType: "json",
-                        contentType: "application/json",
-                        success: function (data) {
-                            if(data.success==true){
-                                $.messager.show({
-                                    title:"提示",
-                                    msg:"添加成功"
-                                })
-                            }else if (data.success==false){
-                                $.messager.alert("提示","添加失败","error")
-                            }
+            // pagination:true,
+            //设置每次只能选择一条数据
+            singleSelect: true,
 
-                        }
-                    })
 
-                }
-            }]
         })
     })
 </script>
+</body>
 </html>
