@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--    导入jQuery的js文件-->
+    <script type="text/javascript" src="./easyui/jquery.min.js"></script>
+    <!--    导入easyUI的js文件-->
+    <script type="text/javascript" src="./easyui/jquery.easyui.min.js"></script>
+    <!--    导入easyUI的语言js文件-->
+    <script type="text/javascript" src="./easyui/locale/easyui-lang-zh_CN.js"></script>
+    <!--    导入easyUI的图标css文件-->
+    <link rel="stylesheet" type="text/css" href="./easyui/themes/icon.css">
+    <!--    导入默认模块的css文件-->
+    <link id="themeLink" rel="stylesheet" type="text/css" href="./easyui/themes/default/easyui.css">
+</head>
+<body>
+<form action="" method="post" id="">
+    <input type="radio" name="gq" value="全关区" id="all">全关区
+    <input type="radio" name="gq" value="单个关区" id="single" style="margin-left: 20px">单个关区
+    <input type="text" id="gq">
+    <a href="#" id="submit" class="easyui-linkbutton" style="width: 50px;outline:none;">确认</a>
+</form>
+<table id="dg"></table>
+</body>
+
+<script type="text/javascript">
+    $(function () {
+        $("input:radio:first").attr("checked", true);
+        var val, gq, gqxz = "全关区", isAll=true;
+        $("input:radio").click(function () {
+            val = $("input:radio:checked").val();
+        })
+
+        $("#submit").click(function () {
+            if (val == "单个关区") {
+                gq = $("#gq").val();
+                if (gq == "") {
+                    $.messager.alert("提示", "请输入关区名称", "error");
+                } else {
+                    isAll = false;
+                    gqxz = gq;
+                }
+            } else {
+                isAll = true;
+            }
+
+            // $.ajax({
+            //     url: "http://localhost:8080/wsjyStatistics",
+            //     type: "post",
+            //     data: JSON.stringify({"isAll":isAll,"gqName":gqxz,}),
+            //     dataType: "json",
+            //     contentType: "application/json",
+            //     success: function (data) {
+            //         alert(JSON.stringify(data))
+            //         $('#dg').datagrid("load",data.rows)
+            //     }
+            // })
+
+            // JSON.stringify()
+            // alert(JSON.stringify({"isAll":isAll,"gqName":gqxz}));
+            $('#dg').datagrid({
+                //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
+                url: 'http://localhost:8080/wsjyStatistics',
+                fitColumns: true,
+                rownumbers: true,
+                method:"get",
+                queryParams:{
+                    isAll:isAll,
+                    gqName:gqxz
+                },
+                /*onBeforeLoad:function(param){
+                    param.isAll=isAll;
+                    param.gqName=gqxz;
+                },*/
+                // queryParams:JSON.stringify({"isAll":isAll,"gqName":gqxz}),
+                columns: [
+                    [
+                        //展示列数据
+                        {field: 'gqName', title: '关区名称', width: 100},
+                        {field: 'bmsw', title: '病媒生物', width: 100},
+                        {field: 'yxyb', title: '阳性样本', width: 100},
+                        {field: 'dz', title: '毒种', width: 100},
+                        {field: 'jz', title: '菌种', width: 100},
+                        {field: 'xbz', title: '细胞株', width: 100},
+                        {field: 'hsdb', title: '核酸/蛋白', width: 100},
+                    ]
+                ],
+
+                //设置每次只能选择一条数据
+                singleSelect: true,
+                pagination:true,
+            })
+
+        })
+
+    })
+</script>
+</html>

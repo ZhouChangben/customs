@@ -271,7 +271,7 @@ public class WsjyService {
     }
 
     //统计所有关区的某资源数量
-    public StatisticWjResultDTO countType(List<wjLblx> wjLblxes){
+    public List<StatisticWjSingleResultDTO> countType(List<wjLblx> wjLblxes){
         dcUserExample userExample = new dcUserExample();
         userExample.createCriteria()
                 .andDcGqdjEqualTo(1);
@@ -285,9 +285,6 @@ public class WsjyService {
                         .andWjLbEqualTo(lblx.getWjlbMc())
                         .andDcRenwugqdmEqualTo(user.getDcGqdm());
                 int size = (int)wsjyMapper.countByExample(example);
-                /*List<dcWsjy> wsjies = wsjyMapper.selectByExample(example);
-                int size = wsjies.size();*/
-                //System.out.println(user.getDcGqname()+lblx.getWjlbMc()+wsjies.size());
                 counts.add(size);
             }
             StatisticWjSingleResultDTO singleResultDTO = new StatisticWjSingleResultDTO();
@@ -325,17 +322,76 @@ public class WsjyService {
                     }
                 }
             }
-            System.out.println(singleResultDTO);
             singleResultDTOS.add(singleResultDTO);
         }
-        StatisticWjResultDTO resultDTO = new StatisticWjResultDTO();
-        resultDTO.setRows(singleResultDTOS);
-        resultDTO.setTotal(singleResultDTOS.size());
-        return resultDTO;
+        return singleResultDTOS;
     }
 
-    public int countTypeForOneGq(List<wjLblx> wjLblxes,String gqName){
+    public List<StatisticWjSingleResultDTO> countTypeForOneGq(List<wjLblx> wjLblxes,String gqName){
+        dcUserExample userExample = new dcUserExample();
+        userExample.createCriteria()
+                .andDcGqnameEqualTo(gqName);
+        List<dcUser> users = userMapper.selectByExample(userExample);
+        ArrayList<StatisticWjSingleResultDTO> singleResultDTOS = new ArrayList<>();
+        if (users.size() != 0){
+            dcUser user = users.get(0);
+            ArrayList<Integer> counts = new ArrayList<>();
+            for (wjLblx lblx : wjLblxes){
+                dcWsjyExample example = new dcWsjyExample();
+                example.createCriteria()
+                        .andWjLbEqualTo(lblx.getWjlbMc())
+                        .andDcRenwugqdmEqualTo(user.getDcGqdm());
+                int size = (int)wsjyMapper.countByExample(example);
+                /*List<dcWsjy> wsjys = wsjyMapper.selectByExample(example);*/
+                counts.add(size);
+            }
+            StatisticWjSingleResultDTO singleResultDTO = new StatisticWjSingleResultDTO();
+            singleResultDTO.setSourceCount(wjLblxes.size());
+            singleResultDTO.setGqName(user.getDcGqname());
+            singleResultDTO.setCounts(counts);
+            for (int i = 0;i < counts.size();i++){
+                switch(i){
+                    case 0:{
+                        singleResultDTO.setBmsw(counts.get(0));
+                        break;
+                    }
+                    case 1:{
+                        singleResultDTO.setYxyb(counts.get(1));
+                        break;
+                    }
+                    case 2:{
+                        singleResultDTO.setDz(counts.get(2));
+                        break;
+                    }
+                    case 3:{
+                        singleResultDTO.setJz(counts.get(3));
+                        break;
+                    }
+                    case 4:{
+                        singleResultDTO.setXbz(counts.get(4));
+                        break;
+                    }
+                    case 5:{
+                        singleResultDTO.setHsdb(counts.get(5));
+                        break;
+                    }
+                    default:{
+                        break;
+                    }
+                }
+            }
+            singleResultDTOS.add(singleResultDTO);
+        }
+        return singleResultDTOS;
 
-        return 1;
+    }
+
+    public List<StatisticWjSingleResultDTO> getWjTjListPage(List<StatisticWjSingleResultDTO> statisticWjSingleResultDTOS, int page, int rows, int size){
+        int first = (page-1)*rows;
+        int last = (page-1)*rows + rows;
+        if (last > size){
+            last = size;
+        }
+        return statisticWjSingleResultDTOS.subList(first,last);
     }
 }

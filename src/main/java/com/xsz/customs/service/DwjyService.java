@@ -2,11 +2,14 @@ package com.xsz.customs.service;
 
 import com.xsz.customs.dto.DwjyDTO;
 import com.xsz.customs.dto.DwjyInfoDTO;
+import com.xsz.customs.dto.StatisticDjSingleResultDTO;
+import com.xsz.customs.dto.StatisticWjSingleResultDTO;
 import com.xsz.customs.mapper.*;
 import com.xsz.customs.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -193,6 +196,142 @@ public class DwjyService {
             dwjys = dwjyExtMapper.SearchDjContentForMax(content);
         }
         return dwjys;
+    }
+
+    //统计所有关区的某资源数量
+    public List<StatisticDjSingleResultDTO> countType(List<djLblx> djLblxes){
+        dcUserExample userExample = new dcUserExample();
+        userExample.createCriteria()
+                .andDcGqdjEqualTo(1);
+        List<dcUser> users = userMapper.selectByExample(userExample);
+        ArrayList<StatisticDjSingleResultDTO> singleResultDTOS = new ArrayList<>();
+        for (dcUser user:users) {
+            ArrayList<Integer> counts = new ArrayList<>();
+            for (djLblx lblx : djLblxes){
+                dcDwjyExample example = new dcDwjyExample();
+                example.createCriteria()
+                        .andDjLbEqualTo(lblx.getDjlbMc())
+                        .andDcRenwugqdmEqualTo(user.getDcGqdm());
+                int size = (int)dwjyMapper.countByExample(example);
+                counts.add(size);
+            }
+            StatisticDjSingleResultDTO singleResultDTO = new StatisticDjSingleResultDTO();
+            singleResultDTO.setSourceCount(djLblxes.size());
+            singleResultDTO.setGqName(user.getDcGqname());
+            singleResultDTO.setCounts(counts);
+            for (int i = 0;i < counts.size();i++){
+                switch(i){
+                    case 0:{
+                        singleResultDTO.setJdz(counts.get(0));
+                        break;
+                    }
+                    case 1:{
+                        singleResultDTO.setXbz(counts.get(1));
+                        break;
+                    }
+                    case 2:{
+                        singleResultDTO.setYxyp(counts.get(2));
+                        break;
+                    }
+                    case 3:{
+                        singleResultDTO.setXq(counts.get(3));
+                        break;
+                    }
+                    case 4:{
+                        singleResultDTO.setZz(counts.get(4));
+                        break;
+                    }
+                    case 5:{
+                        singleResultDTO.setSwbb(counts.get(5));
+                        break;
+                    }
+                    case 6:{
+                        singleResultDTO.setQt(counts.get(6));
+                        break;
+                    }
+                    default:{
+                        break;
+                    }
+                }
+            }
+            singleResultDTOS.add(singleResultDTO);
+        }
+        return singleResultDTOS;
+    }
+
+    public List<StatisticDjSingleResultDTO> countTypeForOneGq(List<djLblx> djLblxes,String gqName){
+        dcUserExample userExample = new dcUserExample();
+        userExample.createCriteria()
+                .andDcGqnameEqualTo(gqName);
+        List<dcUser> users = userMapper.selectByExample(userExample);
+        ArrayList<StatisticDjSingleResultDTO> singleResultDTOS = new ArrayList<>();
+        if (users.size() != 0){
+            dcUser user = users.get(0);
+            ArrayList<Integer> counts = new ArrayList<>();
+            for (djLblx lblx : djLblxes){
+                dcDwjyExample example = new dcDwjyExample();
+                example.createCriteria()
+                        .andDjLbEqualTo(lblx.getDjlbMc())
+                        .andDcRenwugqdmEqualTo(user.getDcGqdm());
+                int size = (int)dwjyMapper.countByExample(example);
+                List<dcDwjy> dwjys = dwjyMapper.selectByExample(example);
+                counts.add(size);
+            }
+            StatisticDjSingleResultDTO singleResultDTO = new StatisticDjSingleResultDTO();
+            singleResultDTO.setSourceCount(djLblxes.size());
+            singleResultDTO.setGqName(user.getDcGqname());
+            singleResultDTO.setCounts(counts);
+            for (int i = 0;i < counts.size();i++){
+                switch(i){
+                    case 0:{
+                        singleResultDTO.setJdz(counts.get(0));
+                        break;
+                    }
+                    case 1:{
+                        singleResultDTO.setXbz(counts.get(1));
+                        break;
+                    }
+                    case 2:{
+                        singleResultDTO.setYxyp(counts.get(2));
+                        break;
+                    }
+                    case 3:{
+                        singleResultDTO.setXq(counts.get(3));
+                        break;
+                    }
+                    case 4:{
+                        singleResultDTO.setXbz(counts.get(4));
+                        break;
+                    }
+                    case 5:{
+                        singleResultDTO.setZz(counts.get(5));
+                        break;
+                    }
+                    case 6:{
+                        singleResultDTO.setSwbb(counts.get(6));
+                        break;
+                    }
+                    case 7:{
+                        singleResultDTO.setQt(counts.get(7));
+                        break;
+                    }
+                    default:{
+                        break;
+                    }
+                }
+            }
+            singleResultDTOS.add(singleResultDTO);
+        }
+        return singleResultDTOS;
+    }
+
+    public List<StatisticDjSingleResultDTO> getDjTjListPage(List<StatisticDjSingleResultDTO> statisticDjSingleResultDTOS, int page, int rows, int size){
+        int first = (page-1)*rows;
+        int last = (page-1)*rows + rows;
+        if (last > size){
+            last = size;
+        }
+        return statisticDjSingleResultDTOS.subList(first,last);
     }
 
     public DwjyDTO transformDwjyToDTO(dcDwjy dwjy) {

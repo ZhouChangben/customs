@@ -1,5 +1,7 @@
 package com.xsz.customs.service;
 
+import com.xsz.customs.dto.StatisticWjSingleResultDTO;
+import com.xsz.customs.dto.StatisticZjSingleResultDTO;
 import com.xsz.customs.dto.ZwjyDTO;
 import com.xsz.customs.dto.ZwjyInfoDTO;
 import com.xsz.customs.mapper.*;
@@ -7,6 +9,7 @@ import com.xsz.customs.model.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -179,12 +182,154 @@ public class ZwjyService {
         return zwjys;
     }
 
-/*"rwxh":rwxh,"gqdm":gqdm,"rwmc":rwmc,"rwid":rwid,"gqName":gqName,"ywly": ywly,"category":category,
-            "saveType":saveType,"name":name,"ename":ename,"source":source,"shidai":shidai,"jydw":jydw,"jyywlb":jyywlb,
-            "number":number,"danwei":danwei,"saveStatus":saveStatus,"hwlb":hwlb,"jizhu":jizhu,
-            "obtainSite":obtainSite,"saveCondition":saveCondition,"sourceSite":sourceSite,
-            "saveTime":saveTime,"code":code,"saveLocation":saveLocation,"contact":contact,"lxrPhone":lxrPhone,"principal":principal,
-            "fzrPhone":fzrPhone,"remark":remark*/
+    //统计所有关区的某资源数量
+    public List<StatisticZjSingleResultDTO> countType(List<zjLblx> zjLblxes){
+        dcUserExample userExample = new dcUserExample();
+        userExample.createCriteria()
+                .andDcGqdjEqualTo(1);
+        List<dcUser> users = userMapper.selectByExample(userExample);
+        ArrayList<StatisticZjSingleResultDTO> singleResultDTOS = new ArrayList<>();
+        for (dcUser user:users) {
+            ArrayList<Integer> counts = new ArrayList<>();
+            for (zjLblx lblx : zjLblxes){
+                dcZwjyExample example = new dcZwjyExample();
+                example.createCriteria()
+                        .andZjLbEqualTo(lblx.getZjlbMc())
+                        .andDcRenwugqdmEqualTo(user.getDcGqdm());
+                int size = (int)zwjyMapper.countByExample(example);
+                counts.add(size);
+            }
+            StatisticZjSingleResultDTO singleResultDTO = new StatisticZjSingleResultDTO();
+            singleResultDTO.setSourceCount(zjLblxes.size());
+            singleResultDTO.setGqName(user.getDcGqname());
+            singleResultDTO.setCounts(counts);
+            for (int i = 0;i < counts.size();i++){
+                switch(i){
+                    case 0:{
+                        singleResultDTO.setKc(counts.get(0));
+                        break;
+                    }
+                    case 1:{
+                        singleResultDTO.setZc(counts.get(1));
+                        break;
+                    }
+                    case 2:{
+                        singleResultDTO.setXc(counts.get(2));
+                        break;
+                    }
+                    case 3:{
+                        singleResultDTO.setXj(counts.get(3));
+                        break;
+                    }
+                    case 4:{
+                        singleResultDTO.setZj(counts.get(4));
+                        break;
+                    }
+                    case 5:{
+                        singleResultDTO.setBd(counts.get(5));
+                        break;
+                    }
+                    case 6:{
+                        singleResultDTO.setRtdw(counts.get(6));
+                        break;
+                    }
+                    case 7:{
+                        singleResultDTO.setWzzy(counts.get(7));
+                        break;
+                    }
+                    case 8:{
+                        singleResultDTO.setQt(counts.get(8));
+                        break;
+                    }
+                    default:{
+                        break;
+                    }
+                }
+            }
+            singleResultDTOS.add(singleResultDTO);
+        }
+        return singleResultDTOS;
+    }
+
+    public List<StatisticZjSingleResultDTO> countTypeForOneGq(List<zjLblx> zjLblxes,String gqName){
+        dcUserExample userExample = new dcUserExample();
+        userExample.createCriteria()
+                .andDcGqnameEqualTo(gqName);
+        List<dcUser> users = userMapper.selectByExample(userExample);
+        ArrayList<StatisticZjSingleResultDTO> singleResultDTOS = new ArrayList<>();
+        if (users.size() != 0){
+            dcUser user = users.get(0);
+            ArrayList<Integer> counts = new ArrayList<>();
+            for (zjLblx lblx : zjLblxes){
+                dcZwjyExample example = new dcZwjyExample();
+                example.createCriteria()
+                        .andZjLbEqualTo(lblx.getZjlbMc())
+                        .andDcRenwugqdmEqualTo(user.getDcGqdm());
+                int size = (int)zwjyMapper.countByExample(example);
+                /*List<dcWsjy> wsjys = wsjyMapper.selectByExample(example);*/
+                counts.add(size);
+            }
+            StatisticZjSingleResultDTO singleResultDTO = new StatisticZjSingleResultDTO();
+            singleResultDTO.setSourceCount(zjLblxes.size());
+            singleResultDTO.setGqName(user.getDcGqname());
+            singleResultDTO.setCounts(counts);
+            for (int i = 0;i < counts.size();i++){
+                switch(i){
+                    case 0:{
+                        singleResultDTO.setKc(counts.get(0));
+                        break;
+                    }
+                    case 1:{
+                        singleResultDTO.setZc(counts.get(1));
+                        break;
+                    }
+                    case 2:{
+                        singleResultDTO.setXc(counts.get(2));
+                        break;
+                    }
+                    case 3:{
+                        singleResultDTO.setXj(counts.get(3));
+                        break;
+                    }
+                    case 4:{
+                        singleResultDTO.setZj(counts.get(4));
+                        break;
+                    }
+                    case 5:{
+                        singleResultDTO.setBd(counts.get(5));
+                        break;
+                    }
+                    case 6:{
+                        singleResultDTO.setRtdw(counts.get(6));
+                        break;
+                    }
+                    case 7:{
+                        singleResultDTO.setWzzy(counts.get(7));
+                        break;
+                    }
+                    case 8:{
+                        singleResultDTO.setQt(counts.get(8));
+                        break;
+                    }
+                    default:{
+                        break;
+                    }
+                }
+            }
+            singleResultDTOS.add(singleResultDTO);
+        }
+        return singleResultDTOS;
+    }
+
+    public List<StatisticZjSingleResultDTO> getZjTjListPage(List<StatisticZjSingleResultDTO> statisticZjSingleResultDTOS, int page, int rows, int size){
+        int first = (page-1)*rows;
+        int last = (page-1)*rows + rows;
+        if (last > size){
+            last = size;
+        }
+        return statisticZjSingleResultDTOS.subList(first,last);
+    }
+
     public ZwjyDTO transformZwjyToDTO(dcZwjy zwjy) {
         ZwjyDTO zwjyDTO = new ZwjyDTO();
 
@@ -255,8 +400,6 @@ public class ZwjyService {
         zwjy.setZjFuzeren(zwjyDTO.getPrincipal());
         zwjy.setZjFuzerendh(zwjyDTO.getFzrPhone());
         zwjy.setZjBy1(zwjyDTO.getRemark());
-        System.out.println("hhh"+zwjy.getId());
-
         return zwjy;
     }
 }

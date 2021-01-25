@@ -34,6 +34,9 @@ public class WsjyController {
     @Autowired
     private LblxService lblxService;
 
+    @Autowired
+    private UserService userService;
+
     @ResponseBody
     @RequestMapping(value = "addWsjy",method = RequestMethod.POST)
     public Object addDwjy(@RequestBody WsjyDTO wsjyDTO,
@@ -48,8 +51,12 @@ public class WsjyController {
 
         int renwuid = (int)request.getSession().getAttribute("wsrwid");
         dcUser user = (dcUser)request.getSession().getAttribute("user");
+        if (user.getDcGqdj() > 1){
+            dcUser fUser = userService.findFatherGq(user.getDcGqdm());
+            wsjyDTO.setGqdm(fUser.getDcGqdm());
+        }
         ResultDTO resultDTO = new ResultDTO();
-        dcWsjy wsjy = new dcWsjy();
+        dcWsjy wsjy;
         wsjy = wsjyService.transformDTOToWsjy(wsjyDTO);
         wsjy.setDcRenwuid(renwuid);
         wsjy.setDcRenwugqdm2(user.getDcGqdm());
@@ -284,24 +291,59 @@ public class WsjyController {
     }
 
     //卫生检疫统计功能
-    @ResponseBody
+    /*@ResponseBody
     @RequestMapping(value = "wsjyStatistics",method = RequestMethod.POST)
     public Object wsjyStatistics(@RequestBody StatisticTypeDTO statisticTypeDTO,
+                                 Integer page,
+                                 Integer rows,
                                  HttpServletRequest request,
                              HttpServletResponse response){
         List<wjLblx> allWjLbs = lblxService.getAllWjlx();
         StatisticWjResultDTO statisticWjResultDTO = new StatisticWjResultDTO();
+        List<StatisticWjSingleResultDTO> singleResultDTOS;
+
+        singleResultDTOS= wsjyService.countType(allWjLbs);
         //选择统计所有关区的资源数量
-        /*if (statisticTypeDTO.isAll() *//*&& user.getDcGqdj() == 0*//*){
-            statisticWjResultDTO = wsjyService.countType(allWjLbs);
-            System.out.println("到我了");
+        *//*if (statisticTypeDTO.isAll()){
+            singleResultDTOS= wsjyService.countType(allWjLbs);
         }
         else {
             String gqName = statisticTypeDTO.getGqName();
-            wsjyService.countTypeForOneGq(allWjLbs,gqName);
+            singleResultDTOS = wsjyService.countTypeForOneGq(allWjLbs,gqName);
+        }*//*
+        int size = singleResultDTOS.size();
+        System.out.println(size);
+        System.out.println(page);
+        System.out.println(rows);
+        singleResultDTOS = wsjyService.getWjTjListPage(singleResultDTOS,page,rows,size);
+        statisticWjResultDTO.setTotal(size);
+        statisticWjResultDTO.setRows(singleResultDTOS);
+        return statisticWjResultDTO;
+    }*/
 
-        }*/
-        statisticWjResultDTO = wsjyService.countType(allWjLbs);
+    //卫生检疫统计功能
+    @ResponseBody
+    @RequestMapping(value = "wsjyStatistics",method = RequestMethod.GET)
+    public Object wsjyStatistics(@RequestParam boolean isAll,
+                                     @RequestParam String gqName,
+                                     Integer page,
+                                     Integer rows,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response){
+        List<wjLblx> allWjLbs = lblxService.getAllWjlx();
+        StatisticWjResultDTO statisticWjResultDTO = new StatisticWjResultDTO();
+        List<StatisticWjSingleResultDTO> singleResultDTOS;
+        //选择统计所有关区的资源数量
+        if (isAll){
+            singleResultDTOS= wsjyService.countType(allWjLbs);
+        }
+        else {
+            singleResultDTOS = wsjyService.countTypeForOneGq(allWjLbs,gqName);
+        }
+        int size = singleResultDTOS.size();
+        singleResultDTOS = wsjyService.getWjTjListPage(singleResultDTOS,page,rows,size);
+        statisticWjResultDTO.setTotal(size);
+        statisticWjResultDTO.setRows(singleResultDTOS);
         return statisticWjResultDTO;
     }
 }

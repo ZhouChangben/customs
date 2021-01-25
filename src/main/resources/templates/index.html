@@ -60,6 +60,20 @@
                 <li th:if="${session.user.getDcGqdj()<2}"><a href="javascript:void(0)" pageUrl="userMP">用户管理</a></li>
             </ul>
         </div>
+        <div title="统计" data-options="iconCls:'icon-sum'" >
+            <ul>
+                <li><a href="javascript:void(0)" pageUrl="wjtj">卫生检疫统计</a></li>
+                <li><a href="javascript:void(0)" pageUrl="djtj">动物检疫统计</a></li>
+                <li><a href="javascript:void(0)" pageUrl="zjtj">植物检疫统计</a></li>
+            </ul>
+        </div>
+        <div title="查询" data-options="iconCls:'icon-search'" >
+            <ul>
+                <li><a href="javascript:void(0)" pageUrl="wjsearch.html">卫生检疫</a></li>
+                <li><a href="javascript:void(0)" pageUrl="djsearch.html">动物检疫</a></li>
+                <li><a href="javascript:void(0)" pageUrl="zjsearch.html">植物检疫</a></li>
+            </ul>
+        </div>
     </div>
 </div>
 <!--编辑区域-->

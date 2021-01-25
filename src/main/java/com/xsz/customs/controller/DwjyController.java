@@ -7,10 +7,8 @@ import com.xsz.customs.service.*;
 import com.xsz.customs.service.DwjyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -29,6 +27,11 @@ public class DwjyController {
     @Autowired
     private LogService logService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private LblxService lblxService;
 
     @ResponseBody
     @RequestMapping(value = "addDwjy",method = RequestMethod.POST)
@@ -44,8 +47,12 @@ public class DwjyController {
 
         int renwuid = (int)request.getSession().getAttribute("dwrwid");
         dcUser user = (dcUser) request.getSession().getAttribute("user");
+        if (user.getDcGqdj() > 1){
+            dcUser fUser = userService.findFatherGq(user.getDcGqdm());
+            dwjyDTO.setGqdm(fUser.getDcGqdm());
+        }
         ResultDTO resultDTO = new ResultDTO();
-        dcDwjy dwjy = new dcDwjy();
+        dcDwjy dwjy;
         dwjy = dwjyService.transformDTOToDwjy(dwjyDTO);
 
         dwjy.setDcRenwuid(renwuid);
@@ -251,5 +258,31 @@ public class DwjyController {
         showDwjyDTO.setRows(dwjys);
         showDwjyDTO.setTotal(dwjys.size());
         return showDwjyDTO;
+    }
+
+    //动物检疫统计功能
+    @ResponseBody
+    @RequestMapping(value = "dwjyStatistics",method = RequestMethod.GET)
+    public Object dwjyStatistics(@RequestParam boolean isAll,
+                                     @RequestParam String gqName,
+                                     Integer page,
+                                     Integer rows,
+                                     HttpServletRequest request,
+                                     HttpServletResponse response){
+        List<djLblx> allDjLbs = lblxService.getAllDjlx();
+        StatisticDjResultDTO statisticDjResultDTO = new StatisticDjResultDTO();
+        List<StatisticDjSingleResultDTO> singleResultDTOS;
+        //选择统计所有关区的资源数量
+        if (isAll){
+            singleResultDTOS= dwjyService.countType(allDjLbs);
+        }
+        else {
+            singleResultDTOS = dwjyService.countTypeForOneGq(allDjLbs,gqName);
+        }
+        int size = singleResultDTOS.size();
+        singleResultDTOS = dwjyService.getDjTjListPage(singleResultDTOS,page,rows,size);
+        statisticDjResultDTO.setTotal(size);
+        statisticDjResultDTO.setRows(singleResultDTOS);
+        return statisticDjResultDTO;
     }
 }

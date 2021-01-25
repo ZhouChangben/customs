@@ -5,10 +5,7 @@ import com.xsz.customs.model.*;
 import com.xsz.customs.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -31,6 +28,12 @@ public class ZwjyController {
     @Autowired
     private LogService logService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private LblxService lblxService;
+
     @ResponseBody
     @RequestMapping(value = "addZwjy",method = RequestMethod.POST)
     public Object addZwjy(@RequestBody ZwjyDTO zwjyDTO,
@@ -45,8 +48,12 @@ public class ZwjyController {
 
         int renwuid = (int)request.getSession().getAttribute("zwrwid");
         dcUser user = (dcUser)request.getSession().getAttribute("user");
+        if (user.getDcGqdj() > 1){
+            dcUser fUser = userService.findFatherGq(user.getDcGqdm());
+            zwjyDTO.setGqdm(fUser.getDcGqdm());
+        }
         ResultDTO resultDTO = new ResultDTO();
-        dcZwjy zwjy = new dcZwjy();
+        dcZwjy zwjy;
         zwjy = zwjyService.transformDTOToZwjy(zwjyDTO);
         zwjy.setDcRenwuid(renwuid);
         zwjy.setDcRenwugqdm2(user.getDcGqdm());
@@ -253,5 +260,29 @@ public class ZwjyController {
         showZwjyDTO.setTotal(zwjys.size());
         return showZwjyDTO;
     }
-
+    //卫生检疫统计功能
+    @ResponseBody
+    @RequestMapping(value = "zwjyStatistics",method = RequestMethod.GET)
+    public Object zwjyStatistics(@RequestParam boolean isAll,
+                                 @RequestParam String gqName,
+                                 Integer page,
+                                 Integer rows,
+                                 HttpServletRequest request,
+                                 HttpServletResponse response){
+        List<zjLblx> allZjLbs = lblxService.getAllZjlx();
+        StatisticZjResultDTO statisticZjResultDTO = new StatisticZjResultDTO();
+        List<StatisticZjSingleResultDTO> singleResultDTOS;
+        //选择统计所有关区的资源数量
+        if (isAll){
+            singleResultDTOS= zwjyService.countType(allZjLbs);
+        }
+        else {
+            singleResultDTOS = zwjyService.countTypeForOneGq(allZjLbs,gqName);
+        }
+        int size = singleResultDTOS.size();
+        singleResultDTOS = zwjyService.getZjTjListPage(singleResultDTOS,page,rows,size);
+        statisticZjResultDTO.setTotal(size);
+        statisticZjResultDTO.setRows(singleResultDTOS);
+        return statisticZjResultDTO;
+    }
 }

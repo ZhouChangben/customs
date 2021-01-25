@@ -60,4 +60,10 @@ public class IndexController {
     public String toHistoryDcrw(){return "lsdcrw";}
     @GetMapping("/userInfo")
     public String toUserInfo(){return "userInfo";}
+    @GetMapping("/wjtj")
+    public String toWjTj(){return "wjtj";}
+    @GetMapping("/djtj")
+    public String toDjTj(){return "djtj";}
+    @GetMapping("/zjtj")
+    public String toZjTj(){return "zjtj";}
 }
