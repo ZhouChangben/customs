@@ -110,47 +110,13 @@ public class UserService {
 
     //此方法考虑到了分页的情况
     //用于获取用户下属列表的方法,根据不同的用户类型来进行分类讨论
-    public List<dcUser> getUserList(String gqdm, int gqdj, int page,int rows,int size){
-        dcUser user = new dcUser();
-        user.setDcGqdj(gqdj);
-        dcUserExample example = new dcUserExample();
+    public List<dcUser> getUserList(List<dcUser> users, int page,int rows,int size){
         int first = (page-1)*rows;
         int last = (page-1)*rows + rows;
         if (last > size){
             last = size;
         }
-        //当前用户是海关科技司（最高级）
-        if (gqdj == 0){
-            example.createCriteria()
-                    .andDcGqdjEqualTo(1);
-            List<dcUser> users1 = userMapper.selectByExample(example);
-
-            /*dcUserExample example1 = new dcUserExample();
-            example1.createCriteria()
-                    .andDcGqdmEqualTo(gqdm);
-            List<dcUser> users = userMapper.selectByExample(example1);
-            users.addAll(users1);*/
-            return users1.subList(first,last);
-        }
-        //当前用户是二级海关部门
-        else if (gqdj == 1){
-            String frontdm = gqdm.substring(0,4);
-            //String reardm = gqdm.substring(4);
-            List<dcUser> users1 = userExtMapper.SelectByFrontDm(frontdm+"%");
-            /*example.createCriteria()
-                    .andDcGqdmEqualTo(gqdm);
-            List<dcUser> users = userMapper.selectByExample(example);
-            users.addAll(users1);*/
-            return users1.subList(first,last);
-        }
-        //当前用户是最低级的用户
-        else{
-            example.createCriteria()
-                    .andDcGqdmEqualTo(gqdm);
-            List<dcUser> users = userMapper.selectByExample(example);
-            return users.subList(first,last);
-            /*return null;*/
-        }
+        return users.subList(first,last);
     }
 
     //此方法是获得当前关区的所有子关区的方法
@@ -177,7 +143,6 @@ public class UserService {
                     .andDcGqdmEqualTo(gqdm);
             List<dcUser> users = userMapper.selectByExample(example);
             return users;
-            /*return null;*/
         }
     }
 
@@ -277,6 +242,29 @@ public class UserService {
         userInfoDTOS.add(userInfoDTO1);
 
         return userInfoDTOS;
+    }
+
+    public UserInfoDTO getUserInfomation(dcUser user){
+        UserInfoDTO userInfoDTO1 = new UserInfoDTO();
+        userInfoDTO1.setGqdm(user.getDcGqdm());
+        userInfoDTO1.setGqName(user.getDcGqname());
+        userInfoDTO1.setLxr(user.getDcLxr());
+        userInfoDTO1.setLxrdh(user.getDcLxdh());
+        userInfoDTO1.setDjLxr(user.getDcDjlxr());
+        userInfoDTO1.setDjLxdh(user.getDcDjlxdh());
+        userInfoDTO1.setDjFzr(user.getDcDjfzr());
+        userInfoDTO1.setDjFzrdh(user.getDcDjfzdh());
+        userInfoDTO1.setWjLxr(user.getDcWjlxr());
+        userInfoDTO1.setWjLxdh(user.getDcWjlxdh());
+        userInfoDTO1.setWjFzr(user.getDcWjfzr());
+        userInfoDTO1.setWjFzrdh(user.getDcWjfzdh());
+        userInfoDTO1.setZjLxr(user.getDcZjlxr());
+        userInfoDTO1.setZjLxdh(user.getDcZjlxdh());
+        userInfoDTO1.setZjFzr(user.getDcZjfzr());
+        userInfoDTO1.setZjFzrdh(user.getDcZjfzdh());
+
+
+        return userInfoDTO1;
     }
 
     public List<UserInfoDTO> getUserInfoForSub(dcUser user,dcUser fUser){

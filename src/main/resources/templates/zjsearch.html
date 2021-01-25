@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--    导入jQuery的js文件-->
+    <script type="text/javascript" src="./easyui/jquery.min.js"></script>
+    <!--    导入easyUI的js文件-->
+    <script type="text/javascript" src="./easyui/jquery.easyui.min.js"></script>
+    <!--    导入easyUI的语言js文件-->
+    <script type="text/javascript" src="./easyui/locale/easyui-lang-zh_CN.js"></script>
+    <!--    导入easyUI的图标css文件-->
+    <link rel="stylesheet" type="text/css" href="./easyui/themes/icon.css">
+    <!--    导入默认模块的css文件-->
+    <link id="themeLink" rel="stylesheet" type="text/css" href="./easyui/themes/default/easyui.css">
+</head>
+<body>
+<div >
+    <span>植物检疫记录查询：</span>
+    <input class="easyui-searchbox" data-options="prompt:'请输入搜索内容',searcher:doSearch" style="width:30%;">
+
+</div>
+<table id="dg"></table>
+<div id="editWinPlant" class="easyui-window" data-options="width:650,height:500,closed:true,">
+    <form action="" method="post" id="editFormPlant">
+        <input type="hidden" id="rwid" name="rwid">
+        <input type="hidden" id="rwmc" name="rwmc">
+        <input type="hidden" id="rwxh" name="rwxh">
+        <input type="hidden" id="gqdm" name="gqdm">
+        <input type="hidden" id="gqName" name="gqName">
+        <input type="hidden" id="id" name="id">
+        <table>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">业务领域 </td>
+                <td style="width: 180px"><input type="text" id="ywly" name="ywly" value="植物检疫"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">中文名称</td>
+                <td><input type="text" id="name" name="name"></td>
+                <td style="text-align: right;padding-right: 0.5em">拉丁学名</td>
+                <td><input type="text" id="ename" name="ename"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">类别</td>
+                <td>
+                    <input id="category" name="category" class="easyui-combobox" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'昆虫'},
+                           {id:'2',value:'杂草'},
+                           {id:'3',value:'线虫'},
+                           {id:'4',value:'细菌'},
+                           {id:'5',value:'真菌'},
+                           {id:'6',value:'病毒'},
+                           {id:'7',value:'软体动物'},
+                           {id:'8',value:'物种资源'},
+                           {id:'9',value:'其他'}
+                           ]">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">世代/种下阶元</td>
+                <td>
+                    <input type="text" id="shidai" name="shidai">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">内部保存编号</td>
+                <td><input type="text" id="code" name="code"></td>
+                <td style="text-align: right;padding-right: 0.5em">检疫地位</td>
+                <td>
+                    <input id="jydw" name="jydw" class="easyui-combobox" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'检疫性'},
+                           {id:'2',value:'非检疫性'},
+                           ]">
+                </td>
+
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">检疫业务类别</td>
+                <td>
+                    <input id="jyywlb" name="jyywlb" class="easyui-combobox" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'货检'},
+                           {id:'2',value:'运输工具检疫'},
+                           {id:'3',value:'旅检'},
+                           {id:'4',value:'邮检'},
+                           {id:'5',value:'木包装检疫'},
+                           {id:'6',value:'集装箱检疫'},
+                           ]">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">货物类别</td>
+                <td>
+                    <input type="text" id="hwlb" name="hwlb">
+                </td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">寄主</td>
+                <td><input type="text" id="jizhu" name="jizhu"></td>
+                <td style="text-align: right;padding-right: 0.5em">保存形式</td>
+                <td>
+                    <input id="saveType" name="saveType" class="easyui-combobox" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'实物'},
+                           {id:'2',value:'针插标本'},
+                           {id:'3',value:'浸渍标本（成虫）'},
+                           {id:'4',value:'浸渍标本（幼虫）'},
+                           {id:'5',value:'玻片标本'},
+                           {id:'6',value:'解剖学标本'},
+                           {id:'7',value:'活体植物组织'},
+                           {id:'8',value:'菌液'},
+                           {id:'9',value:'核酸'},
+                           {id:'10',value:'接种的培养基'},
+                           ]">
+                </td>
+            </tr>
+
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">来源</td>
+                <td>
+                    <input id="source" name="source" class="easyui-combobox" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'截获'},
+                           {id:'2',value:'购买'},
+                           {id:'3',value:'赠送'},
+                           {id:'4',value:'交换'},
+                           {id:'5',value:'监测'},
+                           {id:'6',value:'采集'},
+                           ]">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">来源国家/地区</td>
+                <td><input type="text" id="sourceSite" name="sourceSite"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">样本数量</td>
+                <td><input type="text" id="number" name="number" style="width: 80px">
+                    单位
+                    <input type="text" id="danwei" name="danwei" style="width: 2em">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">保存状态 </td>
+                <td><input type="text" id="saveStatus" name="saveStatus"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">保存条件 </td>
+                <td><input type="text" id="saveCondition" name="saveCondition"></td>
+                <td style="text-align: right;padding-right: 0.5em">保存时间 </td>
+                <td><input type="text" id="saveTime" name="saveTime"></td>
+            </tr>
+
+            <tr>
+
+                <td style="text-align: right;padding-right: 0.5em">获得地点 </td>
+                <td><input type="text" id="obtainSite" name="obtainSite"></td>
+                <td style="text-align: right">保存位置（隶属关/部门）</td>
+                <td><input type="text" id="saveLocation" name="saveLocation"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">联络人 </td>
+                <td><input type="text" id="contact" name="contact" ></td>
+                <td style="text-align: right;padding-right: 0.5em">联络人电话 </td>
+                <td><input type="text" id="lxrPhone" name="lxrPhone"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">负责人 </td>
+                <td><input type="text" id="principal" name="principal" ></td>
+                <td style="text-align: right;padding-right: 0.5em">负责人电话 </td>
+                <td><input type="text" id="fzrPhone" name="fzrPhone"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;vertical-align: top;padding-right: 0.5em">备注 </td>
+                <td>
+                    <textarea name="remark" id="remark" cols="20" rows="5" style="resize: none"></textarea>
+                </td>
+                <td></td>
+
+            </tr>
+
+        </table>
+    </form>
+</div>
+
+</body>
+
+<script type="text/javascript">
+    function doSearch(value){
+        $('#dg').datagrid({
+            //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
+            url: 'http://localhost:8080/zwjySearch',
+            singleSelect: true,
+            queryParams:{
+                content:value,
+            },
+            rownumbers: true,
+            method:"get",
+            columns: [
+                [
+                    //展示列数据
+                    {field: 'dcRenwugqname', title: '关区', width: 100},
+                    {field: 'zjLb', title: '类别', width: 100},
+                    {field: 'zjName', title: '名称', width: 100},
+                    {
+                        field: 'dcRenwugqname', title: '保存位置\n' +
+                            '（隶属关/部门）', width: 100
+                    },
+                    {field: 'zjLianlr', title: '联络人', width: 100},
+                    {field: 'zjLianldh', title: '联络电话', width: 100},
+                    {field: 'zjFuzeren', title: '负责人', width: 100},
+                    {field: 'zjFuzerendh', title: '联络电话', width: 100},
+                    {field: 'zjBy1', title: '备注', width: 100},
+
+                ]
+            ],
+            pagination: true,
+
+            onDblClickRow:function (index,row) {
+                $.ajax({
+                    url: "http://localhost:8080/showZwjyTable",
+                    type: "post",
+                    data: JSON.stringify({"id": row.id}),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+
+                        $("#editFormPlant").form("load", {
+                            id:data.id,
+                            rwid: data.rwid,
+                            rwmc: data.rwmc,
+                            rwxh: data.rwxh,
+                            gqdm: data.gqdm,
+                            gqName: data.gqName,
+                            ywly: data.ywly,
+                            name: data.name,
+                            ename: data.ename,
+                            category: data.category,
+                            shidai: data.shidai,
+                            code: data.code,
+                            jydw:data.jydw,
+                            jyywlb:data.jyywlb,
+                            hwlb: data.hwlb,
+                            jizhu: data.jizhu,
+                            saveType:data.saveType,
+                            source:data.source,
+                            sourceSite:data.sourceSite,
+                            number: data.number,
+                            danwei:data.danwei,
+                            saveStatus: data.saveStatus,
+                            saveCondition: data.saveCondition,
+                            saveTime: data.saveTime,
+                            obtainSite:data.obtainSite,
+                            saveLocation: data.saveLocation,
+                            contact: data.contact,
+                            lxrPhone: data.lxrPhone,
+                            principal: data.principal,
+                            fzrPhone: data.fzrPhone,
+                            remark: data.remark,
+                        });
+                    }
+                })
+                //填弹出编辑窗口
+
+                $("#editWinPlant").window({title: "编辑记录"});
+                $("#editWinPlant").window("open")
+            }
+
+
+        })
+
+
+
+    }
+
+
+
+
+</script>
+</html>

@@ -36,17 +36,12 @@ public class DcrwService {
     public boolean createAll(dcDcrw dcrw){
         dcUserExample userExample = new dcUserExample();
         dcDcrwExample dcrwExample = new dcDcrwExample();
-        /*dcZwjy zwjy = new dcZwjy();
-        dcDwjy dwjy = new dcDwjy();
-        dcWsjy wsjy = new dcWsjy();*/
         dcrwExample.createCriteria()
                 .andDcRenwumcEqualTo(dcrw.getDcRenwumc());
         List<dcDcrw> dcrws = dcrwMapper.selectByExample(dcrwExample);
         //说明这个调查任务的名字还没有被使用过
         if (dcrws.size() == 0){
             //查找所有非海关科技司的用户
-            /*userExample.createCriteria()
-                    .andDcGqdmNotEqualTo("000001");*/
             userExample.createCriteria()
                     .andDcGqdjEqualTo(1);
             List<dcUser> users = userMapper.selectByExample(userExample);
@@ -70,38 +65,6 @@ public class DcrwService {
                     dcrwMapper.insert(dcdcrw);
                 }
             }
-            //除了插入dcrw表以外还需要为每一个调查表自己的数据库表创建一个自己的字段
-            /*dcDcrwExample dcrwExample1 = new dcDcrwExample();
-            dcrwExample1.createCriteria()
-                    .andDcRenwumcEqualTo(dcrw.getDcRenwumc());
-            List<dcDcrw> newDcrws = dcrwMapper.selectByExample(dcrwExample1);
-            for (dcDcrw dcDcrw : newDcrws) {
-                if (dcDcrw.getDcDcbname().equals("动物检疫")){
-                    dwjy.setDcRenwugqdm(dcDcrw.getDcRenwugqdm());
-                    dwjy.setDcRenwugqname(dcDcrw.getDcRenwugqname());
-                    dwjy.setDcRenwuid(dcDcrw.getId());
-                    dwjy.setDcRenwumc(dcDcrw.getDcRenwumc());
-                    dwjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
-                    dcDwjyMapper.insert(dwjy);
-                }
-                if (dcDcrw.getDcDcbname().equals("植物检疫")){
-                    zwjy.setDcRenwugqdm(dcDcrw.getDcRenwugqdm());
-                    zwjy.setDcRenwugqname(dcDcrw.getDcRenwugqname());
-                    zwjy.setDcRenwuid(dcDcrw.getId());
-                    zwjy.setDcRenwumc(dcDcrw.getDcRenwumc());
-                    zwjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
-                    dcZwjyMapper.insert(zwjy);
-                }
-                if (dcDcrw.getDcDcbname().equals("卫生检疫")){
-                    wsjy.setDcRenwugqdm(dcDcrw.getDcRenwugqdm());
-                    wsjy.setDcRenwugqname(dcDcrw.getDcRenwugqname());
-                    wsjy.setDcRenwuid(dcDcrw.getId());
-                    wsjy.setDcRenwumc(dcDcrw.getDcRenwumc());
-                    wsjy.setDcRenwuxh(dcDcrw.getDcRenwuxh());
-                    dcWsjyMapper.insert(wsjy);
-                }
-            }*/
-
             return true;
         }
        return false;
@@ -243,7 +206,6 @@ public class DcrwService {
             return false;
     }
 
-
     public boolean deleteDcrwById(int id) {
         dcDcrwExample dcrwExample = new dcDcrwExample();
         dcrwExample.createCriteria()
@@ -312,7 +274,6 @@ public class DcrwService {
     }
 
     public dcUser findFatherGq(String gqdm) {
-        dcUser user = new dcUser();
         dcUserExample example = new dcUserExample();
         String subgqdm = gqdm.substring(0,4);
         String fgqdm = subgqdm + "00";

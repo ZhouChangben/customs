@@ -195,6 +195,7 @@ public class UserController {
     public Object updateUser(@RequestBody UpdateUserSecondDTO updateUserSecondDTO,
                              HttpServletRequest request,
                              HttpServletResponse response){
+        System.out.println(updateUserSecondDTO.getGqdm());
         //日志记录
         dcLog log = new dcLog();
         log.setIp(request.getRemoteAddr());
@@ -265,18 +266,14 @@ public class UserController {
                               HttpServletResponse response){
         dcUser user = (dcUser) request.getSession().getAttribute("user");
         SubUsersDTO subUsersDTO = new SubUsersDTO();
-        if (user != null){
+        if (user != null && user.getDcGqdj() < 2){
             String gqdm = user.getDcGqdm();
             int gqdj = user.getDcGqdj();
             List<dcUser> users = userService.getUserList(gqdm, gqdj);
-            //当前关区是非三级关区时
-            /*if (users != null && users.get(0).getDcGqdj() < 2){
-                users.add(user);
-            }*/
             //这是为了方便修改三级关区的用户管理而设置的
             if (users != null){
                 int size = users.size();
-                users = userService.getUserList(gqdm, gqdj,page,rows,size);
+                users = userService.getUserList(users,page,rows,size);
                 subUsersDTO.setTotal(size);
                 subUsersDTO.setRows(users);
             }
@@ -319,13 +316,21 @@ public class UserController {
     }
 
     //编辑前的数据写入
-    @ResponseBody
+    /*@ResponseBody
     @RequestMapping(value = "/showUserInfo",method = RequestMethod.POST)
     public Object showUserInfo(HttpServletRequest request,
                                HttpServletResponse response){
         dcUser user = (dcUser)request.getSession().getAttribute("user");
         List<UserInfoDTO> userInfoDTOS = userService.getUserInfo(user);
         UserInfoDTO userInfoDTO = userInfoDTOS.get(0);
+        return userInfoDTO;
+    }*/
+    @ResponseBody
+    @RequestMapping(value = "/showUserInfo",method = RequestMethod.POST)
+    public Object showUserInfo(HttpServletRequest request,
+                               HttpServletResponse response){
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
+        UserInfoDTO userInfoDTO = userService.getUserInfomation(user);
         return userInfoDTO;
     }
 
@@ -340,6 +345,7 @@ public class UserController {
         log.setTime(System.currentTimeMillis());
         log.setMovement("更新卫检联系方式");
         logService.InsertLog(log);
+
         dcUser user = (dcUser)request.getSession().getAttribute("user");
         ResultDTO resultDTO = new ResultDTO();
         boolean flag;
@@ -439,6 +445,8 @@ public class UserController {
         dcUser user = (dcUser)request.getSession().getAttribute("user");
         ResultDTO resultDTO = new ResultDTO();
         boolean flag;
+        user.setDcLxr(userInfoDTO.getLxr());
+        user.setDcLxdh(userInfoDTO.getLxrdh());
         user.setDcWjlxr(userInfoDTO.getWjLxr());
         user.setDcWjlxdh(userInfoDTO.getWjLxdh());
         user.setDcWjfzr(userInfoDTO.getWjFzr());
@@ -469,9 +477,9 @@ public class UserController {
     public Object updateUserPwd(@RequestBody UserPsdDTO userPsdDTO,
                                  HttpServletRequest request,
                                  HttpServletResponse response){
-        dcUser user = new dcUser();
+        dcUser user = (dcUser)request.getSession().getAttribute("user");
         ResultDTO resultDTO = new ResultDTO();
-        user.setDcGqdm(userPsdDTO.getGqdm());
+        //user.setDcGqdm(userPsdDTO.getGqdm());
         user.setDcGqpword(userPsdDTO.getPassword());
         boolean flag = userService.updateUserInfomation(user);
         resultDTO.setSuccess(flag);

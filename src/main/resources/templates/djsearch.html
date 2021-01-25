@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--    导入jQuery的js文件-->
+    <script type="text/javascript" src="./easyui/jquery.min.js"></script>
+    <!--    导入easyUI的js文件-->
+    <script type="text/javascript" src="./easyui/jquery.easyui.min.js"></script>
+    <!--    导入easyUI的语言js文件-->
+    <script type="text/javascript" src="./easyui/locale/easyui-lang-zh_CN.js"></script>
+    <!--    导入easyUI的图标css文件-->
+    <link rel="stylesheet" type="text/css" href="./easyui/themes/icon.css">
+    <!--    导入默认模块的css文件-->
+    <link id="themeLink" rel="stylesheet" type="text/css" href="./easyui/themes/default/easyui.css">
+</head>
+<body>
+<div >
+    <span>动物检疫记录查询：</span>
+    <input class="easyui-searchbox" data-options="prompt:'请输入搜索内容',searcher:doSearch" style="width:30%;">
+
+</div>
+<table id="dg"></table>
+<div id="editWinAnimal" class="easyui-window" data-options="width:700,height:500,closed:true,">
+    <form action="" method="post" id="editFormAnimal">
+        <input type="hidden" id="rwid" name="rwid">
+        <input type="hidden" id="rwmc" name="rwmc">
+        <input type="hidden" id="rwxh" name="rwxh">
+        <input type="hidden" id="gqdm" name="gqdm">
+        <input type="hidden" id="gqName" name="gqName">
+        <input type="hidden" id="id" name="id">
+        <table>
+            <tr>
+                <td></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">业务领域</td>
+                <td><input type="text" id="ywly" name="ywly" value="动物检疫"></td>
+            </tr>
+            <tr>
+
+                <td style="text-align: right;padding-right: 0.5em">名称</td>
+                <td><input type="text" id="name" name="name"></td>
+                <td style="text-align: right;padding-right: 0.5em">英文名（简称）</td>
+                <td><input type="text" id="ename" name="ename"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">类别</td>
+                <td>
+                    <input id="category" class="easyui-combobox" name="category" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'菌毒株'},
+                           {id:'2',value:'细胞株'},
+                           {id:'3',value:'阳性样品'},
+                           {id:'4',value:'血清'},
+                           {id:'5',value:'组织'},
+                           {id:'6',value:'实物标本'},
+                           {id:'7',value:'其他(请在备注栏说明)'}
+                           ]">
+                </td>
+
+                <td style="text-align: right;padding-right: 0.5em">毒（菌）株型/血清型</td>
+                <td><input type="text" id="dzxq" name="dzxq"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">病原微生物分类</td>
+                <td>
+                    <input id="bywswCategory" class="easyui-combobox" name="bywswCategory" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'一类'},
+                           {id:'2',value:'二类'},
+                           {id:'3',value:'三类'},
+                           {id:'4',value:'其它(请填写)'},
+                           ]">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">细胞型</td>
+                <td><input type="text" id="cell" name="cell"></td>
+
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">内部保存编号</td>
+                <td><input type="text" id="code" name="code"></td>
+                <td style="text-align: right;padding-right: 0.5em">传次</td>
+                <td><input type="text" id="chuanci" name="chuanci"></td>
+
+
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">状态\形式</td>
+                <td>
+                    <input type="text" id="condition" name="condition">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">毒株传代细胞</td>
+                <td><input type="text" id="cdCell" name="cdCell"></td>
+            </tr>
+
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">宿主</td>
+                <td><input type="text" id="suzhu" name="suzhu"></td>
+                <td style="text-align: right;padding-right: 0.5em">来源国家/地区</td>
+                <td>
+                    <input type="text" id="sourceSite" name="sourceSite">
+                </td>
+
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">获得渠道</td>
+                <td>
+                    <input id="obtainApproach" class="easyui-combobox" name="obtainApproach" value="请选择" data-options="valueField:'id',textField:'value',
+                           data:[
+                           {id:'1',value:'购买'},
+                           {id:'2',value:'引进'},
+                           {id:'3',value:'赠送'},
+                           {id:'4',value:'截获'},
+                           {id:'5',value:'自行分离'},
+                           ]">
+                </td>
+                <td style="text-align: right;padding-right: 0.5em">数量</td>
+                <td><input type="text" id="number" name="number" style="width: 80px">
+                    单位
+                    <input type="text" id="danwei" name="danwei" style="width: 2em">
+                </td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">保存条件</td>
+                <td><input type="text" id="saveCondition" name="saveCondition"></td>
+                <td style="text-align: right;padding-right: 0.5em">保存时间</td>
+                <td><input type="text" id="saveTime" name="saveTime"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">保存位置（隶属关/部门）</td>
+                <td><input type="text" id="saveLocation" name="saveLocation"></td>
+
+                <td style="text-align: right;padding-right: 0.5em">获得地点</td>
+                <td><input type="text" id="obtainLocation" name="obtainLocation"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">联络人</td>
+                <td><input type="text" id="contact" name="contact"></td>
+                <td style="text-align: right;padding-right: 0.5em">联络人电话</td>
+                <td><input type="text" id="lxrPhone" name="lxrPhone"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">负责人</td>
+                <td><input type="text" id="principal" name="principal"></td>
+                <td style="text-align: right;padding-right: 0.5em">负责人电话</td>
+                <td><input type="text" id="fzrPhone" name="fzrPhone"></td>
+            </tr>
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">基本情况</td>
+                <td><input type="text" id="situation" name="situation"></td>
+            </tr>
+
+            <tr>
+                <td style="text-align: right;padding-right: 0.5em">备注</td>
+                <td>
+                    <textarea name="remark" id="remark" cols="20" rows="5" style="resize: none"></textarea>
+                </td>
+                <td></td>
+
+            </tr>
+        </table>
+    </form>
+</div>
+
+</body>
+
+<script type="text/javascript">
+    function doSearch(value){
+        $('#dg').datagrid({
+            //远程的url地址，需要抓取的数据的地址，这个地址要求返回json格式{"total":xx,"rows":[]}
+            url: 'http://localhost:8080/dwjySearch',
+            singleSelect: true,
+            queryParams:{
+                content:value,
+            },
+            rownumbers: true,
+            method:"get",
+            columns: [
+                [
+                    //展示列数据
+                    {field: 'dcRenwugqname', title: '关区', width: 100},
+                    {field: 'djLb', title: '类别', width: 100},
+                    {field: 'djName', title: '名称', width: 100},
+                    {
+                        field: 'dcRenwugqname', title: '保存位置\n' +
+                            '（隶属关/部门）', width: 100
+                    },
+                    {field: 'djLianlr', title: '联络人', width: 100},
+                    {field: 'djLianldh', title: '联络电话', width: 100},
+                    {field: 'djFuzeren', title: '负责人', width: 100},
+                    {field: 'djFuzerendh', title: '联络电话', width: 100},
+                    {field: 'djBy1', title: '备注', width: 100},
+
+                ]
+            ],
+            pagination: true,
+
+            onDblClickRow:function (index,row) {
+                $.ajax({
+                    url: "http://localhost:8080/showDwjyTable",
+                    type: "post",
+                    data: JSON.stringify({"id": row.id}),
+                    dataType: "json",
+                    contentType: "application/json",
+                    success: function (data) {
+
+                        $("#editFormAnimal").form("load", {
+                            id:data.id,
+                            rwid: data.rwid,
+                            rwmc: data.rwmc,
+                            rwxh: data.rwxh,
+                            gqdm: data.gqdm,
+                            gqName: data.gqName,
+                            ywly: data.ywly,
+                            name:data.name,
+                            ename:data.ename,
+                            category:data.category,
+                            dzxq:data.dzxq,
+                            bywswCategory:data.bywswCategory,
+                            cell:data.cell,
+                            code:data.code,
+                            chuanci:data.chuanci,
+                            condition:data.condition,
+                            cdCell:data.cdCell,
+                            suzhu:data.suzhu,
+                            sourceSite:data.sourceSite,
+                            obtainApproach:data.obtainApproach,
+                            number:data.number,
+                            danwei:data.danwei,
+                            saveCondition:data.saveCondition,
+                            saveTime:data.saveTime,
+                            obtainLocation:data.obtainLocation,
+                            saveLocation: data.saveLocation,
+                            situation:data.situation,
+                            contact: data.contact,
+                            lxrPhone: data.lxrPhone,
+                            principal: data.principal,
+                            fzrPhone: data.fzrPhone,
+                            remark: data.remark,
+                        });
+                    }
+                })
+                //填弹出编辑窗口
+
+                $("#editWinAnimal").window({title: "详细记录"});
+                $("#editWinAnimal").window("open")
+            }
+        })
+
+
+
+    }
+
+
+
+
+</script>
+</html>
