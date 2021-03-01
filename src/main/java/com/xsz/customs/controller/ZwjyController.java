@@ -249,14 +249,18 @@ public class ZwjyController {
     @ResponseBody
     @RequestMapping(value = "zwjySearch",method = RequestMethod.GET)
     public Object zwjySearch(@RequestParam String content,
+                             Integer page,
+                             Integer rows,
                              HttpServletRequest request,
                              HttpServletResponse response){
         dcUser user = (dcUser) request.getSession().getAttribute("user");
         content = '%' + content + '%';
         List<dcZwjy> zwjys = zwjyService.searchZj(content,user);
+        int size = zwjys.size();
+        zwjys = zwjyService.getZwjyListPage(zwjys,page,rows,size);
         ShowZwjyDTO showZwjyDTO = new ShowZwjyDTO();
         showZwjyDTO.setRows(zwjys);
-        showZwjyDTO.setTotal(zwjys.size());
+        showZwjyDTO.setTotal(size);
         return showZwjyDTO;
     }
     //卫生检疫统计功能

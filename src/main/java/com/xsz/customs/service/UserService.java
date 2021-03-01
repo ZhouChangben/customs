@@ -159,10 +159,15 @@ public class UserService {
 
     public String getMaxSubUserDm(String gqdm){
         String frontdm = gqdm.substring(0,4);
-        /*System.out.println(frontdm);*/
         int maxNum = userExtMapper.GetTheNextGqdm(frontdm+"%");
-        String reardm = Integer.toString(maxNum);
-        //System.out.println(frontdm+reardm);
+        String reardm;
+        if (maxNum < 10){
+            reardm = Integer.toString(maxNum);
+            reardm ='0'+reardm;
+        }
+        else {
+            reardm = Integer.toString(maxNum);
+        }
         return frontdm+reardm;
     }
 
@@ -171,11 +176,6 @@ public class UserService {
         userExample.createCriteria()
                 .andDcGqdjEqualTo(1);
         List<dcUser> users = userMapper.selectByExample(userExample);
-        if (users.size() != 0){
-            for (dcUser user : users) {
-
-            }
-        }
         return users;
     }
 

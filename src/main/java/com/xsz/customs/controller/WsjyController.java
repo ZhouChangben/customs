@@ -278,14 +278,18 @@ public class WsjyController {
     @ResponseBody
     @RequestMapping(value = "wsjySearch",method = RequestMethod.GET)
     public Object wsjySearch(@RequestParam String content,
+                             Integer page,
+                             Integer rows,
                              HttpServletRequest request,
                              HttpServletResponse response){
         dcUser user = (dcUser) request.getSession().getAttribute("user");
         content = '%' + content + '%';
         List<dcWsjy> wsjys = wsjyService.searchWj(content,user);
+        int size = wsjys.size();
+        wsjys = wsjyService.getWsjyListPage(wsjys,page,rows,size);
         ShowWsjyDTO showWsjyDTO = new ShowWsjyDTO();
         showWsjyDTO.setRows(wsjys);
-        showWsjyDTO.setTotal(wsjys.size());
+        showWsjyDTO.setTotal(size);
         return showWsjyDTO;
     }
 

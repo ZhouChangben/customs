@@ -248,14 +248,18 @@ public class DwjyController {
     @ResponseBody
     @RequestMapping(value = "dwjySearch",method = RequestMethod.GET)
     public Object wsjySearch(@RequestParam String content,
+                             Integer page,
+                             Integer rows,
                              HttpServletRequest request,
                              HttpServletResponse response){
         dcUser user = (dcUser) request.getSession().getAttribute("user");
         content = '%' + content + '%';
         List<dcDwjy> dwjys = dwjyService.searchDj(content,user);
+        int size = dwjys.size();
+        dwjys = dwjyService.getDwjyListPage(dwjys,page,rows,size);
         ShowDwjyDTO showDwjyDTO = new ShowDwjyDTO();
         showDwjyDTO.setRows(dwjys);
-        showDwjyDTO.setTotal(dwjys.size());
+        showDwjyDTO.setTotal(size);
         return showDwjyDTO;
     }
 
